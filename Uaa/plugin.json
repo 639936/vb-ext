@@ -1,0 +1,22 @@
+{
+  "metadata": {
+    "name": "Uaa",
+    "author": "369",
+    "version": 1,
+    "source": "https://www.uaa.com",
+    "regexp": "(www.|m.)?uaa.com/novel/(chapter|intro)[?]id=\\d+",
+    "description": "V1: dùng cookie trình duyệt",
+    "locale": "zh_CN",
+    "language": "javascript",
+    "type": "chinese_novel",
+    "tag": "nsfw"
+  },
+  "script": {
+    "home": "home.js",
+    "detail": "detail.js",
+    "search": "search.js",
+    "toc": "toc.js",
+    "genre": "genre.js",
+    "chap": "chap.js"
+  }
+}

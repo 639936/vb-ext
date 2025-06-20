@@ -1,0 +1,55 @@
+load('config.js')
+function execute(url) {
+    if (url.includes('/tin-tuc/')) {
+
+        let response = fetch(url);
+        if (response.ok) {
+            let doc = response.html();
+            let suggests = [];
+            doc.select(".box-content .mx-2.mt-5.space-y-2 article").forEach(e => {
+                suggests.push({
+                    title: e.select("h3").text(),
+                    input:  e.select("a").attr("href"),
+                    script: "sgnew.js"
+                });
+            });
+            return Response.success({
+                name: doc.select(".box-content h1").text(),
+                cover: doc.select(".box-content img").first().attr("src"),
+                author: BASE_URL,
+                suggests: suggests,
+                description: doc.select(".box-content .article-content").first().html().replace(/·/g, '')
+            })
+        }
+
+    } else {
+            let response = fetch(url);
+            if (response.ok) {
+                let doc = response.html();
+                let genres = [];
+                doc.select(".space-x-4.space-y-2 a").forEach(e => {
+                    genres.push({
+                        title: e.text(),
+                        input:  e.attr("href"),
+                        script: "gen.js"
+                    });
+                });
+                return Response.success({
+                    name: doc.select("h1.mb-2").text(),
+                    cover: doc.select("a img.mx-auto").attr("src"),
+                    author: doc.select("h1.mb-2 + .mb-6").first().text(),
+                    genres: genres,
+                    suggests: [
+                        {
+                            title: "Đề cử sách: ",
+                            input: doc.select("div.mx-2.mt-5").html(),
+                            script: "similar.js"
+                        }
+                    ],
+                    description: doc.select("#synopsis").html().replace(/·/g, '')
+                })
+            }
+    }
+
+    return null;
+}
