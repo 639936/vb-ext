@@ -1,5 +1,4 @@
 // https://cse.google.com/cse?oe=utf8&ie=utf8&source=uds&q=U%E1%BB%91ng%20nh%E1%BA%A7m%20Thu%E1%BB%91c&safe=off&cx=a7862c59c1ca47414&start=0
-load('libs.js');
 load('config.js');
 function execute(key, page) { 
     var key = encodeURIComponent(key)

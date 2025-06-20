@@ -1,40 +1,43 @@
-load('libs.js');
 load('config.js');
 
 function execute(url, page) {
-    page = page || '1';
-    var newUrl = String.format(BASE_URL + url + (page == '1' ? '/' : '/page/{0}/'), page);
+    page = 0;
+    var newUrl = BASE_URL + url + "/page/" + page;
     var response = fetch(newUrl);
     if (response.ok) {
         var doc = response.html();
+        var next = doc.select('span.page-numbers.current + a').text();
+    if (next) {
+
         var data = [];
+        var elems = doc.select('.noibat, .noibat + .bai-viet-box');
 
-        var elems = $.QA(doc, '.noibat');
-        if (!elems.length) return Response.error(url);
-
-        elems.forEach(function(e) {
-            var name = $.Q(e, 'a > strong').text();
-            if (name == '') return;
+        for (let i = 0; i < elems.size() - 1; i+= 2) {
+            var el = elems.get(i)
             data.push({
-                name: name,
-                link: $.Q(e, 'a').attr('href'),
-                cover:  "https://i.imgur.com/5BdXa90.png",
-                description: $.Q(e, 'span').text(),
+                name: el.text(),
+                link: el.select('a').first().attr('href'),
+                cover:  null,
+                description: elems.get(i + 1).select('a').first().text(),
                 host: BASE_URL
             })
-        })
-
-        var next = $.Q(doc, 'span.page-numbers.current + a').text();
+        }
+        var next = doc.select('span.page-numbers.current + a').text();
         if (next) return Response.success(data, next);
 
         return Response.success(data);
+    } else {
+
+        return Response.success({
+                name: doc.select("tbody tr").get(1).text(),
+                link: newUrl,
+                cover:  null,
+                description: doc.select("tbody tr").get(5).text(),
+                host: BASE_URL
+        });
+
+    }
+
     }
     return null;
-}
-
-// https://stackoverflow.com/a/1527820
-function getRandomInt(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
 }

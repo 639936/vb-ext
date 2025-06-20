@@ -1,4 +1,3 @@
-load('libs.js');
 load('config.js');
 
 function execute(url) {

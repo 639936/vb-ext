@@ -1,4 +1,3 @@
-load('libs.js');
 load('config.js');
 
 function execute(url) {
@@ -14,7 +13,7 @@ function execute(url) {
             host: BASE_URL
         })
 
-        var elems = $.QA(doc, '.bai-viet-box a.post-page-numbers');
+        var elems = doc.select('.bai-viet-box a.post-page-numbers');
         elems.forEach(function(e) {
             data.push({
                 name: e.text(),

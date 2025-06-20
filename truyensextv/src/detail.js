@@ -1,4 +1,3 @@
-load('libs.js');
 load('config.js');
 
 function execute(url) {
@@ -7,27 +6,30 @@ function execute(url) {
     let genres = [];
     if (response.ok) {
         var doc = response.html();
-    let tag = doc.select('table > tbody > tr:nth-child(5) > td:nth-child(2) a ');
-        tag.forEach(e => {
-            genres.push({
-                title: e.text(),
-                input: e.attr("href").replace(BASE_URL,""),
-                script: "gen.js"
-            })
+        let tag = doc.select('tbody a');
+
+    for (let i = 0; i < tag.size() - 1; i++) {
+        var e = tag.get(i);
+        genres.push({
+            title: e.text(),
+            input: e.attr("href").replace(BASE_URL,""),
+            script: "gen.js"
         })
+    }
+
         let suggests = [
             {
                 title: "Truyện cùng tác giả:",
-                input: doc.select('body > div.logo2 > div:nth-child(14) > div strong').html() ||doc.select('body > div.logo2 > div:nth-child(13) > div strong').html() ,
-                script: "suggests_author.js"
+                link: doc.select('.bai-viet-box a').attr("href") ,
+                cover: null,
             }
         ];
         return Response.success({
-            name: $.Q(doc, '.bai-viet-box h1 > a').text(),
-            cover: "https://i.imgur.com/5BdXa90.png",
-            author: $.Q(doc, 'table > tbody > tr:nth-child(3)').text().replace('Tác giả', '').trim() || 'Sưu tầm',
-            description: 'Nghiêm cấm trẻ em dưới 18 tuổi',
-            detail: '',
+            name: doc.select("tbody tr").get(1).text(),
+            cover: null,
+            author: doc.select("tbody tr").get(2).text(),
+            description: doc.select("tbody tr").get(5).text(),
+            detail: doc.select("tbody tr").get(6).text(),
             genres: genres,
             suggests: suggests,
             host: BASE_URL
@@ -35,12 +37,3 @@ function execute(url) {
     }
     return null;
 }
-
-// https://stackoverflow.com/a/1527820
-function getRandomInt(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-// (づ｡◕‿‿◕｡)づ

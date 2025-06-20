@@ -5,7 +5,7 @@
     "version": 1,
     "source": "https://truyensextv.cc/",
     "regexp": "truyen(heo|sex).*?/[^/]+/?$",
-    "description": "Đọc truyện trên trang http://truyensextv.me",
+    "description": "noDes",
     "locale": "vi_VN",
     "language": "javascript",
     "type": "novel",
