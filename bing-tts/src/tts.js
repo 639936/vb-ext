@@ -53,6 +53,12 @@ function escapeXml(unsafe) {
                 return '&apos;';
             case '"':
                 return '&quot;';
+            case "'":
+                return '&quot;';
+            case '“':
+                return '&quot;';
+            case '”':
+                return '&quot;';
         }
     });
 }
