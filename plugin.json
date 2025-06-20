@@ -1,129 +1,131 @@
 {
   "metadata": {
     "author": "369",
-    "description": "69"
+    "description": "noDes"
   },
   "data": [
     {
-      "name": "Cosplaytele",
-      "author": "369",
-      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/cosplaytele/plugin.zip",
-      "version": 1,
-      "source": "https://cosplaytele.com",
-      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/cosplaytele/icon.png",
-      "description": "Ngắm Cosplay +++",
-      "type": "comic",
-      "locale": "zh_CN"
+    "name": "anhhantmwordpress",
+    "author": "369",
+    "path": "https://raw.githubusercontent.com/639936/vb-ext/main/anhhantmwordpress/plugin.zip",
+    "version": 1,
+    "source": "https://anhhantm.wordpress.com/",
+    "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/anhhantmwordpress/icon.png",
+    "description": "noDes",
+    "type": "novel",
+    "locale": "vi_VN",
+    "tag": "nsfw"
     },
-        {
-      "name": "Cosplaytele",
-      "author": "369",
-      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/cosplaytele/plugin.zip",
-      "version": 1,
-      "source": "https://cosplaytele.com",
-      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/cosplaytele/icon.png",
-      "description": "Ngắm Cosplay +++",
-      "type": "comic",
-      "locale": "zh_CN"
+    {
+    "name": "koanchay",
+    "author": "369",
+    "path": "https://raw.githubusercontent.com/639936/vb-ext/main/koanchay/plugin.zip",
+    "version": 1,
+    "source": "https://koanchay.net",
+    "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/koanchay/icon.png",
+    "description": "noDes",
+    "type": "novel",
+    "locale": "vi_VN",
+    "tag": "nsfw"
     },
-        {
-      "name": "Cosplaytele",
-      "author": "369",
-      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/cosplaytele/plugin.zip",
-      "version": 1,
-      "source": "https://cosplaytele.com",
-      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/cosplaytele/icon.png",
-      "description": "Ngắm Cosplay +++",
-      "type": "comic",
-      "locale": "zh_CN"
+    {
+    "name": "truyensextv",
+    "author": "369",
+    "path": "https://raw.githubusercontent.com/639936/vb-ext/main/truyensextv/plugin.zip",
+    "version": 1,
+    "source": "https://truyensextv.cc/",
+    "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/truyensextv/icon.png",
+    "description": "noDes",
+    "type": "novel",
+    "locale": "vi_VN",
+    "tag": "nsfw"
+
     },
-        {
-      "name": "Cosplaytele",
-      "author": "369",
-      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/cosplaytele/plugin.zip",
-      "version": 1,
-      "source": "https://cosplaytele.com",
-      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/cosplaytele/icon.png",
-      "description": "Ngắm Cosplay +++",
-      "type": "comic",
-      "locale": "zh_CN"
+    {
+    "name": "cosplaytele",
+    "author": "369",
+    "path": "https://raw.githubusercontent.com/639936/vb-ext/main/cosplaytele/plugin.zip",
+    "version": 1,
+    "source": "https://cosplaytele.com/",
+    "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/cosplaytele/icon.png",
+    "description": "noDes",
+    "type": "comic",
+    "locale": "zh_CN",
+    "tag": "nsfw"
     },
-        {
-      "name": "Cosplaytele",
-      "author": "369",
-      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/cosplaytele/plugin.zip",
-      "version": 1,
-      "source": "https://cosplaytele.com",
-      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/cosplaytele/icon.png",
-      "description": "Ngắm Cosplay +++",
-      "type": "comic",
-      "locale": "zh_CN"
+    {
+    "name": "Wattpadfake",
+    "author": "369",
+    "path": "https://raw.githubusercontent.com/639936/vb-ext/main/Wattpadfake/plugin.zip",
+    "version": 1,
+    "source": "https://wattpad.com.vn/",
+    "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/Wattpadfake/icon.png",
+    "description": "noDes",
+    "type": "novel",
+    "locale": "vi_VN"
     },
-        {
-      "name": "Cosplaytele",
-      "author": "369",
-      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/cosplaytele/plugin.zip",
-      "version": 1,
-      "source": "https://cosplaytele.com",
-      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/cosplaytele/icon.png",
-      "description": "Ngắm Cosplay +++",
-      "type": "comic",
-      "locale": "zh_CN"
+    {
+    "name": "Wattpad",
+    "author": "369",
+    "path": "https://raw.githubusercontent.com/639936/vb-ext/main/Wattpad/plugin.zip",
+    "version": 1,
+    "source": "https://wattpad.com",
+    "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/Wattpad/icon.png",
+    "description": "noDes",
+    "type": "novel",
+      "locale": "vi_VN"
     },
-        {
-      "name": "Cosplaytele",
-      "author": "369",
-      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/cosplaytele/plugin.zip",
-      "version": 1,
-      "source": "https://cosplaytele.com",
-      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/cosplaytele/icon.png",
-      "description": "Ngắm Cosplay +++",
-      "type": "comic",
-      "locale": "zh_CN"
+    {
+    "name": "Uaa",
+    "author": "369",
+    "path": "https://raw.githubusercontent.com/639936/vb-ext/main/Uaa/plugin.zip",
+    "version": 1,
+    "source": "https://www.uaa.com",
+    "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/Uaa/icon.png",
+    "description": "noDes",
+    "type": "novel",
+    "locale": "zh_CN"
     },
-        {
-      "name": "Cosplaytele",
-      "author": "369",
-      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/cosplaytele/plugin.zip",
-      "version": 1,
-      "source": "https://cosplaytele.com",
-      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/cosplaytele/icon.png",
-      "description": "Ngắm Cosplay +++",
-      "type": "comic",
-      "locale": "zh_CN"
+    {
+    "name": "qidian-vp",
+    "author": "369",
+    "path": "https://raw.githubusercontent.com/639936/vb-ext/main/qidian-vp/plugin.zip",
+    "version": 1,
+    "source": "https://qidian-vp.com/",
+    "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/qidian-vp/icon.png",
+    "description": "noDes",
+    "type": "novel",
+    "locale": "vi_VN"
     },
-        {
-      "name": "Cosplaytele",
+    {
+      "name": "Google TTS",
       "author": "369",
-      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/cosplaytele/plugin.zip",
       "version": 1,
-      "source": "https://cosplaytele.com",
-      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/cosplaytele/icon.png",
-      "description": "Ngắm Cosplay +++",
-      "type": "comic",
-      "locale": "zh_CN"
+      "source": "https://www.google.com",
+      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/google-tts/plugin.zip",
+      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/google-tts/icon.png",
+      "description": "Nghe truyện bằng Google TTS",
+      "type": "tts"
     },
-        {
-      "name": "Cosplaytele",
+    {
+      "name": "Gemini TTS",
       "author": "369",
-      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/cosplaytele/plugin.zip",
       "version": 1,
-      "source": "https://cosplaytele.com",
-      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/cosplaytele/icon.png",
-      "description": "Ngắm Cosplay +++",
-      "type": "comic",
-      "locale": "zh_CN"
+      "source": "https://gemini.google.com",
+      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/gemini-tts/plugin.zip",
+      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/gemini-tts/icon.png",
+      "description": "Nghe truyện bằng Gemini TTS",
+      "type": "tts"
     },
-        {
-      "name": "Cosplaytele",
+    {
+      "name": "Bing TTS",
       "author": "369",
-      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/cosplaytele/plugin.zip",
       "version": 1,
-      "source": "https://cosplaytele.com",
-      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/cosplaytele/icon.png",
-      "description": "Ngắm Cosplay +++",
-      "type": "comic",
-      "locale": "zh_CN"
+      "source": "https://www.bing.com/translator",
+      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/bing-tts/plugin.zip",
+      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/bing-tts/icon.png",
+      "description": "Nghe truyện bằng Bing TTS",
+      "type": "tts"
     }
   ]
 }
