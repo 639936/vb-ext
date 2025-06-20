@@ -2,7 +2,7 @@
   "metadata": {
     "name": "truyensextv",
     "author": "369",
-    "version": 1,
+    "version": 2,
     "source": "https://truyensextv2.cc/",
     "regexp": "truyen(heo|sex).*?/[^/]+/?$",
     "description": "noDes",
