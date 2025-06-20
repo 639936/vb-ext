@@ -14,7 +14,7 @@ function execute(url) {
         if (response.ok) {
             let doc = response.html();
             console.log(doc)
-            let htm = doc.select("#chapter-content");
+            let htm = doc.select("#chapter-content").html();
             htm.select("h2").remove();
             htm = cleanHtml(htm.html());
             return Response.success(htm);

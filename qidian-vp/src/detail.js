@@ -13,12 +13,15 @@ function execute(url) {
                     script: "sgnew.js"
                 });
             });
+            doc.select("img").remove()
+            let des = doc.select(".box-content .article-content").first().html().replace(/·/g, '');
+
             return Response.success({
                 name: doc.select(".box-content h1").text(),
                 cover: doc.select(".box-content img").first().attr("src"),
                 author: BASE_URL,
                 suggests: suggests,
-                description: doc.select(".box-content .article-content").first().html().replace(/·/g, '')
+                description: des
             })
         }
 
