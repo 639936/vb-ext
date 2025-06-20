@@ -1,7 +1,8 @@
 function execute() {
     return Response.success([
-        {title: "Cập nhật", input: "/", script: "up.js"},
-        {title: "HOT new", input: "/", script: "up2.js"},
-        {title: "danh sách HOT", input: "/danh-sach/truyen-hot/", script: "gen.js"},
+        {title: "Truyện Mới Cập Nhật", input: "/", script: "up.js"},
+        {title: "Truyện hot", input: "/", script: "up2.js"},
+        {title: "TOP Truyện Đề Cử", input: "/danh-sach/truyen-hot/", script: "gen.js"},
+        {title: "TOP Truyện Đề Cử", input: "/danh-sach/truyen-hot/", script: "gen.js"}
     ]);
 }
