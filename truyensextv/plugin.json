@@ -3,7 +3,7 @@
     "name": "truyensextv",
     "author": "369",
     "version": 1,
-    "source": "https://truyensextv.cc/",
+    "source": "https://truyensextv2.cc/",
     "regexp": "truyen(heo|sex).*?/[^/]+/?$",
     "description": "noDes",
     "locale": "vi_VN",

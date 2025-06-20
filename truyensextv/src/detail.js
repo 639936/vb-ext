@@ -3,12 +3,13 @@ load('config.js');
 function execute(url) {
     url = url.replace(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n?]+)/img, BASE_URL)
     var response = fetch(url);
-    let genres = [];
+    var genres = [];
     if (response.ok) {
-        var doc = response.html();
-        let tag = doc.select('tbody a');
+        let doc = response.html();
+        doc.select("em").remove();
+        var tag = doc.select('tbody a');
 
-    for (let i = 0; i < tag.size() - 1; i++) {
+    for (var i = 0; i < tag.size() - 1; i++) {
         var e = tag.get(i);
         genres.push({
             title: e.text(),
@@ -17,7 +18,7 @@ function execute(url) {
         })
     }
 
-        let suggests = [
+        var suggests = [
             {
                 title: "Truyện cùng tác giả:",
                 link: doc.select('.bai-viet-box a').attr("href") ,

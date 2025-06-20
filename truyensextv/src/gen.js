@@ -5,14 +5,15 @@ function execute(url, page) {
     var newUrl = BASE_URL + url + "/page/" + page;
     var response = fetch(newUrl);
     if (response.ok) {
-        var doc = response.html();
+        let doc = response.html();
+        doc.select("em").remove();
         var next = doc.select('span.page-numbers.current + a').text();
     if (next) {
 
         var data = [];
         var elems = doc.select('.noibat, .noibat + .bai-viet-box');
 
-        for (let i = 0; i < elems.size() - 1; i+= 2) {
+        for (var i = 0; i < elems.size() - 1; i+= 2) {
             var el = elems.get(i)
             data.push({
                 name: el.text(),
@@ -27,7 +28,6 @@ function execute(url, page) {
 
         return Response.success(data);
     } else {
-
         return Response.success({
                 name: doc.select("tbody tr").get(1).text(),
                 link: newUrl,
@@ -35,9 +35,7 @@ function execute(url, page) {
                 description: doc.select("tbody tr").get(5).text(),
                 host: BASE_URL
         });
-
     }
-
     }
     return null;
 }

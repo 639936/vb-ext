@@ -101,5 +101,3 @@ function execute() {
         { title: "Tác giả Khởi nguồn dục vọng", input: "/tag/tac-gia-khoi-nguon-duc-vong/", script: "gen.js" },
     ]);
 }
-
-// console.log([...document.querySelectorAll('body > div.logo2 > div:nth-child(39) a')].map(e => `{title: "${e.innerText}", input: "${e.href.replace(/^(?:\/\/|[^/]+)*/, '')}", script: "gen.js"},`).join('\n'));
