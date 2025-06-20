@@ -41,24 +41,16 @@ function generateSSML(text, voiceLang, voiceName, voiceGender) {
 }
 
 function escapeXml(unsafe) {
-    return unsafe.replace(/[<>&'"]/g, function (c) {
+    return unsafe.replace(/[<>&'"“”]/g, function (c) {
         switch (c) {
-            case '<':
-                return '&lt;';
-            case '>':
-                return '&gt;';
-            case '&':
-                return '&amp;';
-            case '\'':
-                return '&apos;';
-            case '"':
-                return '&quot;';
-            case "'":
-                return '&quot;';
+            case '<': return '&lt;';
+            case '>': return '&gt;';
+            case '&': return '&amp;';
+            case '\'': return '&apos;';
+            case '"': return '&quot;';
             case '“':
-                return '&quot;';
             case '”':
-                return '&quot;';
+                return '';
         }
     });
 }
