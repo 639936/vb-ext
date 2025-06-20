@@ -5,7 +5,7 @@ function execute(url) {
         console.log(url)
         if (response.ok) {
             let doc = response.html();
-            let htm = doc.select(".box-content .article-content");
+            let htm = doc.select(".box-content .article-content").text();
             return Response.success(htm);
         }
     } else {
