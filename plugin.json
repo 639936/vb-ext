@@ -149,7 +149,7 @@
       "type": "translate"
     },
     {
-      "name": "Gemini Translate",
+      "name": "Google Gemini Translate",
       "author": "369",
       "version": 1,
       "source": "https://generativelanguage.googleapis.com",

@@ -1,31 +1,80 @@
-// google_language_list.js
-// Danh sách ngôn ngữ để hiển thị trong UI. Gemini hỗ trợ nhiều hơn thế.
-// 'id' là mã ISO 639-1, 'name' là tên đầy đủ để ra lệnh cho AI.
+// language_list.js
+// GIỮ NGUYÊN CẤU TRÚC GỐC ĐỂ ĐẢM BẢO TƯƠNG THÍCH
 let languages = [
-    { "id": "auto", "name": "Auto Detect" }, // Tự động phát hiện
-    { "id": "vi", "name": "Vietnamese" },
-    { "id": "en", "name": "English" },
-    { "id": "zh-Hans", "name": "Simplified Chinese" },
-    { "id": "ja", "name": "Japanese" },
-    { "id": "ko", "name": "Korean" },
-    { "id": "fr", "name": "French" },
-    { "id": "de", "name": "German" },
-    { "id": "ru", "name": "Russian" },
-    { "id": "es", "name": "Spanish" },
-    { "id": "th", "name": "Thai" },
-    { "id": "id", "name": "Indonesian" },
-    { "id": "ms", "name": "Malay" },
-    { "id": "lo", "name": "Lao" },
-    { "id": "km", "name": "Khmer" },
-    { "id": "my", "name": "Burmese" }
-];
-
-// Hàm trợ giúp để lấy tên ngôn ngữ từ mã id
-function getLanguageName(id) {
-    for (var i = 0; i < languages.length; i++) {
-        if (languages[i].id === id) {
-            return languages[i].name;
-        }
-    }
-    return "English"; // Mặc định là tiếng Anh nếu không tìm thấy
-}
+    {"id": "auto"}, // Thêm auto để logic code hoạt động
+    {"id": "af"},
+    {"id": "sq"},
+    {"id": "ar"},
+    {"id": "hy"},
+    {"id": "az"},
+    {"id": "eu"},
+    {"id": "be"},
+    {"id": "bn"},
+    {"id": "bs"},
+    {"id": "bg"},
+    {"id": "ca"},
+    {"id": "zh-Hans"},
+    {"id": "zh-Hant"},
+    {"id": "hr"},
+    {"id": "cs"},
+    {"id": "da"},
+    {"id": "nl"},
+    {"id": "en"},
+    {"id": "et"},
+    {"id": "fj"},
+    {"id": "fil"},
+    {"id": "fi"},
+    {"id": "fr"},
+    {"id": "ka"},
+    {"id": "de"},
+    {"id": "el"},
+    {"id": "gu"},
+    {"id": "ht"},
+    {"id": "he"},
+    {"id": "hi"},
+    {"id": "hu"},
+    {"id": "is"},
+    {"id": "id"},
+    {"id": "ga"},
+    {"id": "it"},
+    {"id": "ja"},
+    {"id": "kn"},
+    {"id": "kk"},
+    {"id": "ko"},
+    {"id": "lv"},
+    {"id": "lt"},
+    {"id": "mk"},
+    {"id": "ms"},
+    {"id": "ml"},
+    {"id": "mt"},
+    {"id": "mi"},
+    {"id": "mr"},
+    {"id": "mn"},
+    {"id": "ne"},
+    {"id": "nb"},
+    {"id": "fa"},
+    {"id": "pl"},
+    {"id": "pt"},
+    {"id": "pa"},
+    {"id": "ro"},
+    {"id": "ru"},
+    {"id": "sm"},
+    {"id": "sr-Cyrl"},
+    {"id": "sr-Latn"},
+    {"id": "sk"},
+    {"id": "sl"},
+    {"id": "es"},
+    {"id": "sw"},
+    {"id": "sv"},
+    {"id": "ta"},
+    {"id": "te"},
+    {"id": "th"},
+    {"id": "tr"},
+    {"id": "uk"},
+    {"id": "ur"},
+    {"id": "uz"},
+    {"id": "vi"},
+    {"id": "cy"},
+    {"id": "yua"},
+    {"id": "zu"}
+]
