@@ -1,8 +1,8 @@
 let languages = [
-    {"id": "en", "name": "English"},
-    {"id": "vi", "name": "Vietnamese"},
-    {"id": "zh-Hans", "name": "Chinese (Simplified)"},
-    {"id": "zh-Hant", "name": "Chinese (Traditional)"},
-    {"id": "ja", "name": "Japanese"},
-    {"id": "ko", "name": "Korean"}
+    {"id": "zh-Hans"},
+    {"id": "en"},
+    {"id": "vi"},
+    {"id": "ja"},
+    {"id": "ko"},
+    {"id": "zh-Hant"}
 ];

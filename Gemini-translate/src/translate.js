@@ -1,45 +1,24 @@
-// File này không cần load language_list.js
 load("language_list.js"); 
 
 function execute(text, from, to, apiKey1) {
     let apiKey = "";
-    // Nếu không có API Key, báo lỗi ngay lập tức.
     if (!apiKey) {
-        return Response.error("API Key của Google AI Studio là bắt buộc.");
+        return Response.success("");
     }
+    console.log(apiKey);
+    console.log(text);
+    console.log(from);
+    console.log(to);
 
-    // Prompt dịch thuật chi tiết bạn đã cung cấp (đã cập nhật)
-    const system_prompt = `Bạn cũng là công cụ dịch trang web nhanh chóng.
-Khi dịch trang web, hãy dịch nhanh các phần không phải nội dung chính.
-Khi dịch nội dung văn bản, bạn là một dịch giả chuyên nghiệp tiếng Anh, Trung, Nhật, và Hàn.
-Hãy dịch văn bản sang tiếng Việt, đảm bảo giữ nguyên văn phong, đại từ nhân xưng. 
-Văn bản dịch phải lôi cuốn và khắc họa được tình cảm trong văn bản gốc.
-Lưu ý quan trọng:
-- Với văn bản tiếng Trung, các tên riêng phải được dịch sang Hán Việt.
-- Với văn bản tiếng Anh phải giữ nguyên các tên riêng gốc.
-- Với văn bản tiếng Hàn, Nhật, các tên cần chuyển sang tên latin.
-- Với văn bản tiếng Việt dịch sang các ngôn ngữ khác, hãy dịch tên tương ứng trong ngôn ngữ đích.
-Chỉ trả về văn bản đã dịch, không thêm bất kỳ lời giải thích hay ghi chú nào khác.`;
+    const system_prompt = `với yêu cầu: Đảm bảo giữ nguyên văn phong, nội dung và cảm xúc của các nhân vật. các đại từ nhân xưng phù hợp với hoàn cảnh. Văn bản dịch phải lôi cuốn và khắc họa được tình cảm trong văn bản gốc. Với văn bản tiếng Trung, nên dùng các đại từ nhân xưng "ta", "ngươi", "hắn", "nàng" để dịch, không dùng các từ như "cô ta", "anh ta". Dịch không bỏ sót chi tiết nào. Chỉ trả về văn bản đã dịch, không thêm bất kỳ lời giải thích hay ghi chú nào khác.`;
 
-    // Tạo nội dung hoàn chỉnh để gửi cho AI
-    const full_prompt = `${system_prompt}\n\nDịch văn bản sau từ '${from}' sang '${to}':\n\n---\n${text}\n---`;
-
-    // API Endpoint của Google Gemini. Model 'gemini-1.5-flash' nhanh và rẻ hơn.
+    const full_prompt = `---\n${text}\n---\n\nDịch văn bản sau từ '${from}' sang '${to}' ${system_prompt}`;
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
 
-    // Cấu trúc body cho request tới API Gemini
     const body = {
-        "contents": [{
-            "parts": [{
-                "text": full_prompt
-            }]
-        }],
+        "contents": [{ "parts": [{ "text": full_prompt }] }],
         "generationConfig": {
-            "temperature": 0.5,
-            "topK": 1,
-            "topP": 1,
-            "maxOutputTokens": 8192,
-            "stopSequences": []
+            "temperature": 0.5, "topK": 1, "topP": 1, "maxOutputTokens": 8192, "stopSequences": []
         },
         "safetySettings": [
             { "category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE" },
@@ -49,12 +28,9 @@ Chỉ trả về văn bản đã dịch, không thêm bất kỳ lời giải th
         ]
     };
 
-    // Thực hiện gọi API
     let response = fetch(url, {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body)
     });
 
@@ -62,20 +38,25 @@ Chỉ trả về văn bản đã dịch, không thêm bất kỳ lời giải th
         let result = JSON.parse(response.text());
 
         if (result.candidates && result.candidates[0] && result.candidates[0].content && result.candidates[0].content.parts[0]) {
-            let translatedText = result.candidates[0].content.parts[0].text;
-            return Response.success(translatedText.trim());
+            let translatedBlock = result.candidates[0].content.parts[0].text;
+            
+            // Xử lý để đảm bảo định dạng đầu ra tương thích
+            let lines = translatedBlock.split('\n');
+            let trans = "";
+            lines.forEach(line => {
+                trans += line + "\n";
+            });
+            
+            return Response.success(trans.trim());
+
         } else {
-            let error_reason = "Không nhận được nội dung dịch.";
-            if (result.candidates && result.candidates[0] && result.candidates[0].finishReason) {
-                error_reason = `Dịch thất bại, lý do: ${result.candidates[0].finishReason}`;
-                 if(result.promptFeedback && result.promptFeedback.blockReason) {
-                    error_reason += ` (${result.promptFeedback.blockReason})`;
-                }
-            }
-            return Response.error(error_reason);
+            // 2. Lỗi: API trả về thành công nhưng không có nội dung
+            // Thay vì báo lỗi, trả về một chuỗi rỗng.
+            return Response.success("");
         }
     } else {
-        let error_details = response.text();
-        return Response.error(`Lỗi API (${response.status}): ${error_details}`);
+        // 3. Lỗi: Gọi API thất bại (sai key, lỗi mạng, v.v.)
+        // Thay vì báo lỗi, trả về một chuỗi rỗng.
+        return Response.success("");
     }
 }
