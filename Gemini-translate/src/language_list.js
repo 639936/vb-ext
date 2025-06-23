@@ -1,7 +1,6 @@
 // language_list.js
-// GIỮ NGUYÊN CẤU TRÚC GỐC ĐỂ ĐẢM BẢO TƯƠNG THÍCH
+// Đã xóa "auto" khỏi danh sách
 let languages = [
-    {"id": "auto"}, // Thêm auto để logic code hoạt động
     {"id": "af"},
     {"id": "sq"},
     {"id": "ar"},
