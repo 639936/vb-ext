@@ -35,7 +35,7 @@ function execute(url) {
     const data = [];
     doc = getChapterInPage(currentPage);
     while (doc) {
-        var el = doc.select("li.chapter-name a");
+        var el = doc.select("li.chapter-name a, h5.volume-name");
         for (var i = 0; i < el.size(); i++) {
             var e = el.get(i);
             var link = e.attr("href");
