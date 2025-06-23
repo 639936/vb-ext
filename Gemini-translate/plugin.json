@@ -4,7 +4,7 @@
     "author": "369",
     "version": 1,
     "source": "https://generativelanguage.googleapis.com",
-    "description": "Dịch văn bản bằng Google Gemini API. Yêu cầu API Key từ Google AI Studio.",
+    "description": "Dịch văn bản bằng Google Gemini API (Hardcoded Key).",
     "type": "translate"
   },
   "script": {
@@ -12,10 +12,10 @@
     "translate": "translate.js"
   },
   "config": {
-    "support_auto_detect": true,
+    "support_auto_detect": false,
     "max_line": 1000,
     "max_length": 20000,
-    "required_api_key": true,
+    "required_api_key": false,
     "support_url": "https://aistudio.google.com/app/apikey"
   }
 }
