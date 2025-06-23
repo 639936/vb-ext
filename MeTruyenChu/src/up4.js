@@ -6,8 +6,8 @@ function execute(url) {
     if (response.ok) {
         let doc = response.html();
         const data = [];
-        doc.select(".wrapper.homepage .item").forEach(e => {
-            let bookUrl = BASE_URL + "/" + e.select("a").first().attr("href");
+        doc.select(".wrapper.homepage .widget.bg-widget.suggest .item").forEach(e => {
+            let bookUrl = BASE_URL + "/" + e.select("div > a").first().attr("href");
             let bookResponse = fetch(bookUrl);
             if (bookResponse.ok) {
                 let bookDoc = bookResponse.html();

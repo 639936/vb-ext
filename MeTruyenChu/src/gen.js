@@ -1,7 +1,8 @@
 load('config.js');
-function execute(key,page) {
+function execute(url,page) {
     if(!page) page = '1';
-    let response = fetch(BASE_URL + "/tim-kiem?s=" + encodeURIComponent(key) + "&page=" + page);
+    url = url.replace(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n?]+)/img, BASE_URL);
+    let response = fetch(BASE_URL + url + "?page=" + page);
     if (response.ok) {
         let doc = response.html();
         const data = [];

@@ -26,7 +26,7 @@ function execute(url, page) {
             data.push({
                 name: e.select(".book-title").text(),
                 link: e.select(".info-col > a").first().attr("href"),
-                cover: e.select(".cover-col img").attr("src"),
+                cover: BASE_URL + e.select("img").first().attr("src") + ".jpg",
                 description: e.select(".book-author").text(),
                 host: BASE_URL
             });

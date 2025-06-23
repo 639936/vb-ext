@@ -6,16 +6,16 @@ function execute(url) {
     if (response.ok) {
         let doc = response.html();
         const data = [];
-        doc.select(".wrapper.homepage .item").forEach(e => {
-            let bookUrl = BASE_URL + "/" + e.select("a").first().attr("href");
+        doc.select(".home-content .itemupdate").forEach(e => {
+            let bookUrl = BASE_URL + "/" + e.select("h3 a").first().attr("href");
             let bookResponse = fetch(bookUrl);
             if (bookResponse.ok) {
                 let bookDoc = bookResponse.html();
                 let coverUrl = bookDoc.select(".book-info-pic img").attr("src");
                 data.push({
-                    name: bookDoc.select(".mRightCol h1").text(),
+                    name: e.select("h3 a").first().text(),
                     link: bookUrl,
-                    description: bookDoc.select(".mRightCol .scrolltext div").text(),
+                    description: e.select(".ichapter a").first().text(),
                     cover: BASE_URL + coverUrl,
                     host: BASE_URL
                 });

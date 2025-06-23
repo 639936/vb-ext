@@ -7,7 +7,7 @@ function execute(data) {
         books.push({
             name: e.select(".book-title").text(),
             link: e.select("a.book-title").first().attr("href"),
-            cover: e.select("img").attr("src"),
+            cover: BASE_URL + e.select("img").attr("src") + ".jpg",
             description: e.select(".book-author").text(),
             host: BASE_URL
         });

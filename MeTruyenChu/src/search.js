@@ -1,7 +1,7 @@
 load('config.js');
 function execute(key,page) {
     if(!page) page = '1';
-    let response = fetch(BASE_URL + "/tim-kiem?s=" + encodeURIComponent(key) + "&page=" + page);
+    let response = fetch(BASE_URL + "/search?q=" + encodeURIComponent(key) + "&page=" + page);
     if (response.ok) {
         let doc = response.html();
         const data = [];

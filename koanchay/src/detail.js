@@ -49,7 +49,7 @@ function execute(url) {
         });
         return Response.success({
             name: name,
-            cover: doc.select("div.book-info img").first().attr("src"),
+            cover: BASE_URL + doc.select("div.book-info img").first().attr("src") +".jpg",
             author: author,
             description: doc.select("div.book-desc-detail").html(),
             detail: detail,
@@ -60,7 +60,7 @@ function execute(url) {
             suggests: [
                 {
                     title: "Cùng thể loại",
-                    input: doc.select(".desktop-similar-books").html(),
+                    input: doc.select(".similar-list").html(),
                     script: "similar.js"
                 }
             ],

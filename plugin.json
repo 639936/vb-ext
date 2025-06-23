@@ -65,6 +65,17 @@
     "locale": "vi_VN"
     },
     {
+    "name": "MeTruyenChu",
+    "author": "369",
+    "path": "https://raw.githubusercontent.com/639936/vb-ext/main/MeTruyenChu/plugin.zip",
+    "version": 1,
+    "source": "https://wattpad.com.vn/",
+    "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/MeTruyenChu/icon.png",
+    "description": "noDes",
+    "type": "novel",
+    "locale": "vi_VN"
+    },
+    {
     "name": "Wattpad",
     "author": "369",
     "path": "https://raw.githubusercontent.com/639936/vb-ext/main/wattpad/plugin.zip",
