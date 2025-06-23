@@ -39,8 +39,7 @@ function execute(text, from, to, apiKey1) {
 
         if (result.candidates && result.candidates[0] && result.candidates[0].content && result.candidates[0].content.parts[0]) {
             let translatedBlock = result.candidates[0].content.parts[0].text;
-            
-            // Xử lý để đảm bảo định dạng đầu ra tương thích
+
             let lines = translatedBlock.split('\n');
             let trans = "";
             lines.forEach(line => {
@@ -50,13 +49,9 @@ function execute(text, from, to, apiKey1) {
             return Response.success(trans.trim());
 
         } else {
-            // 2. Lỗi: API trả về thành công nhưng không có nội dung
-            // Thay vì báo lỗi, trả về một chuỗi rỗng.
             return Response.success("");
         }
     } else {
-        // 3. Lỗi: Gọi API thất bại (sai key, lỗi mạng, v.v.)
-        // Thay vì báo lỗi, trả về một chuỗi rỗng.
         return Response.success("");
     }
 }
