@@ -1,7 +1,7 @@
 load("language_list.js"); 
 
 function execute(text, from, to, apiKey1) {
-    let apiKey = "AIzaSyCs6IyDrVqtKuc3cXyIDX6BJEvshnoszVE";
+    let apiKey = "";
     if (!apiKey) {
         return Response.success("");
     }
