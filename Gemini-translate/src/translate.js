@@ -1,24 +1,35 @@
 // translate.js
-// Đã sửa đổi để sử dụng Google Gemini API và loại bỏ logic "auto"
+// GIỮ NGUYÊN CẤU TRÚC GỐC, THAY THẾ LÕI API BẰNG GOOGLE GEMINI
 load("language_list.js");
+load("api.js");
 
-function execute(text, from, to, apiKey) {
-    // Kiểm tra xem người dùng đã cung cấp API Key chưa.
+// Hàm execute() được giữ nguyên để gọi hàm chính
+function execute(text, from, to) {
+    // Gọi hàm dịch thuật chính, bắt đầu với số lần thử là 0
+    return translateContent(text, from, to, apiKey, 0);
+}
+
+// Hàm dịch thuật chính, giữ lại cấu trúc có retry (thử lại)
+function translateContent(text, from, to, apiKey, retryCount) {
+    // 1. Giữ nguyên cơ chế thử lại: Nếu thất bại quá 2 lần thì dừng
+    if (retryCount > 2) {
+        return Response.error("Failed to translate after 3 attempts.");
+    }
+
+    // 2. Kiểm tra API Key (logic mới)
     if (!apiKey) {
         return Response.error("Please provide Google AI API Key in settings.");
     }
 
-    // Lấy tên ngôn ngữ đầy đủ để ra lệnh cho AI
+    // 3. Lấy tên ngôn ngữ đầy đủ (logic mới)
     let fromLanguage = getLanguageName(from);
     let toLanguage = getLanguageName(to);
 
-    // Xây dựng câu lệnh (prompt) cho AI, không còn trường hợp "auto"
+    // 4. Xây dựng prompt chi tiết theo yêu cầu của bạn (logic mới)
     let prompt = `Translate the following text from ${fromLanguage} to ${toLanguage}. You are a professional translator of Chinese and English. Translate texts while ensuring the context, style, narrative perspective, and pronouns are preserved. Pay attention to the names of characters and the appropriateness of pronouns in the text. Provide ONLY the translated text, without any additional explanations or introductory phrases.\n\nText to translate:\n"""\n${text}\n"""`;
 
-    // Địa chỉ API của Google Gemini
+    // 5. Chuẩn bị gọi API (logic mới)
     const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + apiKey;
-
-    // Nội dung gửi đi cho API
     const requestBody = {
         "contents": [{"parts": [{"text": prompt}]}],
         "safetySettings": [
@@ -29,7 +40,7 @@ function execute(text, from, to, apiKey) {
         ]
     };
 
-    // Gửi yêu cầu tới Google API
+    // 6. Gửi yêu cầu fetch (giữ nguyên phương thức, thay đổi nội dung)
     let response = fetch(API_URL, {
         method: "POST",
         headers: {
@@ -38,25 +49,27 @@ function execute(text, from, to, apiKey) {
         body: JSON.stringify(requestBody)
     });
 
-    // Xử lý kết quả trả về
+    // 7. Xử lý kết quả trả về
     if (response.ok) {
+        // Nếu thành công, xử lý JSON của Gemini
         let result = JSON.parse(response.text());
         try {
             let translatedText = result.candidates[0].content.parts[0].text;
+            // Trả về thành công, cấu trúc này ứng dụng sẽ hiểu
             return Response.success(translatedText.trim());
         } catch (e) {
-            let errorInfo = "AI did not return a valid translation.";
-            if (result.candidates && result.candidates[0].finishReason) {
-                errorInfo += " Reason: " + result.candidates[0].finishReason;
-            }
-            return Response.error(errorInfo);
+            // Trường hợp Gemini trả về kết quả nhưng không có nội dung dịch (bị chặn,...)
+            // Thử lại lần nữa
+            return translateContent(text, from, to, apiKey, retryCount + 1);
         }
-    } else {
-        return Response.error("API Error: " + response.status + " " + response.text());
     }
+
+    // Nếu response không ok (lỗi mạng, sai key...), tiến hành thử lại
+    // Đây là logic cốt lõi của file gốc, ta giữ lại nó
+    return translateContent(text, from, to, apiKey, retryCount + 1);
 }
 
-// Hàm trợ giúp để chuyển mã ngôn ngữ ('vi') thành tên đầy đủ ('Vietnamese')
+// Hàm trợ giúp để chuyển mã ngôn ngữ, giữ nguyên
 function getLanguageName(id) {
     const languageMap = {
         'af': 'Afrikaans', 'sq': 'Albanian', 'ar': 'Arabic', 'hy': 'Armenian',
