@@ -6,11 +6,11 @@ load("api.js");
 // Hàm execute() được giữ nguyên để gọi hàm chính
 function execute(text, from, to) {
     // Gọi hàm dịch thuật chính, bắt đầu với số lần thử là 0
-    return translateContent(text, from, to, apiKey, 0);
+    return translateContent(text, from, to, 0);
 }
 
 // Hàm dịch thuật chính, giữ lại cấu trúc có retry (thử lại)
-function translateContent(text, from, to, apiKey, retryCount) {
+function translateContent(text, from, to, retryCount) {
     // 1. Giữ nguyên cơ chế thử lại: Nếu thất bại quá 2 lần thì dừng
     if (retryCount > 2) {
         return Response.error("Failed to translate after 3 attempts.");
