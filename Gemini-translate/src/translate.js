@@ -1,11 +1,10 @@
 // google_translate.js
 load("google_language_list.js");
-const apiKey = "AIzaSyDgovtoLcEZ5TWZ8Hnt36zBvFk5OZQWSww"
 
 // Hàm chính được gọi bởi ứng dụng
-function execute(text, from, to, apiKey) {
+function execute(text, from, to, api_Key) {
     // 1. Kiểm tra xem người dùng đã cung cấp API Key chưa
-    if (!apiKey) {
+    if (!api_Key) {
         return Response.error("Google AI API Key is missing. Please provide it in settings.");
     }
 
@@ -23,7 +22,7 @@ function execute(text, from, to, apiKey) {
     }
 
     // 4. Chuẩn bị URL và nội dung request
-    const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + apiKey;
+    const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + api_Key;
 
     const requestBody = {
         "contents": [{
