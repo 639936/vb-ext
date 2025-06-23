@@ -1,68 +1,46 @@
-// translate.js
-// PHIÊN BẢN MÔ PHỎNG CẤU TRÚC GỐC VỚI KEY GẮN CỨNG
-load("language_list.js");
+// File này không cần load language_list.js
+load("language_list.js"); 
 
-// ##################################################################
-// ## BƯỚC 1: DÁN API KEY CỦA BẠN VÀO ĐÂY ##
-// ##################################################################
-// Lấy key từ: https://aistudio.google.com/app/apikey
-const GEMINI_API_KEY = "DÁN_API_KEY_CỦA_BẠN_VÀO_ĐÂY";
-// ##################################################################
-
-
-// Hàm execute được gọi bởi ứng dụng.
-// Tham số apiKey không còn nữa vì chúng ta đã khai báo ở trên.
-function execute(text, from, to) {
-    // Gọi hàm dịch thuật chính, giữ nguyên cấu trúc này
-    return translateContent(text, from, to, 0);
-}
-
-// Hàm dịch thuật chính, giữ lại cấu trúc có retry (thử lại)
-function translateContent(text, from, to, retryCount) {
-    if (retryCount > 2) {
-        return Response.error("Failed to translate after 3 attempts.");
+function execute(text, from, to, apiKey1) {
+    let apiKey = "";
+    // Nếu không có API Key, báo lỗi ngay lập tức.
+    if (!apiKey) {
+        return Response.error("API Key của Google AI Studio là bắt buộc.");
     }
 
-    // LƯU Ý: logic tách dòng của file gốc được giữ lại.
-    // Tuy nhiên, Gemini API dịch tốt nhất cả một khối văn bản lớn.
-    // Việc dịch từng dòng riêng lẻ có thể làm mất ngữ cảnh và chậm hơn.
-    // Nhưng chúng ta giữ lại logic này để đảm bảo tương thích tối đa.
-    let lines = text.split('\n');
+    // Prompt dịch thuật chi tiết bạn đã cung cấp (đã cập nhật)
+    const system_prompt = `Bạn cũng là công cụ dịch trang web nhanh chóng.
+Khi dịch trang web, hãy dịch nhanh các phần không phải nội dung chính.
+Khi dịch nội dung văn bản, bạn là một dịch giả chuyên nghiệp tiếng Anh, Trung, Nhật, và Hàn.
+Hãy dịch văn bản sang tiếng Việt, đảm bảo giữ nguyên văn phong, đại từ nhân xưng. 
+Văn bản dịch phải lôi cuốn và khắc họa được tình cảm trong văn bản gốc.
+Lưu ý quan trọng:
+- Với văn bản tiếng Trung, các tên riêng phải được dịch sang Hán Việt.
+- Với văn bản tiếng Anh phải giữ nguyên các tên riêng gốc.
+- Với văn bản tiếng Hàn, Nhật, các tên cần chuyển sang tên latin.
+- Với văn bản tiếng Việt dịch sang các ngôn ngữ khác, hãy dịch tên tương ứng trong ngôn ngữ đích.
+Chỉ trả về văn bản đã dịch, không thêm bất kỳ lời giải thích hay ghi chú nào khác.`;
 
-    let translatedLines = [];
-    for (var i = 0; i < lines.length; i++) {
-        let line = lines[i];
-        if (line.trim() === "") {
-            translatedLines.push(""); // Giữ lại các dòng trống
-            continue;
-        }
+    // Tạo nội dung hoàn chỉnh để gửi cho AI
+    const full_prompt = `${system_prompt}\n\nDịch văn bản sau từ '${from}' sang '${to}':\n\n---\n${text}\n---`;
 
-        // Dịch từng dòng
-        let translatedLine = translateSingleLine(line, from, to);
-        
-        if (translatedLine.startsWith("Error:")) {
-            // Nếu một dòng bị lỗi, thử lại toàn bộ tác vụ
-            return translateContent(text, from, to, retryCount + 1);
-        }
-        translatedLines.push(translatedLine);
-    }
-    
-    // Ghép các dòng đã dịch lại với nhau
-    return Response.success(translatedLines.join('\n'));
-}
+    // API Endpoint của Google Gemini. Model 'gemini-1.5-flash' nhanh và rẻ hơn.
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
 
-// Hàm mới để dịch một dòng duy nhất (giúp code gọn gàng hơn)
-function translateSingleLine(line, from, to) {
-    let fromLanguage = getLanguageName(from);
-    let toLanguage = getLanguageName(to);
-
-    // Prompt chi tiết của bạn, áp dụng cho từng dòng
-    let prompt = `Translate the following text from ${fromLanguage} to ${toLanguage}. You are a professional translator of Chinese and English. Translate texts while ensuring the context, style, narrative perspective, and pronouns are preserved. Pay attention to the names of characters and the appropriateness of pronouns in the text. Provide ONLY the translated text, without any additional explanations or introductory phrases.\n\nText to translate:\n"""\n${line}\n"""`;
-
-    const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + getApiKey();
-    
-    const requestBody = {
-        "contents": [{"parts": [{"text": prompt}]}],
+    // Cấu trúc body cho request tới API Gemini
+    const body = {
+        "contents": [{
+            "parts": [{
+                "text": full_prompt
+            }]
+        }],
+        "generationConfig": {
+            "temperature": 0.5,
+            "topK": 1,
+            "topP": 1,
+            "maxOutputTokens": 8192,
+            "stopSequences": []
+        },
         "safetySettings": [
             { "category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE" },
             { "category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE" },
@@ -70,56 +48,34 @@ function translateSingleLine(line, from, to) {
             { "category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE" }
         ]
     };
-    
-    try {
-        let response = fetch(API_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(requestBody)
-        });
 
-        if (response.ok) {
-            let result = JSON.parse(response.text());
-            return result.candidates[0].content.parts[0].text.trim();
+    // Thực hiện gọi API
+    let response = fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body)
+    });
+
+    if (response.ok) {
+        let result = JSON.parse(response.text());
+
+        if (result.candidates && result.candidates[0] && result.candidates[0].content && result.candidates[0].content.parts[0]) {
+            let translatedText = result.candidates[0].content.parts[0].text;
+            return Response.success(translatedText.trim());
         } else {
-            return "Error: API call failed.";
+            let error_reason = "Không nhận được nội dung dịch.";
+            if (result.candidates && result.candidates[0] && result.candidates[0].finishReason) {
+                error_reason = `Dịch thất bại, lý do: ${result.candidates[0].finishReason}`;
+                 if(result.promptFeedback && result.promptFeedback.blockReason) {
+                    error_reason += ` (${result.promptFeedback.blockReason})`;
+                }
+            }
+            return Response.error(error_reason);
         }
-    } catch (e) {
-        return "Error: Exception during fetch.";
+    } else {
+        let error_details = response.text();
+        return Response.error(`Lỗi API (${response.status}): ${error_details}`);
     }
-}
-
-// Hàm này mô phỏng hàm getAuthorizationToken() của file gốc.
-// Thay vì lấy token tạm thời, nó chỉ đơn giản là trả về API key đã được khai báo.
-// Việc giữ lại cấu trúc này có thể quan trọng đối với ứng dụng.
-function getApiKey() {
-    // Thay vì dùng localStorage, ta trả về key đã khai báo cứng.
-    // Đây là "bộ lưu trữ cục bộ" mà bạn yêu cầu, theo một cách đơn giản nhất.
-    if (GEMINI_API_KEY && GEMINI_API_KEY !== "DÁN_API_KEY_CỦA_BẠN_VÀO_ĐÂY") {
-        return GEMINI_API_KEY;
-    }
-    // Nếu key chưa được dán vào, trả về null để gây lỗi, báo cho người dùng biết.
-    return null; 
-}
-
-
-// Hàm trợ giúp để chuyển mã ngôn ngữ, giữ nguyên
-function getLanguageName(id) {
-    const languageMap = {
-        'af': 'Afrikaans', 'sq': 'Albanian', 'ar': 'Arabic', 'hy': 'Armenian',
-        'az': 'Azerbaijani', 'eu': 'Basque', 'be': 'Belarusian', 'bn': 'Bengali', 'bs': 'Bosnian',
-        'bg': 'Bulgarian', 'ca': 'Catalan', 'zh-Hans': 'Simplified Chinese', 'zh-Hant': 'Traditional Chinese',
-        'hr': 'Croatian', 'cs': 'Czech', 'da': 'Danish', 'nl': 'Dutch', 'en': 'English', 'et': 'Estonian',
-        'fj': 'Fijian', 'fil': 'Filipino', 'fi': 'Finnish', 'fr': 'French', 'ka': 'Georgian', 'de': 'German',
-        'el': 'Greek', 'gu': 'Gujarati', 'ht': 'Haitian Creole', 'he': 'Hebrew', 'hi': 'Hindi', 'hu': 'Hungarian',
-        'is': 'Icelandic', 'id': 'Indonesian', 'ga': 'Irish', 'it': 'Italian', 'ja': 'Japanese', 'kn': 'Kannada',
-        'kk': 'Kazakh', 'ko': 'Korean', 'lv': 'Latvian', 'lt': 'Lithuanian', 'mk': 'Macedonian', 'ms': 'Malay',
-        'ml': 'Malayalam', 'mt': 'Maltese', 'mi': 'Maori', 'mr': 'Marathi', 'mn': 'Mongolian', 'ne': 'Nepali',
-        'nb': 'Norwegian', 'fa': 'Persian', 'pl': 'Polish', 'pt': 'Portuguese', 'pa': 'Punjabi', 'ro': 'Romanian',
-        'ru': 'Russian', 'sm': 'Samoan', 'sr-Cyrl': 'Serbian (Cyrillic)', 'sr-Latn': 'Serbian (Latin)',
-        'sk': 'Slovak', 'sl': 'Slovenian', 'es': 'Spanish', 'sw': 'Swahili', 'sv': 'Swedish', 'ta': 'Tamil',
-        'te': 'Telugu', 'th': 'Thai', 'tr': 'Turkish', 'uk': 'Ukrainian', 'ur': 'Urdu', 'uz': 'Uzbek',
-        'vi': 'Vietnamese', 'cy': 'Welsh', 'yua': 'Yucatec Maya', 'zu': 'Zulu'
-    };
-    return languageMap[id] || 'English';
 }
