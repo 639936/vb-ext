@@ -1,0 +1,21 @@
+{
+  "metadata": {
+    "name": "Gemini Translate",
+    "author": "369",
+    "version": 1,
+    "source": "https://generativelanguage.googleapis.com",
+    "description": "Dịch truyện bằng Google Studio",
+    "type": "translate"
+  },
+  "script": {
+    "language": "language.js",
+    "translate": "translate.js"
+  },
+  "config": {
+    "support_auto_detect": true,
+    "max_line": 1000,
+    "max_length": 50000,
+    "required_api_key": false,
+    "support_url": ""
+  }
+}

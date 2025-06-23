@@ -129,14 +129,34 @@
       "type": "tts"
     },
     {
-      "name": "Bing TTS",
+      "name": "Baidu Translate",
+      "author": "369",
+      "version": 1,
+      "source": "https://fanyi.baidu.com",
+      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/baidu-translate/plugin.zip",
+      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/baidu-translate/icon.png",
+      "description": "Nghe truyện bằng Bing TTS",
+      "type": "translate"
+    },
+    {
+      "name": "Edge Translate",
       "author": "369",
       "version": 1,
       "source": "https://www.bing.com/translator",
-      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/bing-tts/plugin.zip",
-      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/bing-tts/icon.png",
+      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/edge-translate/plugin.zip",
+      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/edge-translate/icon.png",
       "description": "Nghe truyện bằng Bing TTS",
-      "type": "tts"
+      "type": "translate"
+    },
+    {
+      "name": "Gemini Translate",
+      "author": "369",
+      "version": 1,
+      "source": "https://generativelanguage.googleapis.com",
+      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-translate/plugin.zip",
+      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-translate/icon.png",
+      "description": "Dịch truyện bằng Google Studio",
+      "type": "translate"
     }
   ]
 }
