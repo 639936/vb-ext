@@ -13,7 +13,7 @@ function execute(url) {
             data.push({
                 name: e.select("strong > a").text(),
                 link: e.select("strong > a").attr("href"),
-                cover: e.attr("src"),
+                cover: "https://i.imgur.com/5BdXa90.png",
                 host: BASE_URL
             
             })

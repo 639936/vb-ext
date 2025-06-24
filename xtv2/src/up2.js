@@ -14,7 +14,7 @@ function execute(url) {
             data.push({
                 name: el.text(),
                 link: el.select("a").attr("href"),
-                cover: el.attr("src"),
+                cover: "https://i.imgur.com/5BdXa90.png",
                 host:  BASE_URL
             })
         }
