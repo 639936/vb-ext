@@ -4,7 +4,7 @@ function execute() {
     let url = "https://truyensextv2.cc"
     let response = fetch(url)
     if (response.ok) {
-        var data = [
+    var data = [
         { title: "Truyện loạn luân", input: BASE_URL + "/tag/truyen-sex-loan-luan", script: "up3.js" },
         { title: "Truyện không loạn luân", input: BASE_URL + "/tag/truyen-khong-loan-luan", script: "up3.js" },
         { title: "Truyện sex có thật", input: BASE_URL + "/tag/truyen-sex-co-that", script: "up3.js" },
@@ -115,5 +115,5 @@ function execute() {
             })
         })
     }
-    return Response.success(data, data2)
+    return Response.success(data)
 }
