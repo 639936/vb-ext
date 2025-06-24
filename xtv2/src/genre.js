@@ -111,7 +111,7 @@ function execute() {
             data.push({
                 title: e.text(),
                 input: e.attr("href"),
-                script: "up2.js"
+                script: "up3.js"
             })
         })
     }
