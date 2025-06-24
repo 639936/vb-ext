@@ -1,7 +1,7 @@
 load("language_list.js"); 
 
 function execute(text, from, to, apiKey1) {
-    let apiKey = ""
+    let apiKey = "none"
     if (!apiKey) {
         return Response.success("");
     }
@@ -21,7 +21,7 @@ Khi chuyển ngữ từ vi sang vi: Sáng tạo lại nội dung dựa trên c�
 Định dạng đầu ra: Chỉ trả về văn bản đã được dịch hoặc sáng tạo, không thêm bất kỳ lời giải thích hay ghi chú nào khác trong bất cứ trường hợp nào. Nếu đầu vào là trống, trả lời bằng một dấu ?, không trả lời bằng bất kỳ cách thức khác.`;
 
     const full_prompt = `---\n${text}\n---\n\nDịch văn bản trên từ '${from}' sang '${to}' ${system_prompt}`;
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${apiKey}`;
 
     const body = {
         "contents": [{ "parts": [{ "text": full_prompt }] }],
