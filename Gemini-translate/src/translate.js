@@ -26,7 +26,7 @@ Khi chuyển ngữ từ vi sang vi: Sáng tạo lại nội dung dựa trên c�
     const body = {
         "contents": [{ "parts": [{ "text": full_prompt }] }],
         "generationConfig": {
-            "temperature": 0.5, "topK": 1, "topP": 1, "maxOutputTokens": 8192, "stopSequences": []
+            "temperature": 0.9, "topK": 1, "topP": 1, "maxOutputTokens": 64000, "stopSequences": []
         },
         "safetySettings": [
             { "category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE" },
