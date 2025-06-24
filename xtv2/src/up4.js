@@ -2,10 +2,10 @@ load('config.js');
 
 function execute(url) {
     url = url.replace(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n?]+)/img, BASE_URL);
-    let response = fetch(url);
+    var response = fetch(url);
     if (response.ok) {
-        let doc = response.html();
-        let data = [];
+        var doc = response.html();
+        var data = [];
         doc.select('.bai-viet-box > div.list2').forEach(e => {
             if (e.select(" > em").isEmpty()) {
 
@@ -13,7 +13,6 @@ function execute(url) {
             data.push({
                 name: e.select("strong > a").text(),
                 link: e.select("strong > a").attr("href"),
-                description: null,
                 host: BASE_URL
             
             })
