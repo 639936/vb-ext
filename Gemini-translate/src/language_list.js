@@ -1,8 +1,7 @@
 let languages = [
-    {"id": "zh-Hans"},
+    {"id": "zh"},
     {"id": "en"},
     {"id": "vi"},
     {"id": "ja"},
-    {"id": "ko"},
-    {"id": "zh-Hant"}
+    {"id": "ko"}
 ];

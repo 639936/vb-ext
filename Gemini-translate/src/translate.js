@@ -1,12 +1,24 @@
 load("language_list.js"); 
 
 function execute(text, from, to, apiKey1) {
-    let apiKey = "no"
+    let apiKey = ""
     if (!apiKey) {
         return Response.success("");
     }
 
-    const system_prompt = `với yêu cầu: Đảm bảo giữ nguyên văn phong, nội dung và cảm xúc của các nhân vật. Các đại từ nhân xưng phù hợp với hoàn cảnh. Văn bản dịch phải lôi cuốn và khắc họa được tình cảm trong văn bản gốc. Với văn bản tiếng Trung, nên dùng các đại từ nhân xưng "ta", "ngươi", "hắn", "nàng" để dịch, không dùng các từ như "cô ta", "anh ta". Dịch không bỏ sót bất cứ từ nào của văn bản gốc. Chỉ trả về văn bản đã dịch, không thêm bất kỳ lời giải thích hay ghi chú nào khác trong bất cứ trường hợp nào.`;
+    const system_prompt = `Mục tiêu: Chuyển ngữ hoặc sáng tạo lại văn bản, đảm bảo duy trì tối đa văn phong, nội dung và cảm xúc gốc, đồng thời phù hợp với các quy tắc ngôn ngữ và phong cách đã định.
+Yêu cầu chi tiết:
+Văn phong, Nội dung & Cảm xúc: Đảm bảo giữ nguyên vẹn văn phong, truyền tải đầy đủ nội dung và cảm xúc sâu sắc của các nhân vật.
+Tính Lôi Cuốn: Văn bản dịch/sáng tạo phải lôi cuốn, hấp dẫn người đọc và khắc họa rõ nét tình cảm trong văn bản gốc.
+Độ Chính Xác: Đảm bảo truyền tải đầy đủ, chính xác mọi ý nghĩa, thông tin và chi tiết cốt lõi của văn bản gốc, không lược bỏ bất kỳ ý tứ quan trọng nào.
+Đại Từ Nhân Xưng:
+Đối với chuyển ngữ từ zh sang vi: Ưu tiên sử dụng các đại từ nhân xưng cổ phong như "ta", "ngươi", "hắn", "nàng". Tuyệt đối không dùng các từ như "cô ta", "anh ta".
+Đối với các trường hợp khác: Các đại từ nhân xưng phải phù hợp với hoàn cảnh, không khí và mối quan hệ của nhân vật trong văn bản.
+Tên Nhân Vật: Tên của nhân vật phải được dịch sang Hán Việt (nếu từ zh) và có tính đồng nhất trong toàn bộ văn bản.
+Chế độ Chuyển ngữ/Sáng tạo:
+Khi chuyển ngữ từ zh sang vi: Thực hiện dịch thuật theo các tiêu chuẩn trên.
+Khi chuyển ngữ từ vi sang vi: Sáng tạo lại nội dung dựa trên cốt truyện, cảm xúc, thông điệp và văn phong gốc. Bản sáng tạo phải mang tính độc đáo nhưng vẫn tuân thủ tất cả các tiêu chí đã nêu.
+Định dạng đầu ra: Chỉ trả về văn bản đã được dịch hoặc sáng tạo, không thêm bất kỳ lời giải thích hay ghi chú nào khác trong bất cứ trường hợp nào. Nếu đầu vào là trống, trả lời bằng một dấu ?, không trả lời bằng bất kỳ cách thức khác.`;
 
     const full_prompt = `---\n${text}\n---\n\nDịch văn bản trên từ '${from}' sang '${to}' ${system_prompt}`;
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;

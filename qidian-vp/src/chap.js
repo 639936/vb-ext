@@ -13,8 +13,7 @@ function execute(url) {
         console.log(url)
         if (response.ok) {
             let doc = response.html();
-            console.log(doc)
-            let htm = doc.select("#chapter-content").html();
+            let htm = doc.select("#chapter-content");
             htm.select("h2").remove();
             htm = cleanHtml(htm.html());
             return Response.success(htm);
