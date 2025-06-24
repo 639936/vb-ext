@@ -2,7 +2,7 @@
   "metadata": {
     "name": "Xtv2",
     "author": "369",
-    "version": 20,
+    "version": 3,
     "source": "https://truyensextv2.cc/",
     "regexp": "truyensextv2.*?/[^/]+/?$",
     "description": "noDes",
