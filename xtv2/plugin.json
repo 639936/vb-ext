@@ -1,8 +1,8 @@
 {
   "metadata": {
-    "name": "truyensextv",
+    "name": "Xtv2",
     "author": "369",
-    "version": 12,
+    "version": 1,
     "source": "https://truyensextv2.cc/",
     "regexp": "truyen(heo|sex).*?/[^/]+/?$",
     "description": "noDes",

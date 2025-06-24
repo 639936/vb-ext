@@ -29,12 +29,12 @@
     "tag": "nsfw"
     },
     {
-    "name": "truyensextv",
+    "name": "Xtv2",
     "author": "369",
-    "path": "https://raw.githubusercontent.com/639936/vb-ext/main/truyensextv/plugin.zip",
+    "path": "https://raw.githubusercontent.com/639936/vb-ext/main/xtv2/plugin.zip",
     "version": 1,
-    "source": "https://truyensextv.cc/",
-    "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/truyensextv/icon.png",
+    "source": "https://truyensextv2.cc/",
+    "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/xtv2/icon.png",
     "description": "noDes",
     "type": "novel",
     "locale": "vi_VN",
@@ -108,7 +108,7 @@
     "type": "novel",
     "locale": "vi_VN"
     },
-    {
+    /*{
       "name": "Google TTS",
       "author": "369",
       "version": 1,
@@ -135,7 +135,7 @@
       "source": "https://fanyi.baidu.com",
       "path": "https://raw.githubusercontent.com/639936/vb-ext/main/baidu-translate/plugin.zip",
       "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/baidu-translate/icon.png",
-      "description": "Nghe truyện bằng Bing TTS",
+      "description": "noDes",
       "type": "translate"
     },
     {
@@ -145,9 +145,9 @@
       "source": "https://www.bing.com/translator",
       "path": "https://raw.githubusercontent.com/639936/vb-ext/main/edge-translate/plugin.zip",
       "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/edge-translate/icon.png",
-      "description": "Nghe truyện bằng Bing TTS",
+      "description": "noDes",
       "type": "translate"
-    },
+    },*/
     {
       "name": "Google Gemini Translate",
       "author": "369",
