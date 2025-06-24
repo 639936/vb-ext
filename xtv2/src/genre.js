@@ -4,18 +4,7 @@ function execute() {
     let url = "https://truyensextv2.cc"
     let response = fetch(url)
     if (response.ok) {
-        var data = []
-        var doc = response.html().select(".logo2")
-        doc.select(".bai-viet-box").last().remove()
-        doc.select(".bai-viet-box > .list2 > strong > a").forEach(e => {
-            data.push({
-                title: e.text(),
-                input: e.attr("href"),
-                script: "up2.js"
-            })
-        })
-    }
-    let data2 = [
+        var data = [
         { title: "Truyện loạn luân", input: BASE_URL + "/tag/truyen-sex-loan-luan", script: "up3.js" },
         { title: "Truyện không loạn luân", input: BASE_URL + "/tag/truyen-khong-loan-luan", script: "up3.js" },
         { title: "Truyện sex có thật", input: BASE_URL + "/tag/truyen-sex-co-that", script: "up3.js" },
@@ -116,5 +105,15 @@ function execute() {
         { title: "Tác giả FrogMan", input: BASE_URL + "/tag/tac-gia-frogman", script: "up3.js" },
         { title: "Tác giả Khởi nguồn dục vọng", input: BASE_URL + "/tag/tac-gia-khoi-nguon-duc-vong", script: "up3.js" },
     ]
+        var doc = response.html().select(".logo2")
+        doc.select(".bai-viet-box").last().remove()
+        doc.select(".bai-viet-box > .list2 > strong > a").forEach(e => {
+            data.push({
+                title: e.text(),
+                input: e.attr("href"),
+                script: "up2.js"
+            })
+        })
+    }
     return Response.success(data, data2)
 }
