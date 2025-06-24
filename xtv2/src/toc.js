@@ -1,4 +1,4 @@
-load('config.js');
+load("config.js");
 
 function execute(url) {
     var response = fetch(url);
@@ -12,11 +12,11 @@ function execute(url) {
             host: BASE_URL
         })
 
-        var elems = doc.select('.bai-viet-box a.post-page-numbers');
+        var elems = doc.select(".bai-viet-box a.post-page-numbers");
         elems.forEach(function(e) {
             data.push({
                 name: e.text(),
-                url: e.attr('href'),
+                url: e.attr("href"),
                 host: BASE_URL
             })
         });

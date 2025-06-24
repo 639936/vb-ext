@@ -1,8 +1,8 @@
-load('config.js');
+load("config.js");
 
 function execute(url, page) {
     let urls = url.replace(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n?]+)/img, BASE_URL);
-    if (!page) page = '0';
+    if (!page) page = "0";
     var response = fetch(urls + "/page/" + page);
     if (response.ok) {
         let doc = response.html().select("body")
@@ -20,7 +20,7 @@ function execute(url, page) {
                 description: e2.text(),
             })
         }
-        var next = doc.select('span.page-numbers.current + a').text();
+        var next = doc.select("span.page-numbers.current + a").text();
         if (next) return Response.success(data, next);
     }
     return null

@@ -7,7 +7,6 @@
     "regexp": "truyen(heo|sex).*?/[^/]+/?$",
     "description": "noDes",
     "locale": "vi_VN",
-    "language": "javascript",
     "type": "novel",
     "tag": "nsfw"
   },

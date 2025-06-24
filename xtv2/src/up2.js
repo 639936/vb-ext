@@ -1,8 +1,8 @@
-load('config.js');
+load("config.js");
 
 function execute(url) {
     let urls = url.replace(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n?]+)/img, BASE_URL);
-    let response = fetch(urls);
+    var response = fetch(urls);
     if (response.ok) {
         let doc = response.html().select(".ndtruyen");
         doc.select("> p").first().remove();

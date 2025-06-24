@@ -1,7 +1,21 @@
-load('config.js');
+load("config.js");
 
 function execute() {
-    return Response.success([
+    let url = "https://truyensextv2.cc"
+    let response = fetch(url)
+    if (response.ok) {
+        var data = []
+        var doc = response.html().select(".logo2")
+        doc.select(".bai-viet-box").last().remove()
+        doc.select(".bai-viet-box > .list2 > strong > a").forEach(e => {
+            data.push({
+                title: e.text(),
+                input: e.attr("href"),
+                script: "up2.js"
+            })
+        })
+    }
+    let data2 = [
         { title: "Truyện loạn luân", input: BASE_URL + "/tag/truyen-sex-loan-luan", script: "up3.js" },
         { title: "Truyện không loạn luân", input: BASE_URL + "/tag/truyen-khong-loan-luan", script: "up3.js" },
         { title: "Truyện sex có thật", input: BASE_URL + "/tag/truyen-sex-co-that", script: "up3.js" },
@@ -101,5 +115,6 @@ function execute() {
         { title: "Tác giả MrGi", input: BASE_URL + "/tag/tac-gia-mrgi", script: "up3.js" },
         { title: "Tác giả FrogMan", input: BASE_URL + "/tag/tac-gia-frogman", script: "up3.js" },
         { title: "Tác giả Khởi nguồn dục vọng", input: BASE_URL + "/tag/tac-gia-khoi-nguon-duc-vong", script: "up3.js" },
-    ]);
+    ]
+    return Response.success(data, data2)
 }
