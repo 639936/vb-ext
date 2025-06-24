@@ -1,9 +1,9 @@
 load('config.js');
 
 function execute(url, page) {
-    url = url.replace(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n?]+)/img, BASE_URL);
+    let urls = url.replace(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n?]+)/img, BASE_URL);
     if (!page) page = '0';
-     response = fetch(url + "/page/" + page);
+    let response = fetch(urls + "/page/" + page);
     if (response.ok) {
         let doc = response.html().select("body");
         doc.select(".noibat").last().remove();
@@ -17,9 +17,7 @@ function execute(url, page) {
             data.push({
                 name: e1.text(),
                 link: e1.attr("href"),
-                cover: "https://i.imgur.com/5BdXa90.png",
                 description: e2.text(),
-                host:  BASE_URL
             })
         }
         var next = doc.select('span.page-numbers.current + a').text();

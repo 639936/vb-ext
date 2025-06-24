@@ -1,8 +1,8 @@
 load('config.js');
 
 function execute(url) {
-    url = url.replace(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n?]+)/img, BASE_URL);
-    var response = fetch(url);
+    let urls = url.replace(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n?]+)/img, BASE_URL);
+    var response = fetch(urls);
     if (response.ok) {
         let doc = response.html();
         var data = [];
@@ -13,8 +13,6 @@ function execute(url) {
             data.push({
                 name: e.select("strong > a").text(),
                 link: e.select("strong > a").attr("href"),
-                cover: "https://i.imgur.com/5BdXa90.png",
-                host: BASE_URL
             
             })
                 }
