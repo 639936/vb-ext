@@ -1,5 +1,4 @@
 load("config.js");
-
 function execute(url, page) {
     let urls = url.replace(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n?]+)/img, BASE_URL);
     if (!page) page = "0";

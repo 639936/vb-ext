@@ -1,5 +1,4 @@
 load("config.js");
-
 function execute(url) {
     let urls = url.replace(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n?]+)/img, BASE_URL);
     var response = fetch(urls);
