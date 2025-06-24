@@ -17,6 +17,7 @@ function execute(url, page) {
             data.push({
                 name: e1.text(),
                 link: e1.attr("href"),
+                cover: e1.attr("src"),
                 description: e2.text(),
                 host:  BASE_URL
             })

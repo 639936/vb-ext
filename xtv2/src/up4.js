@@ -13,6 +13,7 @@ function execute(url) {
             data.push({
                 name: e.select("strong > a").text(),
                 link: e.select("strong > a").attr("href"),
+                cover: e.attr("src"),
                 host: BASE_URL
             
             })
