@@ -6,10 +6,10 @@ function execute(url) {
     if (response.ok) {
         let doc = response.html().select(".ndtruyen");
         doc.select("> p").first().remove();
-        doc.select("> em ").last().remove();
+        doc.select("> em").last().remove();
         var nd = doc.select(".list2");
         var data = [];
-        for (var i = 0; i < nd.size(); i++ ){
+        for (var i = 0; i < nd.size(); i++){
             var el = nd.get(i);
             data.push({
                 name: el.text(),

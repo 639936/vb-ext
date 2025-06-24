@@ -4,10 +4,10 @@ function execute(url) {
     url = url.replace(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n?]+)/img, BASE_URL);
     var response = fetch(url);
     if (response.ok) {
-        var doc = response.html();
+        let doc = response.html();
         var data = [];
         doc.select('.bai-viet-box > div.list2').forEach(e => {
-            if (e.select(" > em").isEmpty()) {
+            if (e.select("> em").isEmpty()) {
 
                 if (e.select("strong > a").text()) {
             data.push({
