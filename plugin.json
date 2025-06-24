@@ -108,46 +108,6 @@
     "type": "novel",
     "locale": "vi_VN"
     },
-    /*{
-      "name": "Google TTS",
-      "author": "369",
-      "version": 1,
-      "source": "https://www.google.com",
-      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/google-tts/plugin.zip",
-      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/google-tts/icon.png",
-      "description": "Nghe truyện bằng Google TTS",
-      "type": "tts"
-    },
-    {
-      "name": "Gemini TTS",
-      "author": "369",
-      "version": 1,
-      "source": "https://gemini.google.com",
-      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/gemini-tts/plugin.zip",
-      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/gemini-tts/icon.png",
-      "description": "Nghe truyện bằng Gemini TTS",
-      "type": "tts"
-    },
-    {
-      "name": "Baidu Translate",
-      "author": "369",
-      "version": 1,
-      "source": "https://fanyi.baidu.com",
-      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/baidu-translate/plugin.zip",
-      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/baidu-translate/icon.png",
-      "description": "noDes",
-      "type": "translate"
-    },
-    {
-      "name": "Edge Translate",
-      "author": "369",
-      "version": 1,
-      "source": "https://www.bing.com/translator",
-      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/edge-translate/plugin.zip",
-      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/edge-translate/icon.png",
-      "description": "noDes",
-      "type": "translate"
-    },*/
     {
       "name": "Google Gemini Translate",
       "author": "369",
