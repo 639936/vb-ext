@@ -1,6 +1,6 @@
 function execute() {
     return Response.success([
-        {title: "Mới cập nhật", input: BASE_URL, script: "gen.js"},
+        {title: "Mới cập nhật", input: BASE_URL, script: "up1.js"},
         {title: "Truyện sex ngắn", input: BASE_URL + "/truyen-sex-ngan", script: "gen.js"},
         {title: "Truyện sex dài tập", input: BASE_URL + "/truyen-sex-dai-tap", script: "gen.js"},
         {title: "Top 300 truyện ngắn được đọc nhiều nhất", input: BASE_URL + "/top-300-truyen-ngan-duoc-doc-nhieu-nhat", script: "gen.js"},
