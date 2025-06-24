@@ -10,7 +10,7 @@ function execute(url, page) {
         var nd1 = doc.select(".noibat");
         var nd2 = doc.select(".noibat + .bai-viet-box");
         var data = [];
-        for (var i = 2; i < Math.min(nd1.size(), nd2.size()); i++){
+        for (var i = 1; i < Math.min(nd1.size(), nd2.size()); i++){
             var e1 = nd1.get(i).select("a").first();
             var e2 = nd2.get(i).select("a").first();
             data.push({

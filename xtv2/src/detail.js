@@ -21,7 +21,7 @@ function execute(url) {
                 suggests.push ({
                     title: el.text(),
                     input: el.attr("href"),
-                    script: "up3.js"
+                    script: "sg.js"
                     });
                 })
             return Response.success({
