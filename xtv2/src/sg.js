@@ -11,4 +11,5 @@ function execute(url) {
                 detail: doc.select("tbody tr").get(6).text(),
                 });
     }
+    return null
 }

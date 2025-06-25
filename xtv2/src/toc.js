@@ -10,7 +10,7 @@ function execute(url) {
             name: "Phần 1",
             url: url,
             host: BASE_URL
-        })
+        });
 
         var elems = doc.select(".bai-viet-box a.post-page-numbers");
         elems.forEach(function(e) {
@@ -18,7 +18,7 @@ function execute(url) {
                 name: e.text(),
                 url: e.attr("href"),
                 host: BASE_URL
-            })
+            });
         });
 
         return Response.success(data);

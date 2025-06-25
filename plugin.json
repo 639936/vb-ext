@@ -32,10 +32,10 @@
     "name": "Truyện sexTV2",
     "author": "369",
     "path": "https://raw.githubusercontent.com/639936/vb-ext/main/xtv2/plugin.zip",
-    "version": 1,
-    "source": "https://truyensextv2.cc/",
+    "version": 3,
+    "source": "https://truyensextv2.cc",
     "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/xtv2/icon.png",
-    "description": "noDes",
+    "description": "đọc truyện sex",
     "type": "novel",
     "locale": "vi_VN",
     "tag": "nsfw"

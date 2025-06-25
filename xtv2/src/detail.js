@@ -12,25 +12,25 @@ function execute(url) {
                 genres.push({
                     title: e.text(),
                     input: e.attr("href").replace(BASE_URL,""),
-                    script: "up3.js"
-                    })
+                    script: "gen3.js"
+                    });
                 }
             var suggests = [];
             doc.select(".bai-viet-box").get(3).select("a").forEach(el => { 
                 suggests.push ({
-                    title: el.text(),
+                    title: "cùng tác giả",
                     input: el.attr("href"),
                     script: "sg.js"
                     });
-                })
+                });
             return Response.success({
                 name: doc.select("tbody tr").get(1).select("td").last().text(),
                 author: doc.select("tbody tr").get(2).select("a").text(),
                 description: doc.select("tbody tr").get(5).text(),
                 detail: doc.select("tbody tr").get(6).text(),
                 genres: genres,
-                suggest: suggests,
+                suggests: suggests,
                 });
         }
-    return null;
+        return null;
 }
