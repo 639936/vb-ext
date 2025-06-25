@@ -44,7 +44,7 @@ Yêu cầu chi tiết:
     // --- KẾT THÚC PHẦN TÍCH HỢP ---
     
     // API Key được giữ nguyên theo cấu trúc gốc của bạn
-    let apiKey = "AIzaSyDgovtoLcEZ5TWZ8Hnt36zBvFk5OZQWSww"; // <--- Vui lòng nhập API Key của bạn vào đây
+    let apiKey = ""; // <--- Vui lòng nhập API Key của bạn vào đây
     if (!apiKey) {
         // Trả về lỗi nếu chưa có key
         console.log("Vui lòng nhập API Key");
