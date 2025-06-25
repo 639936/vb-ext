@@ -1,8 +1,8 @@
 {
   "metadata": {
-    "name": "Google Gemini Translate",
+    "name": "Gemini Translate flash 2.5",
     "author": "369",
-    "version": 7,
+    "version": 10,
     "source": "https://generativelanguage.googleapis.com",
     "description": "Dịch văn bản bằng Google Gemini API (Hardcoded Key).",
     "type": "translate"

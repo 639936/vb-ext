@@ -33,18 +33,18 @@ function execute(text, from, to) {
     // 2. Tạo system_prompt hoàn chỉnh từ các quy tắc đã xác định
     const system_prompt = `Mục tiêu: Chuyển ngữ hoặc sáng tạo lại văn bản, đảm bảo duy trì tối đa văn phong, nội dung và cảm xúc gốc, đồng thời phù hợp với các quy tắc ngôn ngữ và phong cách đã định.
 Yêu cầu chi tiết:
-1.  **Văn phong, Nội dung & Cảm xúc:** Đảm bảo giữ nguyên vẹn văn phong, truyền tải đầy đủ nội dung và cảm xúc sâu sắc của các nhân vật.
-2.  **Tính Lôi Cuốn:** Văn bản dịch/sáng tạo phải lôi cuốn, hấp dẫn người đọc và khắc họa rõ nét tình cảm trong văn bản gốc.
-3.  **Độ Chính Xác:** Đảm bảo truyền tải đầy đủ, chính xác mọi ý nghĩa, thông tin và chi tiết cốt lõi của văn bản gốc, không lược bỏ bất kỳ ý tứ quan trọng nào.
-4.  **Đại Từ Nhân Xưng:** ${pronounRule}
-5.  **Tên Nhân Vật:** ${nameRule}
-6.  **Chế độ Chuyển ngữ/Sáng tạo:** ${modeRule}
-7.  **Định dạng đầu ra:** Chỉ trả về văn bản đã được dịch hoặc sáng tạo, không thêm bất kỳ lời giải thích hay ghi chú nào khác trong bất cứ trường hợp nào. Nếu đầu vào là trống, trả lời bằng một dấu ?, không trả lời bằng bất kỳ cách thức khác.`;
+1.  Văn phong, Nội dung & Cảm xúc: Đảm bảo giữ nguyên vẹn văn phong, truyền tải đầy đủ nội dung và cảm xúc sâu sắc của các nhân vật.
+2.  Tính Lôi Cuốn: Văn bản dịch/sáng tạo phải lôi cuốn, hấp dẫn người đọc và khắc họa rõ nét tình cảm trong văn bản gốc.
+3.  Độ Chính Xác: Đảm bảo truyền tải đầy đủ, chính xác mọi ý nghĩa, thông tin và chi tiết cốt lõi của văn bản gốc, không lược bỏ bất kỳ ý tứ quan trọng nào.
+4.  Đại Từ Nhân Xưng: ${pronounRule}
+5.  Tên Nhân Vật: ${nameRule}
+6.  Chế độ Chuyển ngữ/Sáng tạo: ${modeRule}
+7.  Định dạng đầu ra: Chỉ trả về văn bản đã được dịch hoặc sáng tạo, không thêm bất kỳ lời giải thích hay ghi chú nào khác trong bất cứ trường hợp nào. Nếu đầu vào là trống, trả lời bằng một dấu ?, không trả lời bằng bất kỳ cách thức khác.`;
     
     // --- KẾT THÚC PHẦN TÍCH HỢP ---
     
     // API Key được giữ nguyên theo cấu trúc gốc của bạn
-    let apiKey = ""; // <--- Vui lòng nhập API Key của bạn vào đây
+    let apiKey = "AIzaSyDgovtoLcEZ5TWZ8Hnt36zBvFk5OZQWSww"; // <--- Vui lòng nhập API Key của bạn vào đây
     if (!apiKey) {
         // Trả về lỗi nếu chưa có key
         console.log("Vui lòng nhập API Key");
@@ -68,7 +68,7 @@ Yêu cầu chi tiết:
             "temperature": 0.5,
             "topK": 1,
             "topP": 1,
-            "maxOutputTokens": 64000, // Tăng giới hạn token cho các văn bản dài
+            "maxOutputTokens": 65536, // Tăng giới hạn token cho các văn bản dài
             "stopSequences": []
         },
         "safetySettings": [

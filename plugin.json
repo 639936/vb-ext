@@ -111,10 +111,20 @@
     {
       "name": "Google Gemini Translate",
       "author": "369",
-      "version": 7,
+      "version": 10,
       "source": "https://generativelanguage.googleapis.com",
-      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-translate/plugin.zip",
-      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-translate/icon.png",
+      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-translate-flash-2-5/plugin.zip",
+      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-translate-flash-2-5/icon.png",
+      "description": "Dịch truyện bằng Google Studio",
+      "type": "translate"
+    },
+    {
+      "name": "Gemini Translate flash lite 2.5",
+      "author": "369",
+      "version": 5,
+      "source": "https://generativelanguage.googleapis.com",
+      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-translate-flash-lite-2-5/plugin.zip",
+      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-translate-flash-lite-2-5/icon.png",
       "description": "Dịch truyện bằng Google Studio",
       "type": "translate"
     }
