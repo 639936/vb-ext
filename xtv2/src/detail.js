@@ -30,7 +30,7 @@ function execute(url) {
                 description: doc.select("tbody tr").get(5).text(),
                 detail: doc.select("tbody tr").get(6).text(),
                 genres: genres,
-                suggests: suggests,
+                suggest: suggests,
                 });
         }
     return null;

@@ -1,8 +1,8 @@
 load("config.js");
 function execute(url, page) {
-    let urls = url.replace(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n?]+)/img, BASE_URL);
+    url = url.replace(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n?]+)/img, BASE_URL);
     if (!page) page = "0";
-    var response = fetch(urls + "page/" + page);
+    var response = fetch(url + "page/" + page);
     if (response.ok) {
         let doc = response.html().select("body")
         doc.select(".noibat").last().remove()
