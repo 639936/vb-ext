@@ -1,29 +1,41 @@
 load("config.js");
 function execute(key, page) { 
-    var key = encodeURIComponent(key)
-    var url = "https://www.google.com/search?q="+key+"+site%3Ahttps%3A%2F%2Ftruyensextv2.cc%2F&sxsrf=ALiCzsa2EDImprPyZ6dPndb3j9RX5ndQ2A%3A1667800234553&ei=qpxoY_aqIbueseMPgf-48A8&ved=0ahUKEwj2p6WEsJv7AhU7T2wGHYE_Dv4Q4dUDCA8&uact=5&oq="+key+"+site%3Ahttps%3A%2F%2Ftruyensextv2.cc%2F&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQA0oECEEYAUoECEYYAFDeBVjeBWDvCGgBcAB4AIABlgGIAZYBkgEDMC4xmAEAoAEBwAEB&sclient=gws-wiz-serp"
-    var response = fetch(url)
-    if (response) {
+    // 1. Dọn dẹp URL, chỉ giữ lại tham số cần thiết
+    let url = `https://www.google.com/search?q=${encodeURIComponent(key)}+site:truyensextv2.cc`;
+    console.log(url)
+    let response = fetch(url);
+    if (response.ok) {
         let doc = response.html();
-        doc.select("em").remove();
-        var data = [];
-        var elems = doc.select("a[href*="url?q=https:"]")
-        console.log(elems)
+        let data = [];
+        
+        // 2. Sửa lại selector cho đúng cú pháp
+        // Google trả về các link trong các thẻ div có class nhất định
+        let elems = doc.select("div.g"); 
+
         if (!elems.length) return Response.error(key);
 
         elems.forEach(function(e) {
-            var link = e.select("a").attr("href").match(/https:\/\/truyensextv2.cc\/(.*?)\//g)+""
-            if (e.select("h3").text()) {
-            data.push({
-                name: e.select("h3").text(),
-                cover: null,
-                link: link,
-                description: null,
-                host: BASE_URL
-            })
-            }
-        })
+            // 3. Sửa logic lấy link và tiêu đề
+            let a = e.select("a[href^='/url?q=']").first(); // Link nằm trong thẻ a này
+            let h3 = e.select("h3").first(); // Tiêu đề nằm trong thẻ h3
 
+            if (a && h3) {
+                let link = a.attr("href");
+                // Trích xuất URL thật từ link của Google
+                let realLink = link.match(/q=(.*?)&/);
+                if (realLink && realLink[1]) {
+                     // Decode URL và chỉ lấy phần đến trước dấu / cuối cùng nếu cần
+                    let decodedLink = decodeURIComponent(realLink[1]);
+                    if (decodedLink.includes("truyensextv2.cc")) {
+                        data.push({
+                            name: h3.text(),
+                            link: decodedLink,
+                            host: BASE_URL
+                        });
+                    }
+                }
+            }
+        });
         return Response.success(data);
     }
     return null;

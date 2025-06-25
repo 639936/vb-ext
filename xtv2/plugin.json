@@ -1,21 +1,22 @@
 {
   "metadata": {
-    "name": "Xtv2",
+    "name": "Truyện sexTV2",
     "author": "369",
-    "version": 4,
-    "source": "https://truyensextv2.cc/",
+    "version": 1,
+    "source": "https://truyensextv2.cc",
     "regexp": "truyensextv2.*?/[^/]+/?$",
-    "description": "noDes",
+    "description": "đọc truyện sex",
     "locale": "vi_VN",
-    "type": "novel",
+    "language": "javascript",
+    "type": "chinese_novel",
     "tag": "nsfw"
   },
   "script": {
     "home": "home.js",
     "detail": "detail.js",
-    "toc": "toc.js",
-    "chap": "chap.js",
     "search": "search.js",
-    "genre": "genre.js"
+    "toc": "toc.js",
+    "genre": "genre.js",
+    "chap": "chap.js"
   }
 }

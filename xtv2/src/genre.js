@@ -105,7 +105,7 @@ function execute() {
             { title: "Tác giả FrogMan", input: BASE_URL + "/tag/tac-gia-frogman", script: "up3.js" },
             { title: "Tác giả Khởi nguồn dục vọng", input: BASE_URL + "/tag/tac-gia-khoi-nguon-duc-vong", script: "up3.js" },
         ]
-        var doc = response.html().select(".logo2")
+        var doc = response.html()
         doc.select(".bai-viet-box").last().remove()
         doc.select(".bai-viet-box > .list2 > strong > a").forEach(e => {
             data.push({

@@ -1,8 +1,7 @@
 load("config.js");
 function execute(url, page) {
     url = url.replace(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n?]+)/img, BASE_URL);
-    if (!page) page = "0";
-    var response = fetch(url + "page/" + page);
+    var response = fetch(url + (page ? "/page/" + page : ""));
     if (response.ok) {
         let doc = response.html().select("body")
         doc.select(".noibat").last().remove()
@@ -16,11 +15,16 @@ function execute(url, page) {
             data.push({
                 name: e1.text(),
                 link: e1.attr("href"),
-                description: e2.text(),
+                description: e2.text()
             })
         }
-        var next = doc.select("span.page-numbers.current + a").text();
-        if (next) return Response.success(data, next);
+        var next = doc.select(".page-numbers.current + a").text();
+        if (next) {
+            return Response.success(data, next)
+        } else {
+            return Response.success(data)
+        }
+        
     }
     return null
 }

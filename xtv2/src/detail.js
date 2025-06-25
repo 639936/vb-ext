@@ -4,7 +4,6 @@ function execute(url) {
     var response = fetch(url);
     if (response.ok) {
             let doc = response.html();
-            nd = doc.select(".ndtruyen > p").text();
             var genres = [];
             var tag = doc.select("tbody a");
 
@@ -13,7 +12,7 @@ function execute(url) {
                 genres.push({
                     title: e.text(),
                     input: e.attr("href").replace(BASE_URL,""),
-                    script: "gen.js"
+                    script: "up3.js"
                     })
                 }
             var suggests = [];
