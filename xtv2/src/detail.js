@@ -12,7 +12,7 @@ function execute(url) {
                 var e = tag.get(i);
                 genres.push({
                     title: e.text(),
-                    input: e.attr("href").replace(BASE_URL,""),
+                    input: e.attr("href"),
                     script: "gen3.js"
                     });
                 }
