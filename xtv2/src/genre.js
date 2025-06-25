@@ -1,7 +1,7 @@
 load("config.js");
 
 function execute() {
-    let url = "https://truyensextv2.cc"
+    let url = BASE_URL
     let response = fetch(url)
     if (response.ok) {
         var data = [

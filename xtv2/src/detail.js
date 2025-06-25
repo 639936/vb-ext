@@ -30,6 +30,7 @@ function execute(url) {
                 detail: doc.select("tbody tr").get(6).text(),
                 genres: genres,
                 suggests: suggests,
+                host: BASE_URL
                 });
         }
         return null;
