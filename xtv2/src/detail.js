@@ -17,13 +17,11 @@ function execute(url) {
                     });
                 }
             var suggests = [];
-            doc.select(".bai-viet-box").get(3).select("a").forEach(el => { 
                 suggests.push ({
-                    title: "cùng tác giả",
-                    input: el.attr("href"),
-                    script: "sg.js"
+                    title: "Cùng tác giả",
+                    input: doc.select("tbody tr").get(2).select("a").attr("href"),
+                    script: "gen3.js"
                     });
-                });
             return Response.success({
                 name: doc.select("tbody tr").get(1).select("td").last().text(),
                 author: doc.select("tbody tr").get(2).select("a").text(),
