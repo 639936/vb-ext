@@ -111,7 +111,7 @@
     {
       "name": "Google Gemini Translate",
       "author": "369",
-      "version": 6,
+      "version": 7,
       "source": "https://generativelanguage.googleapis.com",
       "path": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-translate/plugin.zip",
       "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-translate/icon.png",
