@@ -2,7 +2,7 @@
   "metadata": {
     "name": "Truyện sexTV2",
     "author": "369",
-    "version": 4,
+    "version": 5,
     "source": "https://truyensextv2.cc",
     "regexp": "(www.)?truyensextv2.*?/[^/]+/?$",
     "description": "đọc truyện sex",

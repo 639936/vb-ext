@@ -1,6 +1,7 @@
 load("config.js");
 function execute(url) {
-    var response = fetch(url.replace(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n?]+)/img, BASE_URL));
+    url = url.replace(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n?]+)/img, BASE_URL);
+    var response = fetch(url);
     var data = [];
     if (response.ok) {
         let doc = response.html().select(".ndtruyen");
