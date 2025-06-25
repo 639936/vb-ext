@@ -109,9 +109,9 @@
     "locale": "vi_VN"
     },
     {
-      "name": "Google Gemini Translate",
+      "name": "Gemini Translate flash 2.5",
       "author": "369",
-      "version": 10,
+      "version": 1,
       "source": "https://generativelanguage.googleapis.com",
       "path": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-translate-flash-2-5/plugin.zip",
       "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-translate-flash-2-5/icon.png",
