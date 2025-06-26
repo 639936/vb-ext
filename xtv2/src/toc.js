@@ -2,6 +2,7 @@ load("config.js");
 
 function execute(url) {
     var response = fetch(url);
+    url = url.replace(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n?]+)/img, BASE_URL);
     if (response.ok) {
         var doc = response.html();
         var data = [];
