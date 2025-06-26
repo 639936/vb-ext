@@ -11,7 +11,7 @@ function execute(url) {
         book.forEach(el => {
             data.push({
                 name: el.text(),
-                link: el.select("a").attr("href"),
+                link: el.select("a").attr("href").replace(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n?]+)/img, BASE_URL),
                 host: BASE_URL
             });
         });
