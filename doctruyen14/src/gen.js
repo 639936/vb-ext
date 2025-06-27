@@ -1,10 +1,9 @@
 load('config.js');
 
-function execute(url, page) {
+function execute(url,page) {
     url = url.replace(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n?]+)/img, BASE_URL);
     if (!page) page = '1';
-    var url1 = url + "page/" + page + "/";
-    var response = fetch(url1);
+    let response = fetch(url + "/page/" + page);
     if (response.ok) {
         let doc = response.html();
         var data = [];
@@ -17,7 +16,7 @@ function execute(url, page) {
                 });
         });
         var next = doc.select("#content .current + a").text();
-        if (next) return Response.success(data, next)
+        if (next) return Response.success(data,next)
         else return Response.success(data)
     }
     return null
