@@ -2,11 +2,12 @@ load('config.js');
 
 function execute(url, page) {
     url = url.replace(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n?]+)/img, BASE_URL);
-    var url1 = url + (page ? "page/" + page : "");
+    if (!page) page = '1';
+    var url1 = url + "page/" + page + "/";
     var response = fetch(url1);
     if (response.ok) {
         let doc = response.html();
-        const data = [];
+        var data = [];
         doc.select("#content .post").forEach(e => {
                 data.push({
                     name: e.select("h2 a").text(),
