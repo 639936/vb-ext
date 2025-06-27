@@ -32,9 +32,22 @@
     "name": "Truyện sexTV2",
     "author": "369",
     "path": "https://raw.githubusercontent.com/639936/vb-ext/main/xtv2/plugin.zip",
-    "version": 11,
+    "version": 12,
     "source": "https://truyensextv2.cc",
     "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/xtv2/icon.png",
+    "description": "đọc truyện sex",
+    "type": "novel",
+    "locale": "vi_VN",
+    "tag": "nsfw"
+
+    },
+        {
+    "name": "Đọc truyện 14",
+    "author": "369",
+    "path": "https://raw.githubusercontent.com/639936/vb-ext/main/doctruyen14/plugin.zip",
+    "version": 1,
+    "source": "https://doctruyen14.vip/",
+    "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/doctruyen14/icon.png",
     "description": "đọc truyện sex",
     "type": "novel",
     "locale": "vi_VN",
