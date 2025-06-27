@@ -10,7 +10,7 @@ function execute(key,page) {
                 data.push({
                     name: e.select("a").first().text(),
                     link: e.select("a").first().attr("href"),
-                    cover: e.select("img").attr("src"),
+                    cover: e.select("img").attr("data-src"),
                     host: BASE_URL
                 });
         });

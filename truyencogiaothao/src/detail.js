@@ -21,6 +21,7 @@ function execute(url) {
         return Response.success({
             name: doc.select("h1").text(),
             author: doc.select(".author-content").text(),
+            cover: doc.select(".container .summary_image img").attr("data-src"),
             genres: genres,
             suggests: suggests,
         });

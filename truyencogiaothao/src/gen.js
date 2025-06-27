@@ -11,7 +11,7 @@ function execute(url,page) {
                 data.push({
                     name: e.select(".item-summary a").text(),
                     link: e.select(".item-summary a").attr("href"),
-                    cover: e.select("img").attr("src"),
+                    cover: e.select("img").attr("data-src"),
                     host: BASE_URL
                 });
         });
