@@ -1,15 +1,14 @@
 {
   "metadata": {
-    "name": "Truyện sex vn",
+    "name": "Truyện Hoàng Dung",
     "author": "369",
     "version": 1,
-    "source": "https://truyensexvn.com/",
-    "regexp": "(www.)?truyensexvn.*?/[^/]+/?$",
-    "description": "Đọc truyện sex",
+    "source": "https://truyenhoangdung.xyz/",
+    "regexp": "(www.)?truyenhoangdung.*?/[^/]+/?$",
+    "description": "Đọc truyện",
     "locale": "vi_VN",
     "language": "javascript",
-    "type": "novel",
-    "tag": "nsfw"
+    "type": "novel"
   },
   "script": {
     "home": "home.js",
