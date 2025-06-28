@@ -5,7 +5,7 @@ function execute(url,page) {
     let response = fetch(BASE_URL + url + "/" + page);
     if (response.ok) {
         let doc = response.html();
-        const data = [];
+        var data = [];
         doc.select(".list-group > li").forEach(e => {
                 data.push({
                     name: e.select(".title a").first().text(),
