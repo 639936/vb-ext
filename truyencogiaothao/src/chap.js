@@ -3,8 +3,9 @@ function execute(url) {
     let response = fetch(url);
     if (response.ok) {
         let doc = response.html();
-        doc.select("em").remove()
-        let htm = doc.select(".ndtruyen").html();
+        doc.select("em").remove();
+        doc.select("input").remove();
+        let htm = doc.select(".text-left").html();
         htm = cleanHtml(htm);
         return Response.success(htm);
     }

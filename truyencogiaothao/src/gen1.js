@@ -1,8 +1,9 @@
 load('config.js');
-function execute(key,page) {
+
+function execute(url,page) {
     if(!page) page = '1';
     page = parseInt(page, 10);
-    let response = fetch(BASE_URL + "/page/" + page + "/?s=" + encodeURIComponent(key) + "&post_type=wp-manga");
+    let response = fetch(url);
     if (response.ok) {
         let doc = response.html();
         const data = [];
