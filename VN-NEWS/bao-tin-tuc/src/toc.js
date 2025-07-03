@@ -2,7 +2,7 @@ load('config.js');
 
 function execute(url) {
     const data = [];
-    let response = fetch(BASE_URL + url);
+    let response = fetch(url);
 
     if (response.ok) {
         let doc = response.html().select(".detail-content");
