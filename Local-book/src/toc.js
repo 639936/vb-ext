@@ -12,7 +12,7 @@ function execute(url) {
         jsonList.forEach(item => {
             if (item.directory === false && item.name !== "..") {
                 data.push({
-                    name: item.name,
+                    name: item.name.replace(/\.html/gi, ""),
                     url: BASE_URL + "/vBook/Book/" + url + "/" + encodeURIComponent(item.name),
                 });
             }

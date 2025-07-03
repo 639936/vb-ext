@@ -2,7 +2,7 @@
   "metadata": {
     "name": "Local BOOK",
     "author": "369",
-    "version": 2,
+    "version": 3,
     "source": "http://10.2.30.60:8080/vBook/Book",
     "regexp": "(www.)?10.2.30.60:8080/vBook/Book/[^/]+",
     "description": "Đọc truyện Local",
