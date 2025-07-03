@@ -1,7 +1,7 @@
 load('config.js');
 
 function execute(url) {
-    let response = fetch(url);
+    let response = fetch(BASE_URL + url);
     if (response.ok) {
         let doc = response.html().select(".contents");
         doc.select(".lazier").remove();
