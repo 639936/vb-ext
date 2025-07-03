@@ -1,0 +1,18 @@
+{
+  "metadata": {
+    "name": "Local BOOK",
+    "author": "369",
+    "version": 1,
+    "source": "http://192.168.0.100:8080/vBook/Book",
+    "regexp": "(www.)?192.168.0.100:8080/vBook/Book/[^/]+",
+    "description": "Đọc truyện Local",
+    "language": "javascript",
+    "type": "novel"
+  },
+  "script": {
+    "home": "home.js",
+    "detail": "detail.js",
+    "toc": "toc.js",
+    "chap": "chap.js"
+  }
+}
