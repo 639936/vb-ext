@@ -1,0 +1,20 @@
+{
+  "metadata": {
+    "name": "Báo Tin Tức",
+    "author": "369",
+    "version": 1,
+    "source": "https://baotintuc.vn/",
+    "regexp": "https://baotintuc.vn/(.*?)[.](htm|html)",
+    "description": "Đọc báo Tin Tức",
+    "locale": "vi_VN",
+    "language": "javascript",
+    "type": "novel"
+  },
+  "script": {
+    "home": "home.js",
+    "genre": "genre.js",
+    "detail": "detail.js",
+    "toc": "toc.js",
+    "chap": "chap.js"
+  }
+}
