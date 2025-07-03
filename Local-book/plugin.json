@@ -3,8 +3,8 @@
     "name": "Local BOOK",
     "author": "369",
     "version": 1,
-    "source": "http://192.168.0.100:8080/vBook/Book",
-    "regexp": "(www.)?192.168.0.100:8080/vBook/Book/[^/]+",
+    "source": "http://10.2.30.60:8080/vBook/Book",
+    "regexp": "(www.)?10.2.30.60:8080/vBook/Book/[^/]+",
     "description": "Đọc truyện Local",
     "language": "javascript",
     "type": "novel"
