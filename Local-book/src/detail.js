@@ -4,7 +4,7 @@ function execute(url) {
     if (response.ok) {
         var doc = response.html();
         return Response.success({
-                name: doc.select("#path").text(),
+                name: doc.select("#path").text().replace("/vBook/Book/", ""),
                 });
     }
     return null
