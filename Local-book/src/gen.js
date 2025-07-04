@@ -1,7 +1,7 @@
 load('config.js');
 
 function execute(url) {
-    var response = fetch(BASE_URL + "/api/file/list?path=%2FvBook%2FBook&sort=default&sort-reversed=false", {
+    var response = fetch(BASE_URL + "/api/file/list?path=%2FvBook%2FBook&sort=modified&sort-reversed=false", {
         method: "GET"
     });
 

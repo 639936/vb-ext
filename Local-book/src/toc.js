@@ -2,7 +2,7 @@ load('config.js');
 function execute(url) {
     url = url.replace(BASE_URL, "");
     url = url.replace("/vBook/Book/", "");
-    var response = fetch(BASE_URL + "/api/file/list?path=%2FvBook%2FBook%2F" + url + "%2F&sort=default&sort-reversed=false", {
+    var response = fetch(BASE_URL + "/api/file/list?path=%2FvBook%2FBook%2F" + url + "%2F&sort=modified&sort-reversed=false", {
         method: "GET"
     });
 

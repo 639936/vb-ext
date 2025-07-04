@@ -20,7 +20,7 @@
     "name": "Local BOOK",
     "author": "369",
     "path": "https://raw.githubusercontent.com/639936/vb-ext/main/Local-book/plugin.zip",
-    "version": 5,
+    "version": 6,
     "source": "http://10.2.30.60:8080/vBook/Book",
     "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/Local-book/icon.png",
     "description": "Đọc truyện Local",
