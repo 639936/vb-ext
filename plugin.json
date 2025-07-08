@@ -188,7 +188,7 @@
     {
       "name": "Gemini Novel Analyzer",
       "author": "369",
-      "version": 1,
+      "version": 2,
       "source": "https://generativelanguage.googleapis.com",
       "path": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-Search-Name/plugin.zip",
       "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-Search-Name/icon.png",

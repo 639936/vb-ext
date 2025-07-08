@@ -2,7 +2,7 @@
   "metadata": {
     "name": "Gemini Novel Analyzer",
     "author": "369",
-    "version": 1,
+    "version": 2,
     "source": "https://generativelanguage.googleapis.com",
     "description": "Phân tích văn bản truyện (tên riêng, việt phrase, luật nhân) bằng Google Gemini API. Hỗ trợ nhiều API key.",
     "type": "translate"
