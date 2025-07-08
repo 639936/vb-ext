@@ -69,7 +69,6 @@ var promptLibrary = {
                    '    *   **Nhiệm vụ 3: Tạo Luật Nhân**: Tìm các cấu trúc có chứa số hoặc danh từ có thể thay thế để tạo ra quy tắc chung, sử dụng placeholder {0}, {1}.' +
                    '2.  **Định dạng đầu ra BẮT BUỘC**:' +
                    '    *   Kết quả phải là văn bản thuần túy, KHÔNG được chứa markdown hay bất kỳ lời giải thích nào.' +
-                   '    *   Nội dung phải được chia thành BA phần, bắt đầu bằng các tiêu đề: "- tên:", "- việt phrase:", "- luật nhân:".' +
                    '    *   Mỗi mục trong các phần phải theo định dạng `Tiếng Trung=Tiếng Việt`.' +
                    '**QUY TẮC TUYỆT ĐỐI**: Chỉ được trả về kết quả theo đúng định dạng đã yêu cầu. Nếu không tìm thấy mục nào cho một phần, hãy để trống phần đó (ví dụ: "- tên:" rồi xuống dòng ngay).'
 };

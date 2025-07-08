@@ -27,14 +27,14 @@ function tryTranslateWithKeys(text, from, to, keyIndex) {
     }
     
     var system_prompt = promptLibrary[to] || promptLibrary['default'];
-    var STRUCTURE_RULE = "QUY TẮC CẤU TRÚC: Đảm bảo tuân thủ cấu trúc của văn bản gốc. chỉ trả về kết quả dịch, không có markdown";
+    var STRUCTURE_RULE = "QUY TẮC CẤU TRÚC: Đảm bảo tuân thủ cấu trúc của văn bản gốc. chỉ trả về kết quả, không có markdown";
 
     if (to !== 'vi-analyzer') {
         system_prompt += "\n\n" + STRUCTURE_RULE;
     }
 
     var full_prompt = system_prompt + "\n\n---\n\n" + text;
-    var url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite-preview-06-17:generateContent?key=" + apiKey;
+    var url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + apiKey;
     var body = {
         "contents": [{ "parts": [{ "text": full_prompt }] }],
         "generationConfig": {
