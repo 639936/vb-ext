@@ -7,8 +7,7 @@ load("prompts.js");
  */
 function execute(text, from, to) {
     if (!text || text.trim() === '') {
-        // Trả về dấu ? trong thẻ p để đảm bảo nhất quán
-        return Response.success("<p>?</p>");
+        return Response.success("?");
     }
     
     // Bắt đầu quá trình thử các API key
@@ -29,7 +28,12 @@ function tryTranslateWithKeys(text, from, to, keyIndex) {
         return tryTranslateWithKeys(text, from, to, keyIndex + 1);
     }
     
+    // --- LOGIC CHỌN PROMPT ĐỘNG ---
+    // Chọn prompt từ thư viện dựa vào giá trị của 'to'.
+    // Nếu không tìm thấy 'to' trong thư viện, dùng prompt 'default'.
     const system_prompt = promptLibrary[to] || promptLibrary['default'];
+    // --- KẾT THÚC LOGIC CHỌN PROMPT ---
+
     const full_prompt = `${system_prompt}\n\n---\n\n${text}`;
     
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
@@ -55,27 +59,8 @@ function tryTranslateWithKeys(text, from, to, keyIndex) {
             let result = JSON.parse(response.text());
             if (result.candidates && result.candidates[0].content && result.candidates[0].content.parts[0]) {
                 let translatedText = result.candidates[0].content.parts[0].text;
-                
-                // ==========================================================
-                // === BẮT ĐẦU THAY ĐỔI: ĐỊNH DẠNG ĐẦU RA SANG HTML      ===
-                // ==========================================================
-
-                // 1. Thay thế tất cả các ký tự xuống dòng (\n) bằng thẻ <br>
-                //    Sử dụng biểu thức chính quy /.../g để thay thế toàn bộ.
-                const textWithBreaks = translatedText.replace(/\n/g, '<br>');
-                
-                // 2. Bọc toàn bộ kết quả trong cặp thẻ <p>...</p> để tạo thành một đoạn văn bản HTML.
-                const htmlOutput = `<p>${textWithBreaks}</p>`;
-
-                // ==========================================================
-                // === KẾT THÚC THAY ĐỔI                                 ===
-                // ==========================================================
-
                 console.log(`API Key ${keyIndex + 1} thành công.`);
-
-                // Trả về chuỗi đã được định dạng HTML
-                return Response.success(htmlOutput.trim());
-
+                return Response.success(translatedText.trim());
             } else {
                 console.log(`API Key ${keyIndex + 1} không trả về nội dung hợp lệ. Thử key tiếp theo.`);
                 return tryTranslateWithKeys(text, from, to, keyIndex + 1);
