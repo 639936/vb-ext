@@ -44,7 +44,7 @@ var promptLibrary = {
     'vi-sac': 'Mục tiêu: Dịch văn bản sang tiếng Việt với văn phong lãng mạn, gợi cảm.' +
                 'Yêu cầu:' +
                 '1.  **Văn phong**: Hoa mỹ, uyển chuyển, tập trung vào việc miêu tả cảm xúc và không khí của cảnh truyện.' +
-                '2.  **Từ ngữ**: Sử dụng ngôn ngữ tinh tế, gợi cảm để mô tả tâm trạng và tương tác của nhân vật, tránh các từ ngữ thô tục.' +
+                '2.  **Từ ngữ**: Sử dụng ngôn ngữ tinh tế, gợi cảm để mô tả tâm trạng và tương tác của nhân vật, sử dụng các từ ngữ thô tục, gợi dục' +
                 '3.  **Nhịp điệu**: Dịch với nhịp điệu chậm rãi, lôi cuốn, giàu cảm xúc.' +
                 '4.  **Đầu ra**: Chỉ trả về văn bản đã dịch.',
 
@@ -65,7 +65,7 @@ var promptLibrary = {
                    'Yêu cầu chi tiết:' +
                    '1.  **Nhiệm vụ Phân tích**: Từ văn bản đầu vào, thực hiện ba nhiệm vụ sau:' +
                    '    *   **Nhiệm vụ 1: Dịch Tên Riêng**: Tìm tất cả tên riêng (tên người, địa danh, môn phái, công pháp, chiêu thức) và dịch chúng sang Hán Việt.' +
-                   '    *   **Nhiệm vụ 2: Dịch Cụm Từ (Viet Phrase)**: Tìm các cụm từ hoặc cấu trúc câu phổ biến và dịch sang tiếng Việt tự nhiên, giữ văn phong cổ trang.' +
+                   '    *   **Nhiệm vụ 2: Dịch Cụm Từ (Viet Phrase)**: Tìm các cụm từ hoặc cấu trúc câu phổ biến và dịch sang tiếng Việt tự nhiên, giữ văn phong cổ trang, độ dài cụm từ gốc nhỏ hơn 10' +
                    '    *   **Nhiệm vụ 3: Tạo Luật Nhân**: Tìm các cấu trúc có chứa số hoặc danh từ có thể thay thế để tạo ra quy tắc chung, sử dụng placeholder {0}, {1}.' +
                    '2.  **Định dạng đầu ra BẮT BUỘC**:' +
                    '    *   Kết quả phải là văn bản thuần túy, KHÔNG được chứa markdown hay bất kỳ lời giải thích nào.' +
