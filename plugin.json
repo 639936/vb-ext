@@ -186,6 +186,16 @@
       "type": "translate"
     },
     {
+      "name": "Gemini Novel Analyzer",
+      "author": "369",
+      "version": 1,
+      "source": "https://generativelanguage.googleapis.com",
+      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-Search-Name/plugin.zip",
+      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-Search-Name/icon.png",
+      "description": "Phân tích văn bản truyện (tên riêng, việt phrase, luật nhân) bằng Google Gemini API. Hỗ trợ nhiều API key.",
+      "type": "translate"
+    },
+    {
       "name": "Báo Tin Tức",
       "author": "369",
       "version": 1,
