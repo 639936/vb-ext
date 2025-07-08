@@ -12,9 +12,9 @@
     "translate": "translate.js"
   },
   "config": {
-    "support_auto_detect": true,
+    "support_auto_detect": false,
     "max_length": 40000,
-    "required_api_key": "false",
+    "required_api_key": false,
     "support_url": "https://aistudio.google.com/app/apikey"
   }
 }
