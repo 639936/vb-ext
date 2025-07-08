@@ -9,36 +9,33 @@ function execute(text, from, to) {
     if (!text || text.trim() === '') {
         return Response.success("?");
     }
-    
-    // Bắt đầu quá trình thử các API key
     return tryTranslateWithKeys(text, from, to, 0);
 }
 
 /**
- * Hàm đệ quy để thử tuần tự các API key.
+ * Hàm đệ quy để thử tuần tự các API key, được viết bằng cú pháp ES5.
  */
 function tryTranslateWithKeys(text, from, to, keyIndex) {
     if (keyIndex >= apiKeys.length) {
         return Response.error("Tất cả API Key đều đã hết hạn mức hoặc không hợp lệ.");
     }
 
-    const apiKey = apiKeys[keyIndex];
+    var apiKey = apiKeys[keyIndex];
     if (!apiKey || apiKey.startsWith("YOUR_")) {
-        console.log(`Bỏ qua API key không hợp lệ ở vị trí ${keyIndex + 1}.`);
+        console.log("Bỏ qua API key không hợp lệ ở vị trí " + (keyIndex + 1));
         return tryTranslateWithKeys(text, from, to, keyIndex + 1);
     }
     
-    // --- LOGIC CHỌN PROMPT ĐỘNG ---
-    // Chọn prompt từ thư viện dựa vào giá trị của 'to'.
-    // Nếu không tìm thấy 'to' trong thư viện, dùng prompt 'default'.
-    const system_prompt = promptLibrary[to] || promptLibrary['default'];
-    // --- KẾT THÚC LOGIC CHỌN PROMPT ---
+    var system_prompt = promptLibrary[to] || promptLibrary['default'];
+    var STRUCTURE_RULE = "QUY TẮC CẤU TRÚC: Đầu ra BẮT BUỘC phải có số lượng đoạn văn (phân tách bằng ký tự xuống dòng) chính xác bằng với đầu vào. Nếu một đoạn trong đầu vào là một dòng trống, đầu ra cũng phải có một dòng trống tương ứng. Không bao giờ được gộp các đoạn văn lại với nhau.";
 
-    const full_prompt = `${system_prompt}\n\n---\n\n${text}`;
-    
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+    if (to !== 'vi-analyzer') {
+        system_prompt += "\n\n" + STRUCTURE_RULE;
+    }
 
-    const body = {
+    var full_prompt = system_prompt + "\n\n---\n\n" + text;
+    var url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + apiKey;
+    var body = {
         "contents": [{ "parts": [{ "text": full_prompt }] }],
         "generationConfig": {
             "temperature": 0.3, "topK": 1, "topP": 1, "maxOutputTokens": 65536, "stopSequences": []
@@ -52,25 +49,38 @@ function tryTranslateWithKeys(text, from, to, keyIndex) {
     };
 
     try {
-        console.log(`Đang thử API Key ${keyIndex + 1} với chế độ dịch '${to}'...`);
-        let response = fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+        console.log("Đang thử API Key " + (keyIndex + 1) + " với chế độ dịch '" + to + "'...");
+        var response = fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
 
         if (response.ok) {
-            let result = JSON.parse(response.text());
-            if (result.candidates && result.candidates[0].content && result.candidates[0].content.parts[0]) {
-                let translatedText = result.candidates[0].content.parts[0].text;
-                console.log(`API Key ${keyIndex + 1} thành công.`);
+            var result = JSON.parse(response.text());
+
+            // =================================================================
+            // === SỬA LỖI QUAN TRỌNG TẠI ĐÂY                                ===
+            // =================================================================
+            // Phải truy cập vào phần tử đầu tiên của mảng "candidates" là [0]
+            if (result.candidates && result.candidates[0] && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts[0]) {
+                var translatedText = result.candidates[0].content.parts[0].text;
+                
+                console.log("API Key " + (keyIndex + 1) + " thành công.");
                 return Response.success(translatedText.trim());
+
             } else {
-                console.log(`API Key ${keyIndex + 1} không trả về nội dung hợp lệ. Thử key tiếp theo.`);
+                // In ra lỗi thực tế từ API (nếu có) để dễ debug hơn
+                var apiError = result.promptFeedback ? JSON.stringify(result.promptFeedback) : "Không có nội dung trả về.";
+                console.log("API Key " + (keyIndex + 1) + " không trả về nội dung hợp lệ. Lý do: " + apiError + ". Thử key tiếp theo.");
                 return tryTranslateWithKeys(text, from, to, keyIndex + 1);
             }
+            // =================================================================
+            // === KẾT THÚC PHẦN SỬA LỖI                                      ===
+            // =================================================================
+
         } else {
-            console.log(`API Key ${keyIndex + 1} thất bại (HTTP ${response.status}). Thử key tiếp theo.`);
+            console.log("API Key " + (keyIndex + 1) + " thất bại (HTTP " + response.status + "). Thử key tiếp theo.");
             return tryTranslateWithKeys(text, from, to, keyIndex + 1);
         }
     } catch (e) {
-        console.log(`Ngoại lệ khi gọi API Key ${keyIndex + 1}: ${e.toString()}. Thử key tiếp theo.`);
+        console.log("Ngoại lệ khi gọi API Key " + (keyIndex + 1) + ": " + e.toString() + ". Thử key tiếp theo.");
         return tryTranslateWithKeys(text, from, to, keyIndex + 1);
     }
 }
