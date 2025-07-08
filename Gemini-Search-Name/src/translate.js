@@ -32,7 +32,7 @@ function tryTranslateWithKeys(text, from, to, keyIndex) {
     const system_prompt = promptLibrary[to] || promptLibrary['default'];
     const full_prompt = `${system_prompt}\n\n---\n\n${text}`;
     
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
     const body = {
         "contents": [{ "parts": [{ "text": full_prompt }] }],
