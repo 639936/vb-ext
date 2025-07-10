@@ -16,6 +16,18 @@
     "locale": "vi_VN",
     "tag": "nsfw"
     },
+     {
+    "name": "TruyệnC",
+    "author": "369",
+    "path": "https://raw.githubusercontent.com/639936/vb-ext/main/TruyenC/plugin.zip",
+    "version": 1,
+    "source": "https://truyenc.com/",
+    "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/TruyenC/icon.png",
+    "description": "Đọc truyện trên TruyệnC",
+    "type": "novel",
+    "locale": "vi_VN",
+    "tag": "nsfw"
+    },
     {
     "name": "Local BOOK",
     "author": "369",
