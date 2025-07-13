@@ -122,6 +122,18 @@
     "locale": "zh_CN",
     "tag": "nsfw"
     },
+     {
+    "name": "Misskon",
+    "author": "369",
+    "path": "https://raw.githubusercontent.com/639936/vb-ext/main/Misskon/plugin.zip",
+    "version": 1,
+    "source": "https://misskon.com/",
+    "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/Misskon/icon.png",
+    "description": "Xem gái trên misskon",
+    "type": "comic",
+    "locale": "vi_VN",
+    "tag": "nsfw"
+    },
     {
     "name": "Wattpadfake",
     "author": "369",
