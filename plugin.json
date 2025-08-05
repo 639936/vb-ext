@@ -210,6 +210,16 @@
       "type": "translate"
     },
     {
+      "name": "Gemini Translate flash Pro",
+      "author": "369",
+      "version": 3,
+      "source": "https://generativelanguage.googleapis.com",
+      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-Translate-flash-Pro/plugin.zip",
+      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-Translate-flash-Pro/icon.png",
+      "description": "Dịch văn bản bằng Google Gemini API với nhiều key, prompt tùy chỉnh theo thể loại và xử lý lỗi an toàn thông minh.",
+      "type": "translate"
+    },
+    {
       "name": "Gemini Novel Analyzer",
       "author": "369",
       "version": 10,
