@@ -7,5 +7,5 @@ let languages = [
     {"id": "vi_sac", "name": "Việt (Truyện Sắc)"},
     {"id": "vi_huyenhuyen", "name": "Việt (Huyền Huyễn)"},
     {"id": "vi_tienhiep", "name": "Việt (Tiên Hiệp)"},
-    {{"id": "vi_vietlai", "name": "Việt (Viết Lại Convert)"}
+    {"id": "vi_vietlai", "name": "Việt (Viết Lại Convert)"}
 ];
