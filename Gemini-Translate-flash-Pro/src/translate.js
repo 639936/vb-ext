@@ -19,8 +19,8 @@ function callGeminiAPI(text, prompt, apiKey) {
     var body = {
         "contents": [{ "parts": [{ "text": full_prompt }] }],
         "generationConfig": {
-            "temperature": 1.5,
-            "topP": 0.9,
+            "temperature": 0.5,
+            "topP": 0.95,
             "maxOutputTokens": 64000
         },
         "safetySettings": [
