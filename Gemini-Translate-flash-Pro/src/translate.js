@@ -115,7 +115,7 @@ function execute(text, from, to) {
     if (processedText.length < 200) {
         // --- LỘ TRÌNH NHANH: CHO VĂN BẢN NGẮN ---
         console.log("Phát hiện văn bản ngắn (< 200 ký tự). Sử dụng prompt đơn giản.");
-        var languageMap = { 'zh': 'Chinese', 'en': 'English', 'vi': 'Vietnamese' };
+        var languageMap = { 'zh': 'Chinese', 'en': 'English', 'vi': 'Vietnamese', 'vi_vietlai': 'Vietnamese', 'vi_sac': 'Vietnamese' };
         var toLang = languageMap[to] || to;
         // Prompt này không yêu cầu AI phải "dịch từ" ngôn ngữ nào, vì đầu vào có thể là Hán Việt hoặc chữ Hán gốc
         var simplePrompt = "Translate the following text into " + toLang + " in an easy-to-understand and accurate manner. [FORMATTING CONSTRAINT]: You MUST return only the translated text. DO NOT include explanations, summaries, or markdown formatting (like ```).";
