@@ -1,24 +1,31 @@
 load('config.js');
-function execute(url,page) {
-    if(!page) page = '1';
-    let response = fetch(url + "?page=" + page);
+
+function execute(url, page) {
+    if (!page) page = '1';
+    let response1 = fetch(url);
+        if (response1.ok) {
+            let doc = response1.html();
+            let newUrl = doc.select("select option").first().attr("value");
+            url = newUrl.match(/(.*_)/)[0];
+        }
+    let fullUrl = BASE_URL + url + page + ".html"; 
+    let response = fetch(fullUrl);
     if (response.ok) {
-        let doc = response.html();
+        let doc1 = response.html();
         var data = [];
-        doc.select(".page-content .d-flex").forEach(e => {
-          data.push({
-            name: e.select("a").first().attr("title"),
-            link: e.select("a").first().attr("href"),
-            cover: e.select("img").first().attr("src"),
-            description: e.select("p").first().text(),
-            host: BASE_URL
-          })
+        doc1.select(".mod.block.book-all-list ul li").forEach(e => {
+            data.push({
+                name: e.select("a.name").text(),
+                link: e.select("a.name").attr("href"),
+                description: e.select(".info").text(),
+                host: BASE_URL
+            });
         });
-        let next = doc.select(".pagination li.active + li").text();
-        if (next)
-        return Response.success(data,next)
-        else
-        return Response.success(data)
+
+        let nextPage = parseInt(page) + 1;
+
+        return Response.success(data, nextPage.toString());
     }
+
     return null;
 }
