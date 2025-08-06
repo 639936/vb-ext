@@ -2,9 +2,9 @@
   "metadata": {
     "name": "alicesw",
     "author": "369",
-    "version": 3,
+    "version": 4,
     "source": "https://www.alicesw.com/",
-    "regexp": "(www.)?alicesw.com/[^/]+",
+    "regexp": "(www\\.)?alicesw\\.com.*",
     "description": "Đọc truyện trên alicesw.com",
     "locale": "zh_CN",
     "language": "javascript",

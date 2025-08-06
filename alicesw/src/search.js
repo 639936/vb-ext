@@ -3,7 +3,7 @@ load('config.js');
 function execute(key, page) {
     if (!page) page = '1';
     var key = encodeURIComponent(key)
-    let fullUrl = BASE_URL + "/search.html?q=" + key + "&f=tag&sort=hits_DESC&p=" + page + "&serialize="; 
+    let fullUrl = BASE_URL + "/search.html?q=" + key + "&f=_all" + page + "&serialize="; 
     let response = fetch(fullUrl);
     if (response.ok) {
         let doc = response.html();
