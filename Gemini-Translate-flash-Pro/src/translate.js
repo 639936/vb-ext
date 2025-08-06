@@ -6,21 +6,13 @@ var currentKeyIndex = 0;
 
 // Hàm gọi API Gemini chính, không thay đổi
 function callGeminiAPI(text, prompt, apiKey) {
-    if (!apiKey) {
-        return { status: "error", message: "API Key không hợp lệ." };
-    }
-    if (!text || text.trim() === '') {
-        return { status: "success", data: "" };
-    }
+    if (!apiKey) { return { status: "error", message: "API Key không hợp lệ." }; }
+    if (!text || text.trim() === '') { return { status: "success", data: "" }; }
     var full_prompt = prompt + "\n\n---\n\n" + text;
     var url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=" + apiKey;
     var body = {
         "contents": [{ "parts": [{ "text": full_prompt }] }],
-        "generationConfig": {
-            "temperature": 0.7,
-            "topP": 0.95,
-            "maxOutputTokens": 65536
-        },
+        "generationConfig": { "temperature": 0.7, "topP": 0.95, "maxOutputTokens": 65536 },
         "safetySettings": [
             { "category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE" },
             { "category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE" },
@@ -47,19 +39,14 @@ function callGeminiAPI(text, prompt, apiKey) {
     }
 }
 
-// Hàm dịch từng dòng, được gọi khi một chunk bị chặn an toàn
+// Hàm dịch từng dòng
 function translateInChunksByLine(text, prompt) {
-    console.log("Kích hoạt chế độ dịch từng dòng do nội dung bị chặn...");
     var lines = text.split('\n');
     var translatedLines = [];
     var errorOccurred = false;
-
     for (var i = 0; i < lines.length; i++) {
         var line = lines[i];
-        if (line.trim() === '') {
-            translatedLines.push('');
-            continue;
-        }
+        if (line.trim() === '') { translatedLines.push(''); continue; }
         var lineTranslated = false;
         for (var j = 0; j < apiKeys.length; j++) {
             var key = apiKeys[currentKeyIndex];
@@ -86,54 +73,41 @@ function translateInChunksByLine(text, prompt) {
             errorOccurred = true;
         }
     }
-    
-    // Trả về một đối tượng chứa kết quả, thay vì Response.success
-    if (errorOccurred) {
-        return { status: "partial_error", data: translatedLines.join('\n') };
-    }
+    if (errorOccurred) { return { status: "partial_error", data: translatedLines.join('\n') }; }
     return { status: "success", data: translatedLines.join('\n') };
 }
 
-// Hàm dịch một chunk văn bản duy nhất (có xoay vòng key và xử lý lỗi)
+// Hàm dịch một chunk văn bản duy nhất
 function translateSingleChunk(chunkText, prompt) {
     for (var i = 0; i < apiKeys.length; i++) {
         var key = apiKeys[currentKeyIndex];
         var result = callGeminiAPI(chunkText, prompt, key);
-        if (result.status === "success") {
-            return result;
-        }
-        if (result.status === "blocked") {
-            return translateInChunksByLine(chunkText, prompt);
-        }
+        if (result.status === "success") { return result; }
+        if (result.status === "blocked") { return translateInChunksByLine(chunkText, prompt); }
         if (result.status === "key_error") {
-            console.log("Key " + currentKeyIndex + " có thể đã lỗi. Chuyển key.");
             currentKeyIndex = (currentKeyIndex + 1) % apiKeys.length;
         } else {
-            return result; // Trả về lỗi không xác định để hiển thị
+            return result;
         }
     }
     return { status: "error", message: "Tất cả các API key đều không hoạt động." };
 }
 
-// Hàm thực thi chính (đóng vai trò quản lý và gỡ lỗi)
+// Hàm thực thi chính
 function execute(text, from, to) {
     if (!apiKeys || apiKeys.length === 0 || (apiKeys[0].indexOf("YOUR_GEMINI_API_KEY") !== -1)) {
         return Response.error("Vui lòng cấu hình API key trong file apikey.js.");
     }
-    if (!text || text.trim() === '') {
-        return Response.success("?");
-    }
+    if (!text || text.trim() === '') { return Response.success("?"); }
 
     var selectedPrompt = prompts[to] || prompts["default"];
     
-    // --- LOGIC CHIA VĂN BẢN ĐẦU VÀO ---
     var textChunks = [];
     var CHUNK_SIZE = 5000;
     var MIN_LAST_CHUNK_SIZE = 1000;
     var INPUT_LENGTH_THRESHOLD = 10000;
 
     if (text.length > INPUT_LENGTH_THRESHOLD) {
-        console.log("Phát hiện văn bản dài > " + INPUT_LENGTH_THRESHOLD + " ký tự. Bắt đầu chia nhỏ...");
         var tempChunks = [];
         for (var i = 0; i < text.length; i += CHUNK_SIZE) {
             tempChunks.push(text.substring(i, i + CHUNK_SIZE));
@@ -144,22 +118,17 @@ function execute(text, from, to) {
             tempChunks.push(secondLastChunk + lastChunk);
         }
         textChunks = tempChunks;
-        console.log("Đã chia văn bản thành " + textChunks.length + " phần.");
     } else {
         textChunks.push(text);
     }
 
-    // --- DỊCH TỪNG CHUNK, GOM KẾT QUẢ VÀ LỖI ---
     var finalParts = [];
     for (var k = 0; k < textChunks.length; k++) {
-        console.log("Đang dịch phần " + (k + 1) + "/" + textChunks.length + "...");
         var chunkResult = translateSingleChunk(textChunks[k], selectedPrompt);
         
-        // DÙ THÀNH CÔNG HAY LỖI, ĐỀU THÊM KẾT QUẢ VÀO MẢNG
         if (chunkResult.status === 'success' || chunkResult.status === 'partial_error') {
             finalParts.push(chunkResult.data);
         } else {
-            // Đây là nơi chèn thông báo lỗi vào nội dung hiển thị
             var errorString = "\n\n<<<<<--- LỖI DỊCH PHẦN " + (k + 1) + " --->>>>>\n" +
                               "Lý do: " + chunkResult.message + "\n" +
                               "<<<<<--- KẾT THÚC LỖI --->>>>>\n\n";
@@ -167,11 +136,18 @@ function execute(text, from, to) {
         }
     }
 
-    console.log("Đã dịch xong tất cả các phần. Đang ghép kết quả...");
-    
-    // Ghép tất cả các phần (bao gồm cả phần thành công và phần báo lỗi) thành một chuỗi duy nhất
-    // Sử dụng \n\n để đảm bảo có khoảng cách giữa các chunk lớn, giúp dễ đọc hơn
-    var finalContent = finalParts.join('\n\n');
-    
-    return Response.success(finalContent);
+    var intermediateContent = finalParts.join('\n\n');
+
+    // =======================================================================
+    // --- BƯỚC XỬ LÝ CUỐI CÙNG: TÁI TẠO CHUỖI ĐỂ ĐẢM BẢO TƯƠNG THÍCH ---
+    // Bắt chước chính xác cách script mẫu của Microsoft xử lý để app hiển thị đúng
+    // =======================================================================
+    var lines = intermediateContent.split('\n');
+    var finalOutput = "";
+    for (var i = 0; i < lines.length; i++) {
+        finalOutput += lines[i] + "\n";
+    }
+
+    // Trả về chuỗi đã được chuẩn hóa và cắt bỏ khoảng trắng/dòng thừa ở cuối
+    return Response.success(finalOutput.trim());
 }
