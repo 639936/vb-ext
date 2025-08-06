@@ -72,7 +72,7 @@ function execute(text, from, to) {
     var processedText;
 
     // --- LOGIC MỚI: TIỀN XỬ LÝ DỰA TRÊN NGÔN NGỮ ĐÍCH ---
-    // (Trong thiết lập hiện tại, 'default' là prompt Việt tổng hợp)
+    // (Trong thiết lập hiện tại, 'vi' là prompt Việt tổng hợp)
     if (to === 'vi' || to === 'vi_sac') {
         console.log("Phát hiện ngôn ngữ đích '" + to + "'. Bắt đầu quy trình phiên âm Hán Việt...");
         try {
