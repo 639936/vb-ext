@@ -1,1 +1,1 @@
-const BASE_URL = 'https://www.alicesw.com';
+const BASE_URL = 'http://www.alicesw.com';

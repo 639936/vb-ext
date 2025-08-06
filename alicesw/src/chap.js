@@ -10,8 +10,8 @@ function execute(url) {
     browser.launch(BASE_URL + url, 1000); 
 
     let htm = "";
-    const maxTries = 10; // Tối đa 10 lần thử
-    const delay = 1000;  // Mỗi lần thử cách nhau 1 giây (1000ms)
+    const maxTries = 20; // Tối đa 10 lần thử
+    const delay = 500;  // Mỗi lần thử cách nhau 1 giây (1000ms)
 
     // 3. Bắt đầu vòng lặp kiểm tra
     for (var i = 0; i < maxTries; i++) {
