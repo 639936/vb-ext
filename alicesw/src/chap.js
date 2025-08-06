@@ -1,10 +1,11 @@
+load('config.js');
 function execute(url) {
     // 1. Khởi tạo trình duyệt ảo
     var browser = Engine.newBrowser();
     
     // 2. Mở URL. Chúng ta không cần timeout dài ở đây vì vòng lặp sẽ xử lý việc chờ.
     // Timeout ngắn (2-3 giây) chỉ để đảm bảo trang có đủ thời gian tải khung HTML ban đầu.
-    browser.launch(url, 1000); 
+    browser.launch(BASE_URL + url, 1000); 
 
     let htm = "";
     const maxTries = 20; // Tối đa 10 lần thử
