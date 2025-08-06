@@ -4,14 +4,11 @@ function execute(url) {
     let response = fetch(url);
     if (response.ok) {
         let doc = response.html();
-        var data = [];
+        var page = [];
         doc.select(".pagelistbox option").forEach(e => {
-          data.push({
-            link: e.attr("value"),
-            host: BASE_URL
-          })
+          page.push(BASE_URL + e.attr("value"))
         });
-        return Response.success(data)
+        return Response.success(page)
     }
     return null;
 }
