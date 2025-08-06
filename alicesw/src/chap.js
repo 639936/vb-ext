@@ -1,7 +1,5 @@
 load('config.js');
-function execute(url) {
-    url = url.replace(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n?]+)/img, BASE_URL);
-    
+function execute(url) {    
     // 1. Khởi tạo trình duyệt ảo
     var browser = Engine.newBrowser();
     
@@ -41,6 +39,6 @@ function execute(url) {
         return Response.success(htm);
     } else {
         // Nếu sau 10 lần thử vẫn không thành công, trả về lỗi
-        return Response.success(url);
+        return Response.success(BASE_URL + url);
     }
 }

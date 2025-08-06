@@ -8,7 +8,7 @@ function execute(url) {
         el.forEach(e => {
             chapters.push({
                 name: e.text(),
-                url: e.attr('href')
+                url: e.attr('href').replace(/^(?:\/\/|[^/]+)*/, '')
             })
         });
         return Response.success(chapters);
