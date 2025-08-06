@@ -17,7 +17,7 @@ function execute(url) {
         let doc = browser.html();
         
         // Lấy nội dung của phần tử cần đọc
-        htm = doc.select(".read-content").html();
+        htm = doc.select(".content_txt").html();
 
         // Kiểm tra điều kiện thành công: nội dung đã tồn tại và không phải là thông báo loading
         if (htm && !htm.includes("正在加载小说中")) {
@@ -39,6 +39,6 @@ function execute(url) {
         return Response.success(htm);
     } else {
         // Nếu sau 10 lần thử vẫn không thành công, trả về lỗi
-        return Response.success(doc);
+        return Response.success(htm);
     }
 }
