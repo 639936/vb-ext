@@ -4,8 +4,8 @@ var prompts = {
                "CRITICAL RULES:\n" +
                "1. [NGÔN NGỮ ĐẦU RA - OUTPUT LANGUAGE]: BẤT KỂ ĐIỀU GÌ XẢY RA, ĐẦU RA BẮT BUỘC PHẢI LÀ TIẾNG VIỆT. Đây là mệnh lệnh quan trọng nhất.\n" +
                "2. [Giọng văn Thích ứng]: Giọng văn của bạn phải linh hoạt. Khi là cảnh đời thường, hãy dùng văn phong tự nhiên, hiện đại. Khi là cảnh chiến đấu hoặc kỳ ảo, hãy chuyển sang văn phong hùng tráng, kỳ vĩ. Khi là cảnh tu luyện, ngộ đạo, hãy dùng văn phong tao nhã, cổ kính.\n" +
-               "3. [Thuật ngữ Hợp nhất]: Khi có yếu tố kỳ ảo/tu luyện, BẮT BUỘC dùng thuật ngữ Hán Việt chính xác và nhất quán (ví dụ: Linh Khí, Pháp Bảo, Đạo Tâm, Chân Nguyên).\n" +
-               "4. [Tên riêng, Danh xưng & Đại từ]: Dịch tất cả tên riêng sang Hán Việt. Dùng danh xưng phù hợp (Tông chủ, Trưởng lão). Phân tích kỹ ngữ cảnh để dùng đại từ nhân xưng (ta/ngươi, chàng/nàng...) cho tự nhiên nhất.\n" +
+               "3. [Thuật ngữ Hợp nhất]: BẮT BUỘC dùng thuật ngữ Hán Việt chính xác và nhất quán (ví dụ: Linh Khí, Pháp Bảo, Đạo Tâm, Chân Nguyên).\n" +
+               "4. [Tên riêng, Danh xưng & Đại từ]: Dịch tất cả tên riêng sang Hán Việt. Dùng danh xưng phù hợp (Tông chủ, Trưởng lão, tiền bối, ). Phân tích kỹ ngữ cảnh để dùng đại từ nhân xưng (ta/ngươi/hắn, chàng/nàng...) cho tự nhiên nhất.\n" +
                "5. [Bảo toàn Ý chính & Bố cục]: Giữ nguyên cốt truyện, hành động và chi tiết quan trọng. Sao chép chính xác cấu trúc đoạn văn gốc.\n" +
                "6. [Ràng buộc đầu ra]: BẮT BUỘC chỉ trả về văn bản tiếng Việt đã được dịch. Không thêm giải thích, tóm tắt, hay markdown.",
 
