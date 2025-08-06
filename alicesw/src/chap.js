@@ -5,7 +5,7 @@ function execute(url) {
     
     // 2. Mở URL. Chúng ta không cần timeout dài ở đây vì vòng lặp sẽ xử lý việc chờ.
     // Timeout ngắn (2-3 giây) chỉ để đảm bảo trang có đủ thời gian tải khung HTML ban đầu.
-    browser.launch(BASE_URL + url, 1000); 
+    browser.launch(url, 1000); 
 
     let htm = "";
     const maxTries = 20; // Tối đa 10 lần thử
@@ -39,6 +39,6 @@ function execute(url) {
         return Response.success(htm);
     } else {
         // Nếu sau 10 lần thử vẫn không thành công, trả về lỗi
-        return Response.success(BASE_URL + url);
+        return Response.success(url);
     }
 }
