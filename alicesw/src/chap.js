@@ -5,7 +5,7 @@ function execute(url) {
     
     // 2. Mở URL. Chúng ta không cần timeout dài ở đây vì vòng lặp sẽ xử lý việc chờ.
     // Timeout ngắn (2-3 giây) chỉ để đảm bảo trang có đủ thời gian tải khung HTML ban đầu.
-    browser.launch(url, 1000); 
+    browser.launch(url, 2000); 
 
     let htm = "";
     const maxTries = 20; // Tối đa 10 lần thử
@@ -17,7 +17,7 @@ function execute(url) {
         let doc = browser.html();
         
         // Lấy nội dung của phần tử cần đọc
-        htm = doc.select(".read-content.j_readContent.user_ad_content").html();
+        htm = doc.select(".read-content").html();
 
         // Kiểm tra điều kiện thành công: nội dung đã tồn tại và không phải là thông báo loading
         if (htm && !htm.includes("正在加载小说中")) {
