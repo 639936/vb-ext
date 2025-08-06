@@ -4,7 +4,6 @@ load("prompt.js");
 
 var currentKeyIndex = 0;
 
-// Hàm gọi API Gemini chính, không thay đổi
 function callGeminiAPI(text, prompt, apiKey) {
     if (!apiKey) { return { status: "error", message: "API Key không hợp lệ." }; }
     if (!text || text.trim() === '') { return { status: "success", data: "" }; }
@@ -100,54 +99,79 @@ function execute(text, from, to) {
     }
     if (!text || text.trim() === '') { return Response.success("?"); }
 
-    var selectedPrompt = prompts[to] || prompts["default"];
-    
-    var textChunks = [];
-    var CHUNK_SIZE = 5000;
-    var MIN_LAST_CHUNK_SIZE = 1000;
-    var INPUT_LENGTH_THRESHOLD = 10000;
+    // =======================================================================
+    // --- LOGIC MỚI: KIỂM TRA ĐỘ DÀI VĂN BẢN ---
+    // =======================================================================
+    if (text.length < 200) {
+        // --- LỘ TRÌNH 1: XỬ LÝ VĂN BẢN NGẮN ---
+        console.log("Phát hiện văn bản ngắn (< 200 ký tự). Sử dụng prompt đơn giản.");
+        var languageMap = { 'zh': 'Chinese', 'en': 'English', 'vi': 'Vietnamese' };
+        var fromLang = languageMap[from] || from;
+        var toLang = languageMap[to] || to;
+        var simplePrompt = "Translate the following text from " + fromLang + " to " + toLang + ".[Output Constraint]: You MUST return only the translated text. Do not include any explanations, summaries, or markdown formatting.";
 
-    if (text.length > INPUT_LENGTH_THRESHOLD) {
-        var tempChunks = [];
-        for (var i = 0; i < text.length; i += CHUNK_SIZE) {
-            tempChunks.push(text.substring(i, i + CHUNK_SIZE));
-        }
-        if (tempChunks.length > 1 && tempChunks[tempChunks.length - 1].length < MIN_LAST_CHUNK_SIZE) {
-            var lastChunk = tempChunks.pop();
-            var secondLastChunk = tempChunks.pop();
-            tempChunks.push(secondLastChunk + lastChunk);
-        }
-        textChunks = tempChunks;
-    } else {
-        textChunks.push(text);
-    }
+        var result = translateSingleChunk(text, simplePrompt);
 
-    var finalParts = [];
-    for (var k = 0; k < textChunks.length; k++) {
-        var chunkResult = translateSingleChunk(textChunks[k], selectedPrompt);
-        
-        if (chunkResult.status === 'success' || chunkResult.status === 'partial_error') {
-            finalParts.push(chunkResult.data);
+        if (result.status === 'success' || result.status === 'partial_error') {
+            // Áp dụng cách xử lý cuối cùng để đảm bảo tương thích hiển thị
+            var lines = result.data.split('\n');
+            var finalOutput = "";
+            for (var i = 0; i < lines.length; i++) {
+                finalOutput += lines[i] + "\n";
+            }
+            return Response.success(finalOutput.trim());
         } else {
-            var errorString = "\n\n<<<<<--- LỖI DỊCH PHẦN " + (k + 1) + " --->>>>>\n" +
-                              "Lý do: " + chunkResult.message + "\n" +
-                              "<<<<<--- KẾT THÚC LỖI --->>>>>\n\n";
-            finalParts.push(errorString);
+            // Hiển thị lỗi trong nội dung nếu dịch nhanh thất bại
+            var errorString = "LỖI DỊCH NHANH: " + result.message;
+            return Response.success(errorString);
         }
+
+    } else {
+        // --- LỘ TRÌNH 2: XỬ LÝ VĂN BẢN DÀI (LOGIC CŨ) ---
+        var selectedPrompt = prompts[to] || prompts["default"];
+    
+        var textChunks = [];
+        var CHUNK_SIZE = 5000;
+        var MIN_LAST_CHUNK_SIZE = 1000;
+        var INPUT_LENGTH_THRESHOLD = 10000;
+
+        if (text.length > INPUT_LENGTH_THRESHOLD) {
+            var tempChunks = [];
+            for (var i = 0; i < text.length; i += CHUNK_SIZE) {
+                tempChunks.push(text.substring(i, i + CHUNK_SIZE));
+            }
+            if (tempChunks.length > 1 && tempChunks[tempChunks.length - 1].length < MIN_LAST_CHUNK_SIZE) {
+                var lastChunk = tempChunks.pop();
+                var secondLastChunk = tempChunks.pop();
+                tempChunks.push(secondLastChunk + lastChunk);
+            }
+            textChunks = tempChunks;
+        } else {
+            textChunks.push(text);
+        }
+
+        var finalParts = [];
+        for (var k = 0; k < textChunks.length; k++) {
+            var chunkResult = translateSingleChunk(textChunks[k], selectedPrompt);
+            
+            if (chunkResult.status === 'success' || chunkResult.status === 'partial_error') {
+                finalParts.push(chunkResult.data);
+            } else {
+                var errorString = "\n\n<<<<<--- LỖI DỊCH PHẦN " + (k + 1) + " --->>>>>\n" +
+                                  "Lý do: " + chunkResult.message + "\n" +
+                                  "<<<<<--- KẾT THÚC LỖI --->>>>>\n\n";
+                finalParts.push(errorString);
+            }
+        }
+
+        var intermediateContent = finalParts.join('\n\n');
+
+        var lines = intermediateContent.split('\n');
+        var finalOutput = "";
+        for (var i = 0; i < lines.length; i++) {
+            finalOutput += lines[i] + "\n";
+        }
+
+        return Response.success(finalOutput.trim());
     }
-
-    var intermediateContent = finalParts.join('\n\n');
-
-    // =======================================================================
-    // --- BƯỚC XỬ LÝ CUỐI CÙNG: TÁI TẠO CHUỖI ĐỂ ĐẢM BẢO TƯƠNG THÍCH ---
-    // Bắt chước chính xác cách script mẫu của Microsoft xử lý để app hiển thị đúng
-    // =======================================================================
-    var lines = intermediateContent.split('\n');
-    var finalOutput = "";
-    for (var i = 0; i < lines.length; i++) {
-        finalOutput += lines[i] + "\n";
-    }
-
-    // Trả về chuỗi đã được chuẩn hóa và cắt bỏ khoảng trắng/dòng thừa ở cuối
-    return Response.success(finalOutput.trim());
 }
