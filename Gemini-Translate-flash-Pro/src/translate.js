@@ -12,7 +12,7 @@ function callGeminiAPI(text, prompt, apiKey) {
     var url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=" + apiKey;
     var body = {
         "contents": [{ "parts": [{ "text": full_prompt }] }],
-        "generationConfig": { "temperature": 0.85, "topP": 0.9, "maxOutputTokens": 65536 },
+        "generationConfig": { "temperature": 0.85, "topP": 0.95, "maxOutputTokens": 65536 },
         "safetySettings": [
             { "category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE" },
             { "category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE" },
