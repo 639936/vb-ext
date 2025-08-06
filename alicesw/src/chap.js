@@ -39,6 +39,6 @@ function execute(url) {
         return Response.success(htm);
     } else {
         // Nếu sau 10 lần thử vẫn không thành công, trả về lỗi
-        return Response.success(url);
+        return Response.success(doc);
     }
 }
