@@ -236,7 +236,7 @@
     {
       "name": "Gemini Translate flash Pro",
       "author": "369",
-      "version": 12,
+      "version": 13,
       "source": "https://generativelanguage.googleapis.com",
       "path": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-Translate-flash-Pro/plugin.zip",
       "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-Translate-flash-Pro/icon.png",

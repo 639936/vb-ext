@@ -17082,7 +17082,7 @@ var hanVietMap = {
 '䲹': 'phi',
 '殅': 'sinh',
 '煟': 'vị',
-'鮸': 'miễn',
+'鮸': 'miễn'
 };
 function phienAmToHanViet(text) {
     if (!text) return "";

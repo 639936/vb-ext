@@ -91,7 +91,7 @@ function execute(text, from, to) {
     }
     if (!text || text.trim() === '') { return Response.success("?"); }
 
-    var selectedPrompt = prompts[to] || prompts["default"];
+    var selectedPrompt = prompts[to] || prompts["vi"];
     var processedText;
     var isPinyinRoute = false;
 
@@ -115,10 +115,11 @@ function execute(text, from, to) {
     if (processedText.length < 200) {
         // --- LỘ TRÌNH NHANH: CHO VĂN BẢN NGẮN ---
         console.log("Phát hiện văn bản ngắn (< 200 ký tự). Sử dụng prompt đơn giản.");
-        var languageMap = { 'zh': 'Chinese', 'en': 'English', 'vi': 'Vietnamese', 'vi_vietlai': 'Vietnamese', 'vi_sac': 'Vietnamese' };
-        var toLang = languageMap[to] || to;
+        var languageMap = { 'zh': 'Chinese', 'en': 'English', 'vi': 'Vietnamese' };
+        var toLang = languageMap[to] || "Vietnamese";
         // Prompt này không yêu cầu AI phải "dịch từ" ngôn ngữ nào, vì đầu vào có thể là Hán Việt hoặc chữ Hán gốc
-        var simplePrompt = "Translate the following text into " + toLang + " in an easy-to-understand and accurate manner. [FORMATTING CONSTRAINT]: You MUST return only the translated text. DO NOT include explanations, summaries, or markdown formatting (like ```).";
+        var simplePrompt = "Translate the following text into " + toLang + " in an easy-to-understand and accurate manner./n " + "[INTERPRET RATHER THAN DIRECT TRANSLATE]: This is the most important rule. **STRICTLY PROHIBITED to translate word-for-word.** You must **read to understand the intention, emotion, and imagery** that the phrase wants to convey, then express it again in **the most equivalent and easily understandable  " + toLang + " phrases./n" + " [OUTPUT LANGUAGE]: MUST BE " + toLang + ".[FORMATTING CONSTRAINT]: You MUST return only the translated text. DO NOT include explanations, summaries, or markdown formatting (like ```).";
+        console.log(simplePrompt);
 
         // Dùng `translateSingleChunk` vẫn tốt hơn vì nó có thể xoay vòng key nếu cần
         var result = translateSingleChunk(processedText, simplePrompt, isPinyinRoute); 
