@@ -96,7 +96,7 @@ function execute(text, from, to) {
     var isPinyinRoute = false;
 
     // --- BƯỚC 1: TIỀN XỬ LÝ (QUYẾT ĐỊNH PHIÊN ÂM) ---
-    if (to === 'vi' || to === 'vi_sac') {
+    if (to === 'vi' || to === 'vi_sac' || to === 'vi_NameEng') {
         isPinyinRoute = true;
         try {
             load("phienam.js");
