@@ -83,9 +83,11 @@ function baiduDetectLanguage(text) {
     var response = fetch('https://fanyi.baidu.com/langdetect', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Content-Type': 'application/json',
         },
-        body: "query=" + encodeURIComponent(sampleText),
+        body: {
+            "query": sampleText
+        },
     });
     if (response.ok) {
         try {
