@@ -2,7 +2,7 @@
 load("language_list.js"); 
 load("apikey.js");
 load("prompt.js");
-load("Baidutranslate.js");
+load("baidutranslate.js");
 
 var currentKeyIndex = 0;
 
