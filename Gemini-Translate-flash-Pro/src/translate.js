@@ -1,4 +1,3 @@
-// translate.js (Phiên bản "Tổng chỉ huy" - Xử lý hiển thị)
 load("language_list.js"); 
 load("apikey.js");
 load("prompt.js");
@@ -6,7 +5,6 @@ load("baidutranslate.js");
 
 var currentKeyIndex = 0;
 
-// ... (Toàn bộ logic của Gemini AI từ callGeminiAPI đến translateSingleChunk giữ nguyên) ...
 function callGeminiAPI(text, prompt, apiKey) {
     if (!apiKey) { return { status: "error", message: "API Key không hợp lệ." }; }
     if (!text || text.trim() === '') { return { status: "success", data: "" }; }
