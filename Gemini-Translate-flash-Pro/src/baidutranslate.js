@@ -4,7 +4,6 @@ var languageMap = {
     "en": "en",
     "vi": "vie"
 };
-
 function baiduTranslateContent(text, from, to, retryCount) {
     if (retryCount > 2) return null;
 
@@ -66,20 +65,35 @@ function baiduTranslateContent(text, from, to, retryCount) {
             }
         }
         
+        // --- THAY ĐỔI DUY NHẤT NẰM Ở ĐÂY ---
+        // Thay vì trả về trực tiếp, chúng ta thêm bước chuẩn hóa cuối cùng
+        // để đảm bảo ứng dụng hiển thị đúng.
         if (trans.trim() !== "") {
-            return Response.success(trans.trim());
+            var lines = trans.split('\n');
+            var finalOutput = "";
+            for (var k = 0; k < lines.length; k++) {
+                finalOutput += lines[k] + "\n";
+            }
+            return Response.success(finalOutput.trim());
         }
+        // Nếu không có nội dung dịch, sẽ đi tiếp và thử lại
     }
 
+    // Nếu fetch thất bại hoặc không tìm thấy nội dung dịch, thử lại
     return baiduTranslateContent(text, from, to, retryCount + 1);
 }
 
+/**
+ * Phát hiện ngôn ngữ của một đoạn văn bản ngắn.
+ * @param {string} text - Văn bản cần kiểm tra.
+ * @returns {string} - Mã ngôn ngữ được phát hiện.
+ */
 function baiduDetectLanguage(text) {
     var sampleText = text.substring(0, Math.min(200, text.length));
     var response = fetch('https://fanyi.baidu.com/langdetect', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Content-Type': 'application/x-www.form-urlencoded; charset=UTF-8',
         },
         body: "query=" + encodeURIComponent(sampleText),
     });
