@@ -1,7 +1,7 @@
 load("language_list.js"); 
 load("apikey.js");
 load("prompt.js");
-load("baidutranslate.js");
+load("edgetranslate.js");
 
 var currentKeyIndex = 0;
 
@@ -66,20 +66,18 @@ function execute(text, from, to) {
 
     // --- CỔNG KIỂM SOÁT ĐẦU TIÊN: KIỂM TRA ĐỘ DÀI ---
     if (text.length < 500) {
-        // --- LỘ TRÌNH 1 (NHANH & GỌN): DÙNG BAIDU TRANSLATE ---
-        console.log("Phát hiện văn bản ngắn (< 500 ký tự). Sử dụng Baidu Translate.");
-        var baiduToLang = to;
+        // --- LỘ TRÌNH 1 (NHANH & GỌN): DÙNG EDGE TRANSLATE ---
+        console.log("Phát hiện văn bản ngắn (< 500 ký tự). Sử dụng Edge Translate.");
+        var edgeToLang = to;
         if (to === 'vi_sac' || to === 'vi_vietlai' || to === 'vi_NameEng') {
-            baiduToLang = 'vi';
+            edgeToLang = 'vi';
         }
         
-        // --- THAY ĐỔI CÁCH XỬ LÝ KẾT QUẢ TỪ BAIDU ---
-        // 1. Nhận chuỗi văn bản thô hoặc null
-        var rawTranslatedText = baiduTranslateContent(text, from, baiduToLang, 0); 
+        // <-- THAY ĐỔI 2: Gọi hàm của Edge thay vì Baidu
+        var rawTranslatedText = edgeTranslateContent(text, from, edgeToLang, 0); 
 
-        // 2. Kiểm tra kết quả
         if (rawTranslatedText !== null) {
-            // 3. Nếu thành công, áp dụng logic định dạng hiển thị TẠI ĐÂY
+            // Định dạng hiển thị cho kết quả của Edge
             var lines = rawTranslatedText.split('\n');
             var finalOutput = "";
             for (var i = 0; i < lines.length; i++) {
@@ -87,8 +85,7 @@ function execute(text, from, to) {
             }
             return Response.success(finalOutput.trim());
         } else {
-            // 4. Nếu thất bại (null), trả về lỗi
-            return Response.error("Lỗi khi dịch bằng Baidu Translate (sau nhiều lần thử lại).");
+            return Response.error("Lỗi khi dịch bằng Edge Translate (sau nhiều lần thử lại).");
         }
     }
     
