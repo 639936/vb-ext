@@ -1,8 +1,7 @@
-// translate.js (Phiên bản Hybrid - Xử lý Mã Ngôn ngữ Ảo)
 load("language_list.js"); 
 load("apikey.js");
 load("prompt.js");
-load("baidutranslate.js"); // Tải logic của Baidu Translate
+load("baidutranslate.js");
 
 var currentKeyIndex = 0;
 
