@@ -214,43 +214,13 @@
     "locale": "vi_VN"
     },
     {
-      "name": "Gemini Translate flash 2.5",
+      "name": "Gemini Translate V4",
       "author": "369",
-      "version": 1,
+      "version": 40,
       "source": "https://generativelanguage.googleapis.com",
-      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-translate-flash-2-5/plugin.zip",
-      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-translate-flash-2-5/icon.png",
-      "description": "Dịch truyện bằng Google Studio",
-      "type": "translate"
-    },
-    {
-      "name": "Gemini Translate flash lite 2.5",
-      "author": "369",
-      "version": 5,
-      "source": "https://generativelanguage.googleapis.com",
-      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-translate-flash-lite-2-5/plugin.zip",
-      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-translate-flash-lite-2-5/icon.png",
-      "description": "Dịch truyện bằng Google Studio",
-      "type": "translate"
-    },
-    {
-      "name": "Gemini Translate flash Pro",
-      "author": "369",
-      "version": 31,
-      "source": "https://generativelanguage.googleapis.com",
-      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-Translate-flash-Pro/plugin.zip",
-      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-Translate-flash-Pro/icon.png",
+      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-Translate-flash-lite-v4/plugin.zip",
+      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-Translate-flash-lite-v4/icon.png",
       "description": "Dịch văn bản bằng Google Gemini API với nhiều key, prompt tùy chỉnh theo thể loại và xử lý lỗi an toàn thông minh.",
-      "type": "translate"
-    },
-    {
-      "name": "Gemini Novel Analyzer",
-      "author": "369",
-      "version": 10,
-      "source": "https://generativelanguage.googleapis.com",
-      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-Search-Name/plugin.zip",
-      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-Search-Name/icon.png",
-      "description": "Phân tích văn bản truyện (tên riêng, việt phrase, luật nhân) bằng Google Gemini API. Hỗ trợ nhiều API key.",
       "type": "translate"
     },
     {
