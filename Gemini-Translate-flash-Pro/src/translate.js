@@ -12,7 +12,7 @@ function callGeminiAPI(text, prompt, apiKey) {
     var url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=" + apiKey;
     var body = {
         "contents": [{ "parts": [{ "text": full_prompt }] }],
-        "generationConfig": { "temperature": 0.75, "topP": 0.95, "maxOutputTokens": 65536 },
+        "generationConfig": { "temperature": 0.85, "topP": 0.95, "maxOutputTokens": 65536 },
         "safetySettings": [ { "category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE" }, { "category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE" }, { "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE" }, { "category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE" } ]
     };
     try {
@@ -64,20 +64,14 @@ function translateSingleChunk(chunkText, prompt, isPinyinRoute) {
 function execute(text, from, to) {
     if (!text || text.trim() === '') { return Response.success("?"); }
 
-    // --- CỔNG KIỂM SOÁT ĐẦU TIÊN: KIỂM TRA ĐỘ DÀI ---
-    if (text.length < 500) {
-        // --- LỘ TRÌNH 1 (NHANH & GỌN): DÙNG EDGE TRANSLATE ---
-        console.log("Phát hiện văn bản ngắn (< 500 ký tự). Sử dụng Edge Translate.");
+    if (text.length < 200) {
+        console.log("Phát hiện văn bản ngắn (< 200 ký tự). Sử dụng Edge Translate.");
         var edgeToLang = to;
         if (to === 'vi_sac' || to === 'vi_vietlai' || to === 'vi_NameEng') {
             edgeToLang = 'vi';
         }
-        
-        // <-- THAY ĐỔI 2: Gọi hàm của Edge thay vì Baidu
         var rawTranslatedText = edgeTranslateContent(text, from, edgeToLang, 0); 
-
         if (rawTranslatedText !== null) {
-            // Định dạng hiển thị cho kết quả của Edge
             var lines = rawTranslatedText.split('\n');
             var finalOutput = "";
             for (var i = 0; i < lines.length; i++) {
@@ -89,7 +83,6 @@ function execute(text, from, to) {
         }
     }
     
-    // --- LỘ TRÌNH 2 (CHẤT LƯỢNG CAO): DÙNG GEMINI AI ---
     console.log("Văn bản dài. Sử dụng quy trình Gemini AI.");
     if (!apiKeys || apiKeys.length === 0 || (apiKeys[0].indexOf("YOUR_GEMINI_API_KEY") !== -1)) {
         return Response.error("Vui lòng cấu hình API key trong file apikey.js.");
@@ -105,21 +98,58 @@ function execute(text, from, to) {
         isPinyinRoute = false;
         processedText = text;
     }
+
     var textChunks = [];
-    var CHUNK_SIZE = 5000;
-    var MIN_LAST_CHUNK_SIZE = 1000;
+    var CHUNK_SIZE = 50000;
+    var MIN_LAST_CHUNK_SIZE = 10000;
+    
     if (processedText.length > CHUNK_SIZE) {
-        var tempChunks = [];
-        for (var i = 0; i < processedText.length; i += CHUNK_SIZE) { tempChunks.push(processedText.substring(i, i + CHUNK_SIZE)); }
-        if (tempChunks.length > 1 && tempChunks[tempChunks.length - 1].length < MIN_LAST_CHUNK_SIZE) {
-            var lastChunk = tempChunks.pop();
-            var secondLastChunk = tempChunks.pop();
-            tempChunks.push(secondLastChunk + lastChunk);
+        console.log("Văn bản quá dài, bắt đầu chia nhỏ thông minh theo đoạn văn...");
+        var paragraphs = processedText.split('\n');
+        var currentChunk = "";
+
+        for (var i = 0; i < paragraphs.length; i++) {
+            var paragraph = paragraphs[i];
+            if (paragraph.length > CHUNK_SIZE) {
+                if (currentChunk.length > 0) {
+                    textChunks.push(currentChunk);
+                    currentChunk = "";
+                }
+                textChunks.push(paragraph); 
+                continue;
+            }
+            if (currentChunk.length + paragraph.length + 1 > CHUNK_SIZE && currentChunk.length > 0) {
+                textChunks.push(currentChunk);
+                currentChunk = paragraph;
+            } else {
+                if (currentChunk.length > 0) { currentChunk += "\n" + paragraph; } 
+                else { currentChunk = paragraph; }
+            }
         }
-        textChunks = tempChunks;
+        if (currentChunk.length > 0) {
+            textChunks.push(currentChunk);
+        }
+        console.log("Đã chia văn bản thành " + textChunks.length + " phần.");
+
+        // =======================================================================
+        // --- LOGIC MỚI: GỘP PHẦN CUỐI NẾU QUÁ NHỎ ---
+        // =======================================================================
+        if (textChunks.length > 1 && textChunks[textChunks.length - 1].length < MIN_LAST_CHUNK_SIZE) {
+            console.log("Phần cuối quá nhỏ (" + textChunks[textChunks.length - 1].length + " ký tự), đang gộp vào phần trước đó.");
+            var lastChunk = textChunks.pop();
+            var secondLastChunk = textChunks.pop();
+            // Nối lại bằng một ký tự xuống dòng để duy trì cấu trúc đoạn
+            textChunks.push(secondLastChunk + "\n" + lastChunk);
+            console.log("Số phần sau khi gộp: " + textChunks.length);
+        }
+        // =======================================================================
+        // --- KẾT THÚC LOGIC GỘP ---
+        // =======================================================================
+
     } else {
         textChunks.push(processedText);
     }
+    
     var finalParts = [];
     for (var k = 0; k < textChunks.length; k++) {
         var chunkResult = translateSingleChunk(textChunks[k], selectedPrompt, isPinyinRoute);
@@ -132,7 +162,8 @@ function execute(text, from, to) {
             finalParts.push(errorString);
         }
     }
-    var finalContent = finalParts.join('\n\n');
+    
+    var finalContent = finalParts.join('\n');
     var lines = finalContent.split('\n');
     var finalOutput = "";
     for (var i = 0; i < lines.length; i++) {
