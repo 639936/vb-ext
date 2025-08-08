@@ -9,15 +9,10 @@ function callGeminiAPI(text, prompt, apiKey) {
     if (!apiKey) { return { status: "error", message: "API Key không hợp lệ." }; }
     if (!text || text.trim() === '') { return { status: "success", data: "" }; }
     var full_prompt = prompt + "\n\n---\n\n" + text;
-    // SỬA LỖI 1: Sửa 'lastest' thành 'latest'
     var url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=" + apiKey;
     var body = {
         "contents": [{ "parts": [{ "text": full_prompt }] }],
-        "generationConfig": { 
-            "temperature": 0.85, 
-            "topP": 0.95,
-            "maxOutputTokens": 65536
-        },
+        "generationConfig": { "temperature": 0.85, "topP": 0.95, "maxOutputTokens": 64000 },
         "safetySettings": [ { "category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE" }, { "category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE" }, { "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE" }, { "category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE" } ]
     };
     try {
@@ -34,8 +29,6 @@ function callGeminiAPI(text, prompt, apiKey) {
         return { status: "error", message: "Ngoại lệ Javascript: " + e.toString() };
     }
 }
-
-// Hàm này được giữ nguyên logic ban đầu, chỉ truyền apiKey vào
 function translateInChunksByLine(text, prompt, apiKey) {
     var lines = text.split('\n'); var translatedLines = []; var errorOccurred = false;
     for (var i = 0; i < lines.length; i++) {
@@ -49,21 +42,37 @@ function translateInChunksByLine(text, prompt, apiKey) {
     return { status: "success", data: translatedLines.join('\n') };
 }
 
-// Hàm này chỉ gọi callGeminiAPI và xử lý fallback
-function translateSingleChunk(chunkText, prompt, isPinyinRoute, apiKey) {
-    var result = callGeminiAPI(chunkText, prompt, apiKey);
-    if (result.status === "success") { return result; }
-    if (result.status === "blocked") {
-        if (isPinyinRoute) { return result; } 
-        else { return translateInChunksByLine(chunkText, prompt, apiKey); }
+function translateSingleChunk(chunkText, prompt, isPinyinRoute) {
+    var lastError = null;
+    var maxRetries = 2;
+
+    for (var attempt = 0; attempt <= maxRetries; attempt++) {
+        var apiKeyToUse = apiKeys[currentKeyIndex];
+        console.log("Đang thử dịch (lần " + (attempt + 1) + ") với Key Index " + currentKeyIndex);
+
+        var result = callGeminiAPI(chunkText, prompt, apiKeyToUse);
+        
+        if (result.status === "success" || result.status === "blocked") {
+            currentKeyIndex = (currentKeyIndex + 1) % apiKeys.length;
+            return result;
+        }
+
+        lastError = result; 
+        console.log("Lỗi với Key Index " + currentKeyIndex + ": " + result.message + ". Đang thử lại với key tiếp theo...");
+        currentKeyIndex = (currentKeyIndex + 1) % apiKeys.length;
+
+        if (attempt === maxRetries) {
+            break;
+        }
     }
-    return result; 
+    
+    console.log("Thất bại sau " + (maxRetries + 1) + " lần thử.");
+    return lastError; 
 }
 
 function execute(text, from, to) {
     if (!text || text.trim() === '') { return Response.success("?"); }
     if (text.length < 200) {
-        // ... (Logic Edge Translate giữ nguyên, không đổi) ...
         var edgeToLang = to;
         if (to === 'vi_sac' || to === 'vi_vietlai' || to === 'vi_NameEng') { edgeToLang = 'vi'; }
         var rawTranslatedText = edgeTranslateContent(text, from, edgeToLang, 0); 
@@ -72,20 +81,17 @@ function execute(text, from, to) {
             var finalOutput = "";
             for (var i = 0; i < lines.length; i++) { finalOutput += lines[i] + "\n"; }
             return Response.success(finalOutput.trim());
-        } else {
-            return Response.error("Lỗi Edge Translate.");
-        }
+        } else { return Response.error("Lỗi Edge Translate."); }
     }
     
-    console.log("Văn bản dài. Sử dụng quy trình Gemini AI tuần tự xoay vòng.");
-    if (!apiKeys || apiKeys.length === 0 || (apiKeys[0].indexOf("YOUR_GEMINI_API_KEY") !== -1)) {
-        return Response.error("Vui lòng cấu hình API key trong file apikey.js.");
+    console.log("Văn bản dài. Sử dụng quy trình Gemini AI với cơ chế retry.");
+    if (!apiKeys || apiKeys.length < 3) { // Cần ít nhất 3 key để cơ chế retry hoạt động tốt nhất
+        return Response.error("Vui lòng cấu hình ít nhất 3 API key cho cơ chế retry.");
     }
     var selectedPrompt = prompts[to] || prompts["vi"];
     var isPinyinRoute = (to === 'vi' || to === 'vi_sac' || to === 'vi_NameEng');
 
     var textChunks = [];
-    // SỬA LỖI 2: Giảm kích thước chunk để tránh timeout
     var CHUNK_SIZE = 8000;
     var MIN_LAST_CHUNK_SIZE = 1000;
     if (text.length > CHUNK_SIZE) {
@@ -107,9 +113,7 @@ function execute(text, from, to) {
     
     var finalParts = [];
     for (var k = 0; k < textChunks.length; k++) {
-        var apiKeyToUse = apiKeys[currentKeyIndex];
-        console.log("Đang dịch phần " + (k + 1) + "/" + textChunks.length + " với Key Index " + currentKeyIndex);
-
+        console.log("Bắt đầu dịch phần " + (k + 1) + "/" + textChunks.length + "...");
         var chunkToSend;
         if (isPinyinRoute) {
             try { load("phienam.js"); chunkToSend = phienAmToHanViet(textChunks[k]); } 
@@ -118,18 +122,16 @@ function execute(text, from, to) {
             chunkToSend = textChunks[k];
         }
 
-        var chunkResult = translateSingleChunk(chunkToSend, selectedPrompt, isPinyinRoute, apiKeyToUse);
+        var chunkResult = translateSingleChunk(chunkToSend, selectedPrompt, isPinyinRoute);
 
         if (chunkResult.status === 'success' || chunkResult.status === 'partial_error') {
             finalParts.push(chunkResult.data);
         } else {
-            var errorString = "\n\n<<<<<--- LỖI DỊCH PHẦN " + (k + 1) + " VỚI KEY " + currentKeyIndex + " --->>>>>\n" +
-                              "Lý do: " + chunkResult.message + "\n" +
-                              "<<<<<--- KẾT THÚC LỖI --->>>>>\n\n";
+            var errorString = "<<<<<--- LỖI DỊCH PHẦN " + (k + 1) + " (SAU KHI THỬ LẠI) --->>>>>" +
+                              "Lý do: " + chunkResult.message + "" +
+                              "<<<<<--- KẾT THÚC LỖI --->>>>>";
             finalParts.push(errorString);
         }
-        
-        currentKeyIndex = (currentKeyIndex + 1) % apiKeys.length;
     }
     
     var finalContent = finalParts.join('\n');
