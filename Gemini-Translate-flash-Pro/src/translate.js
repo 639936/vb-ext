@@ -60,7 +60,6 @@ function translateSingleChunk(chunkText, prompt, isPinyinRoute) {
     return { status: "error", message: "Tất cả các API key đều không hoạt động." };
 }
 
-// --- HÀM THỰC THI CHÍNH (HYBRID) ---
 function execute(text, from, to) {
     if (!text || text.trim() === '') { return Response.success("?"); }
 
@@ -100,8 +99,8 @@ function execute(text, from, to) {
     }
 
     var textChunks = [];
-    var CHUNK_SIZE = 50000;
-    var MIN_LAST_CHUNK_SIZE = 10000;
+    var CHUNK_SIZE = 8000;
+    var MIN_LAST_CHUNK_SIZE = 1000;
     
     if (processedText.length > CHUNK_SIZE) {
         console.log("Văn bản quá dài, bắt đầu chia nhỏ thông minh theo đoạn văn...");
@@ -131,20 +130,13 @@ function execute(text, from, to) {
         }
         console.log("Đã chia văn bản thành " + textChunks.length + " phần.");
 
-        // =======================================================================
-        // --- LOGIC MỚI: GỘP PHẦN CUỐI NẾU QUÁ NHỎ ---
-        // =======================================================================
         if (textChunks.length > 1 && textChunks[textChunks.length - 1].length < MIN_LAST_CHUNK_SIZE) {
             console.log("Phần cuối quá nhỏ (" + textChunks[textChunks.length - 1].length + " ký tự), đang gộp vào phần trước đó.");
             var lastChunk = textChunks.pop();
             var secondLastChunk = textChunks.pop();
-            // Nối lại bằng một ký tự xuống dòng để duy trì cấu trúc đoạn
             textChunks.push(secondLastChunk + "\n" + lastChunk);
             console.log("Số phần sau khi gộp: " + textChunks.length);
         }
-        // =======================================================================
-        // --- KẾT THÚC LOGIC GỘP ---
-        // =======================================================================
 
     } else {
         textChunks.push(processedText);
