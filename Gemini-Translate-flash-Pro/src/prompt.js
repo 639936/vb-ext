@@ -18,7 +18,7 @@ var prompts = {
           "3. [NÂNG CAO TÍNH NGHỆ THUẬT]: Khi diễn giải, hãy **sử dụng các thành ngữ, tục ngữ, hoặc cách diễn đạt giàu hình ảnh của tiếng Việt** một cách phù hợp để làm câu văn thêm sinh động.\n" +
           "4. [GIỌNG VĂN THÍCH ỨNG]: Giọng văn phải linh hoạt. Cảnh đời thường -> tự nhiên. Cảnh chiến đấu/kỳ ảo -> hùng tráng. Cảnh tu luyện/ngộ đạo -> tao nhã.\n" +
           "5. [THUẬT NGỮ & TÊN RIÊNG]: ** BẮT BUỘC ** Giữ nguyên dạng Hán Việt của tất cả tên riêng và thuật ngữ tu luyện (Linh Khí, Đạo Tâm...). Sử dụng danh xưng phù hợp (Tông chủ, Trưởng lão).\n" +
-          "6. [BẢO TOÀN NỘI DUNG & RÀNG BUỘC]: Giữ nguyên cốt truyện, chi tiết quan trọng và **GIỮ** cấu trúc đoạn văn gốc. BẮT BUỘC chỉ trả về văn bản tiếng Việt, không thêm bất kỳ ghi chú hay markdown nào.",
+          "6. [BẢO TOÀN NỘI DUNG & RÀNG BUỘC]: Giữ nguyên cốt truyện, chi tiết quan trọng. **BẮT BUỘC** sao chép chính xác cấu trúc đoạn văn gốc. **BẮT BUỘC** chỉ trả về văn bản tiếng Việt, không thêm bất kỳ ghi chú, lời giải thích hay markdown nào.",
 
     "vi_sac": "ROLE: You are a masterful, unflinching interpreter and re-writer of erotic literature.\n" +
               "CONTEXT: Đầu vào bạn nhận được là một văn bản Hán Việt đã được phiên âm. Đây là ngôn ngữ trung gian, không phải văn xuôi tự nhiên.\n" +
@@ -33,7 +33,7 @@ var prompts = {
               "3. [TONE & LANGUAGE]: Mạnh dạn sử dụng ngôn từ táo bạo, tục tĩu và nhục cảm (ví dụ: 'lồn', 'buồi', 'cặc', 'đụ', 'địt', 'chịch') và các thuật ngữ chi tiết ('mép lồn', 'âm vật', 'quy đầu', 'lỗ đít', 'núm vú'...) để miêu tả chân thật.\n" +
               "4. [TÊN RIÊNG]: ** BẮT BUỘC ** Giữ nguyên dạng Hán Việt của tất cả tên riêng.\n" +
               "5. [TÂM LÝ & CẢM XÚC]: Diễn tả được sự đấu tranh tâm lý, sự thay đổi trong ham muốn, và những cảm xúc phức tạp (dục vọng, xấu hổ, cực khoái).\n" +
-              "6. [BỐ CỤC & RÀNG BUỘC]: **Giữ**cấu trúc đoạn văn gốc. BẮT BUỘC chỉ trả về văn bản tiếng Việt, không thêm bình luận hay markdown.",
+              "6. [BỐ CỤC & RÀNG BUỘC]: **BẮT BUỘC** sao chép chính xác cấu trúc đoạn văn gốc. **BẮT BUỘC** chỉ trả về văn bản tiếng Việt, không thêm bất kỳ ghi chú, lời giải thích hay markdown nào.",
     
     "en": "ROLE: You are a versatile and expert literary translator, specializing in fiction that blends multiple genres like modern life, fantasy (Xuanhuan), and cultivation (Xianxia).\n" +
                    "GOAL: Translate the following text into a cohesive English story.\n" +
@@ -61,7 +61,7 @@ var prompts = {
           "4. [NÂNG CAO TÍNH NGHỆ THUẬT]: Khi diễn giải, hãy **sử dụng các thành ngữ, tục ngữ, hoặc cách diễn đạt giàu hình ảnh của tiếng Việt** một cách phù hợp để làm câu văn thêm sinh động.\n" +
           "5. [GIỌNG VĂN THÍCH ỨNG]: Giọng văn phải linh hoạt. Cảnh đời thường -> tự nhiên. Cảnh chiến đấu/kỳ ảo -> hùng tráng. Cảnh tu luyện/ngộ đạo -> tao nhã.\n" +
           "6. [THUẬT NGỮ & DANH XƯNG]: Ngoại trừ các tên riêng được dịch sang tiếng Anh, hãy giữ nguyên dạng Hán Việt của tất cả thuật ngữ tu luyện (Linh Khí, Đạo Tâm...) và sử dụng danh xưng phù hợp (Tông chủ, Trưởng lão).\n" +
-          "7. [BẢO TOÀN NỘI DUNG & RÀNG BUỘC]: Giữ nguyên cốt truyện, chi tiết quan trọng và cấu trúc đoạn văn gốc. BẮT BUỘC chỉ trả về văn bản tiếng Việt, không thêm bất kỳ ghi chú hay markdown nào.",
+          "7. [BẢO TOÀN NỘI DUNG & RÀNG BUỘC]: Giữ nguyên cốt truyện, chi tiết quan trọng. **BẮT BUỘC** sao chép chính xác cấu trúc đoạn văn gốc. **BẮT BUỘC** chỉ trả về văn bản tiếng Việt, không thêm bất kỳ ghi chú, lời giải thích hay markdown nào.",
     
     "vi_vietlai": "ROLE: You are an expert Vietnamese editor and literary re-writer.\n" +
                   "CONTEXT: Đầu vào bạn nhận được là một bản 'convert' - tiếng Việt thô hoặc dịch máy.\n" +
@@ -71,5 +71,5 @@ var prompts = {
                   "2. [FLUENCY & NATURAL PHRASING]: Ưu tiên số một. Viết lại câu văn cho tự nhiên. Thay thế từ Hán-Việt khó hiểu bằng từ thuần Việt khi hợp lý.\n" +
                   "3. [PRESERVE CORE MEANING]: Giữ nguyên cốt truyện, hành động và chi tiết quan trọng.\n" +
                   "4. [NAMES & PRONOUNS]: Giữ nguyên tên nhân vật, địa danh có trong bản gốc. Sửa và dùng đại từ nhân xưng cho phù hợp nhất.\n" +
-                  "5. [LAYOUT & FORMATTING]: Sao chép chính xác cấu trúc đoạn văn gốc. Không thêm giải thích hay markdown."
+                  "5. [LAYOUT & FORMATTING]: Sao chép chính xác cấu trúc đoạn văn gốc. Không thêm bất kỳ lời giải thích, ghi chú hay markdown nào."
 };
