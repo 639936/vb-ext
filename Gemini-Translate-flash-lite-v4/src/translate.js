@@ -3,13 +3,17 @@ load("apikey.js");
 load("prompt.js");
 load("edgetranslate.js");
 
+/*var testText = `ả`;
+var testFrom = `zh`;
+var testTo = `vi`;*/
+
 var currentKeyIndex = 0;
 
 function callGeminiAPI(text, prompt, apiKey) {
     if (!apiKey) { return { status: "error", message: "API Key không hợp lệ." }; }
     if (!text || text.trim() === '') { return { status: "success", data: "" }; }
     var full_prompt = prompt + "\n\n---\n\n" + text;
-    var url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=" + apiKey;
+    var url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key=" + apiKey;
     var body = {
         "contents": [{ "parts": [{ "text": full_prompt }] }],
         "generationConfig": { "temperature": 0.85, "topP": 0.95, "maxOutputTokens": 64000 },
@@ -72,6 +76,10 @@ function translateSingleChunk(chunkText, prompt, isPinyinRoute) {
 
 function execute(text, from, to) {
     if (!text || text.trim() === '') { return Response.success("?"); }
+    /*var text = testText;
+    var from = testFrom;
+    var to = testTo;*/
+
     if (text.length < 200) {
         var edgeToLang = to;
         if (to === 'vi_sac' || to === 'vi_vietlai' || to === 'vi_NameEng') { edgeToLang = 'vi'; }
