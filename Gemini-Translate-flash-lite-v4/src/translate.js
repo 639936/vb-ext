@@ -1,29 +1,9 @@
 load("language_list.js"); 
 load("apikey.js");
 load("prompt.js");
+load("phienam.js");
 load("edgetranslate.js");
-/*
-var testText = `Dòng 1: 楚晚宁是真的狗。
-Dòng 2: 他吸了一口，那浓精几乎是立刻就烫得他皱起了眉头。
-Dòng 3: 这是第一段。
 
-Dòng 4: 这是第二段，它比较短。
-Dòng 5: 这是第二段的另一句话。
-
-Dòng 6: 这是第三段。
-Dòng 7: 这是第四段。
-Dòng 8: 这是第五段。
-Dòng 9: 这是第六段。
-　　以及美丽娇俏的尤物堂姐
- 　　这里是蘑菇蛋，很高兴恢复更新，谢谢大家。
- 　　这篇给大家带来的是催眠之力系列，按照创作计划，催眠之力正传是以春节大章作为收尾，不过因为灵感因素，一直都未能创作完成，所以更新一篇外传，希望大家喜欢。
- 　　“祝愿堂哥新年快乐，恭喜发财！”
- 　　王光阳打开家门，看清来人面孔后抱拳恭喜，表现热情。
- 　　“嗯，同喜同喜。”
-`;
-var testFrom = `zh`;
-var testTo = `vi`;
-*/
 var currentKeyIndex = 0;
 
 function callGeminiAPI(text, prompt, apiKey) {
@@ -92,15 +72,11 @@ function translateSingleChunk(chunkText, prompt, isPinyinRoute) {
 }
 
 function execute(text, from, to) {
-    /*
-    var text = testText;
-    var from = testFrom;
-    var to = testTo;
-    */
+    
     if (!text || text.trim() === '') { return Response.success("?"); }
     
 
-    if (text.length < 200) {
+    if (text.length < 100) {
         var edgeToLang = to;
         if (to === 'vi_sac' || to === 'vi_vietlai' || to === 'vi_NameEng') { edgeToLang = 'vi'; }
         var rawTranslatedText = edgeTranslateContent(text, from, edgeToLang, 0); 
@@ -120,8 +96,8 @@ function execute(text, from, to) {
     var isPinyinRoute = (to === 'vi' || to === 'vi_sac' || to === 'vi_NameEng');
 
     var textChunks = [];
-    var CHUNK_SIZE = 4000;
-    var MIN_LAST_CHUNK_SIZE = 600;
+    var CHUNK_SIZE = 8000;
+    var MIN_LAST_CHUNK_SIZE = 1000;
     if (text.length > CHUNK_SIZE) {
         var paragraphs = text.split('\n'); var currentChunk = "";
         for (var i = 0; i < paragraphs.length; i++) {
@@ -144,7 +120,7 @@ function execute(text, from, to) {
         console.log("Bắt đầu dịch phần " + (k + 1) + "/" + textChunks.length + "...");
         var chunkToSend;
         if (isPinyinRoute) {
-            try { load("phienam.js"); chunkToSend = phienAmToHanViet(textChunks[k]); } 
+            try { chunkToSend = phienAmToHanViet(textChunks[k]); } 
             catch (e) { return Response.error("LỖI: Không thể tải file phienam.js."); }
         } else {
             chunkToSend = textChunks[k];
