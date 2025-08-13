@@ -103,7 +103,7 @@ function execute(text, from, to) {
     var isPinyinRoute = (to === 'vi' || to === 'vi_sac' || to === 'vi_NameEng');
 
     var textChunks = [];
-    var CHUNK_SIZE = 8000;
+    var CHUNK_SIZE = 5000;
     var MIN_LAST_CHUNK_SIZE = 1000;
     var paragraphs = lines;
     var currentChunk = "";
