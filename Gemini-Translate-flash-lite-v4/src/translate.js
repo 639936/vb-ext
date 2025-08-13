@@ -100,8 +100,8 @@ function execute(text, from, to) {
 
     var textChunks = [];
     // TINH CHỈNH: Dùng lại các hằng số an toàn hơn
-    var CHUNK_SIZE = 3000;
-    var MIN_LAST_CHUNK_SIZE = 500;
+    var CHUNK_SIZE = 8000;
+    var MIN_LAST_CHUNK_SIZE = 1000;
     if (text.length > CHUNK_SIZE) {
         var paragraphs = text.split('\n'); var currentChunk = "";
         for (var i = 0; i < paragraphs.length; i++) {
