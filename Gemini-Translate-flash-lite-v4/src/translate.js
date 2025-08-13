@@ -75,7 +75,7 @@ function execute(text, from, to) {
     }
 
     // Luồng 1 & 2: Dùng Edge cho văn bản ngắn hoặc danh sách chương
-    if (text.length < 200 || !isContent) {
+    if (text.length < 100 || !isContent) {
         console.log("Sử dụng Edge Translate.");
         var edgeToLang = (to === 'vi_sac' || to === 'vi_vietlai' || to === 'vi_NameEng') ? 'vi' : to;
         var rawTranslatedText = edgeTranslateContent(text, from, edgeToLang, 0);
@@ -103,8 +103,8 @@ function execute(text, from, to) {
     var isPinyinRoute = (to === 'vi' || to === 'vi_sac' || to === 'vi_NameEng');
 
     var textChunks = [];
-    var CHUNK_SIZE = 3000;
-    var MIN_LAST_CHUNK_SIZE = 500;
+    var CHUNK_SIZE = 7000;
+    var MIN_LAST_CHUNK_SIZE = 1000;
     var paragraphs = lines;
     var currentChunk = "";
 

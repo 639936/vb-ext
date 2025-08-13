@@ -216,7 +216,7 @@
     {
       "name": "Gemini Translate V4",
       "author": "369",
-      "version": 45,
+      "version": 46,
       "source": "https://generativelanguage.googleapis.com",
       "path": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-Translate-flash-lite-v4/plugin.zip",
       "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-Translate-flash-lite-v4/icon.png",
