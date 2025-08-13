@@ -9,7 +9,7 @@ function callGeminiAPI(text, prompt, apiKey) {
     if (!apiKey) { return { status: "error", message: "API Key không hợp lệ." }; }
     if (!text || text.trim() === '') { return { status: "success", data: "" }; }
     var full_prompt = prompt + "\n\n---\n\n" + text;
-    var url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key=" + apiKey;
+    var url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + apiKey;
     var body = {
         "contents": [{ "parts": [{ "text": full_prompt }] }],
         "generationConfig": { "temperature": 0.85, "topP": 0.95, "maxOutputTokens": 65536 },
