@@ -14,7 +14,7 @@ function callGeminiAPI(text, prompt, apiKey) {
     var url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + apiKey;
     var body = {
         "contents": [{ "parts": [{ "text": full_prompt }] }],
-        "generationConfig": { "temperature": 0.85, "topP": 0.95, "maxOutputTokens": 65536 },
+        "generationConfig": { "temperature": 1, "topP": 0.95, "maxOutputTokens": 65536 },
         "safetySettings": [ { "category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE" }, { "category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE" }, { "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE" }, { "category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE" } ]
     };
     try {
@@ -59,7 +59,7 @@ function translateInChunksByLine(text, prompt, apiKey) {
 
 function translateSingleChunk(chunkText, prompt, isPinyinRoute) {
     var lastError = null;
-    var maxRetries = 2;
+    var maxRetries = 1;
     for (var attempt = 0; attempt <= maxRetries; attempt++) {
         var apiKeyToUse = apiKeys[currentKeyIndex];
         console.log("Đang thử dịch (lần " + (attempt + 1) + ") với Key Index " + currentKeyIndex);
@@ -92,8 +92,8 @@ function execute(text, from, to) {
     }
     
     console.log("Văn bản dài. Sử dụng quy trình Gemini AI với cơ chế retry.");
-    if (!apiKeys || apiKeys.length < 3) {
-        return Response.error("Vui lòng cấu hình ít nhất 3 API key cho cơ chế retry.");
+    if (!apiKeys || apiKeys.length < 2) {
+        return Response.error("Vui lòng cấu hình ít nhất 2 API key cho cơ chế retry.");
     }
     var selectedPrompt = prompts[to] || prompts["vi"];
     var isPinyinRoute = (to === 'vi' || to === 'vi_sac' || to === 'vi_NameEng');
