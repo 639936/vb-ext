@@ -1,4 +1,3 @@
-// translate.js (Phiên bản đã sửa lỗi TypeError)
 load("language_list.js"); 
 load("apikey.js");
 load("prompt.js");
@@ -79,6 +78,8 @@ function translateSingleChunk(chunkText, prompt, isPinyinRoute) {
 
 function execute(text, from, to) {
     if (!text || text.trim() === '') { return Response.success("?"); }
+
+    // Xử lý với văn bản ngắn (Edge Translate)
     if (text.length < 100) {
         var edgeToLang = to;
         if (to === 'vi_sac' || to === 'vi_vietlai' || to === 'vi_NameEng') { edgeToLang = 'vi'; }
@@ -87,10 +88,17 @@ function execute(text, from, to) {
             var lines = rawTranslatedText.split('\n');
             var finalOutput = "";
             for (var i = 0; i < lines.length; i++) { finalOutput += lines[i] + "\n"; }
-            return Response.success(finalOutput.trim());
+            
+            // BẮT ĐẦU THAY ĐỔI 1
+            // Nối thêm dữ liệu gốc vào cuối kết quả để gỡ lỗi
+            var debugResult = finalOutput.trim() + "\n\n--- DEBUG: DỮ LIỆU GỐC NHẬN ĐƯỢC ---\n\n" + text;
+            return Response.success(debugResult);
+            // KẾT THÚC THAY ĐỔI 1
+
         } else { return Response.error("Lỗi Edge Translate."); }
     }
     
+    // Xử lý với văn bản dài (Gemini AI)
     console.log("Văn bản dài. Sử dụng quy trình Gemini AI với cơ chế retry.");
     if (!apiKeys || apiKeys.length < 2) {
         return Response.error("Vui lòng cấu hình ít nhất 2 API key cho cơ chế retry.");
@@ -99,7 +107,6 @@ function execute(text, from, to) {
     var isPinyinRoute = (to === 'vi' || to === 'vi_sac' || to === 'vi_NameEng');
 
     var textChunks = [];
-    // TINH CHỈNH: Dùng lại các hằng số an toàn hơn
     var CHUNK_SIZE = 8000;
     var MIN_LAST_CHUNK_SIZE = 1000;
     if (text.length > CHUNK_SIZE) {
@@ -146,5 +153,10 @@ function execute(text, from, to) {
     for (var i = 0; i < lines.length; i++) {
         finalOutput += lines[i] + "\n";
     }
-    return Response.success(finalOutput.trim());
+
+    // BẮT ĐẦU THAY ĐỔI 2
+    // Nối thêm dữ liệu gốc vào cuối kết quả để gỡ lỗi
+    var debugResult = finalOutput.trim() + "\n\n--- DEBUG: DỮ LIỆU GỐC NHẬN ĐƯỢC ---\n\n" + text;
+    return Response.success(debugResult);
+    // KẾT THÚC THAY ĐỔI 2
 }
