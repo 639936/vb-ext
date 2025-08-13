@@ -65,9 +65,9 @@ function execute(text, from, to) {
 
     var lines = text.split('\n');
     var isContent = false;
-    if (text.length >= 200) {
+    if (text.length >= 100) {
         for (var i = 0; i < lines.length; i++) {
-            if (lines[i].length >= 30) {
+            if (lines[i].length >= 50) {
                 isContent = true;
                 break;
             }
@@ -103,8 +103,8 @@ function execute(text, from, to) {
     var isPinyinRoute = (to === 'vi' || to === 'vi_sac' || to === 'vi_NameEng');
 
     var textChunks = [];
-    var CHUNK_SIZE = 4000;
-    var MIN_LAST_CHUNK_SIZE = 1000;
+    var CHUNK_SIZE = 3000;
+    var MIN_LAST_CHUNK_SIZE = 500;
     var paragraphs = lines;
     var currentChunk = "";
 
