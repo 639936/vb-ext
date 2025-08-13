@@ -1,7 +1,7 @@
+// translate.js (Phiên bản đã sửa lỗi TypeError)
 load("language_list.js"); 
 load("apikey.js");
 load("prompt.js");
-load("phienam.js");
 load("edgetranslate.js");
 
 var currentKeyIndex = 0;
@@ -10,7 +10,8 @@ function callGeminiAPI(text, prompt, apiKey) {
     if (!apiKey) { return { status: "error", message: "API Key không hợp lệ." }; }
     if (!text || text.trim() === '') { return { status: "success", data: "" }; }
     var full_prompt = prompt + "\n\n---\n\n" + text;
-    var url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=" + apiKey;
+    // SỬA LỖI 2: Quay lại dùng model flash để có tốc độ tốt nhất
+    var url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + apiKey;
     var body = {
         "contents": [{ "parts": [{ "text": full_prompt }] }],
         "generationConfig": { "temperature": 0.85, "topP": 0.95, "maxOutputTokens": 65536 },
@@ -20,8 +21,20 @@ function callGeminiAPI(text, prompt, apiKey) {
         var response = fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
         if (response.ok) {
             var result = JSON.parse(response.text());
-            if (result.candidates && result.candidates.length > 0 && result.candidates[0].content) { return { status: "success", data: result.candidates[0].content.parts[0].text.trim() }; }
-            if (result.promptFeedback && result.promptFeedback.blockReason) { return { status: "blocked", message: "Bị chặn bởi Safety Settings: " + result.promptFeedback.blockReason };}
+
+            // SỬA LỖI 1: Thêm lớp kiểm tra an toàn cho 'parts'
+            if (result.candidates && result.candidates.length > 0 && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts.length > 0) {
+                return { status: "success", data: result.candidates[0].content.parts[0].text.trim() };
+            }
+
+            // Nếu không có 'parts', rất có thể là đã bị chặn
+            if (result.promptFeedback && result.promptFeedback.blockReason) { 
+                return { status: "blocked", message: "Bị chặn bởi Safety Settings: " + result.promptFeedback.blockReason };
+            }
+            // Trường hợp bị chặn nhưng không có promptFeedback (hiếm gặp)
+            if (result.candidates && result.candidates.length > 0 && !result.candidates[0].content.parts) {
+                return { status: "blocked", message: "Bị chặn (không có nội dung trả về)." };
+            }
             return { status: "error", message: "API không trả về nội dung hợp lệ. Phản hồi: " + response.text() };
         } else {
             return { status: "key_error", message: "Lỗi HTTP " + response.status + " (API key hoặc tên model sai)." };
@@ -30,6 +43,7 @@ function callGeminiAPI(text, prompt, apiKey) {
         return { status: "error", message: "Ngoại lệ Javascript: " + e.toString() };
     }
 }
+
 function translateInChunksByLine(text, prompt, apiKey) {
     var lines = text.split('\n'); var translatedLines = []; var errorOccurred = false;
     for (var i = 0; i < lines.length; i++) {
@@ -46,36 +60,25 @@ function translateInChunksByLine(text, prompt, apiKey) {
 function translateSingleChunk(chunkText, prompt, isPinyinRoute) {
     var lastError = null;
     var maxRetries = 2;
-
     for (var attempt = 0; attempt <= maxRetries; attempt++) {
         var apiKeyToUse = apiKeys[currentKeyIndex];
         console.log("Đang thử dịch (lần " + (attempt + 1) + ") với Key Index " + currentKeyIndex);
-
         var result = callGeminiAPI(chunkText, prompt, apiKeyToUse);
-        
         if (result.status === "success" || result.status === "blocked") {
             currentKeyIndex = (currentKeyIndex + 1) % apiKeys.length;
             return result;
         }
-
         lastError = result; 
         console.log("Lỗi với Key Index " + currentKeyIndex + ": " + result.message + ". Đang thử lại với key tiếp theo...");
         currentKeyIndex = (currentKeyIndex + 1) % apiKeys.length;
-
-        if (attempt === maxRetries) {
-            break;
-        }
+        if (attempt === maxRetries) { break; }
     }
-    
     console.log("Thất bại sau " + (maxRetries + 1) + " lần thử.");
     return lastError; 
 }
 
 function execute(text, from, to) {
-    
     if (!text || text.trim() === '') { return Response.success("?"); }
-    
-
     if (text.length < 100) {
         var edgeToLang = to;
         if (to === 'vi_sac' || to === 'vi_vietlai' || to === 'vi_NameEng') { edgeToLang = 'vi'; }
@@ -89,13 +92,14 @@ function execute(text, from, to) {
     }
     
     console.log("Văn bản dài. Sử dụng quy trình Gemini AI với cơ chế retry.");
-    if (!apiKeys || apiKeys.length < 3) { // Cần ít nhất 3 key để cơ chế retry hoạt động tốt nhất
+    if (!apiKeys || apiKeys.length < 3) {
         return Response.error("Vui lòng cấu hình ít nhất 3 API key cho cơ chế retry.");
     }
     var selectedPrompt = prompts[to] || prompts["vi"];
     var isPinyinRoute = (to === 'vi' || to === 'vi_sac' || to === 'vi_NameEng');
 
     var textChunks = [];
+    // TINH CHỈNH: Dùng lại các hằng số an toàn hơn
     var CHUNK_SIZE = 8000;
     var MIN_LAST_CHUNK_SIZE = 1000;
     if (text.length > CHUNK_SIZE) {
@@ -120,14 +124,12 @@ function execute(text, from, to) {
         console.log("Bắt đầu dịch phần " + (k + 1) + "/" + textChunks.length + "...");
         var chunkToSend;
         if (isPinyinRoute) {
-            try { chunkToSend = phienAmToHanViet(textChunks[k]); } 
+            try { load("phienam.js"); chunkToSend = phienAmToHanViet(textChunks[k]); } 
             catch (e) { return Response.error("LỖI: Không thể tải file phienam.js."); }
         } else {
             chunkToSend = textChunks[k];
         }
-
         var chunkResult = translateSingleChunk(chunkToSend, selectedPrompt, isPinyinRoute);
-
         if (chunkResult.status === 'success' || chunkResult.status === 'partial_error') {
             finalParts.push(chunkResult.data);
         } else {
