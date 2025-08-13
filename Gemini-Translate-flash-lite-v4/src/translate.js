@@ -2,6 +2,7 @@ load("language_list.js");
 load("apikey.js");
 load("prompt.js");
 load("edgetranslate.js");
+load("phienam.js");
 
 var currentKeyIndex = 0;
 
@@ -9,7 +10,6 @@ function callGeminiAPI(text, prompt, apiKey) {
     if (!apiKey) { return { status: "error", message: "API Key không hợp lệ." }; }
     if (!text || text.trim() === '') { return { status: "success", data: "" }; }
     var full_prompt = prompt + "\n\n---\n\n" + text;
-    // SỬA LỖI 2: Quay lại dùng model flash để có tốc độ tốt nhất
     var url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + apiKey;
     var body = {
         "contents": [{ "parts": [{ "text": full_prompt }] }],
@@ -79,27 +79,32 @@ function translateSingleChunk(chunkText, prompt, isPinyinRoute) {
 function execute(text, from, to) {
     if (!text || text.trim() === '') { return Response.success("?"); }
 
-    // Xử lý với văn bản ngắn (Edge Translate)
-    if (text.length < 100) {
+    // --- BẮT ĐẦU LOGIC TỐI ƯU HÓA ---
+    var lines = text.split('\n');
+    var isChapterContent = false;
+    for (var i = 0; i < lines.length; i++) {
+        if (lines[i].length >= 25) {
+            isChapterContent = true;
+            break;
+        }
+    }
+
+    // Nếu văn bản rất ngắn HOẶC không phải nội dung chương (chỉ gồm các dòng ngắn), dùng Edge.
+    if (text.length < 100 || !isChapterContent) {
+        console.log("Văn bản ngắn hoặc chỉ gồm các dòng ngắn. Sử dụng Edge Translate.");
         var edgeToLang = to;
         if (to === 'vi_sac' || to === 'vi_vietlai' || to === 'vi_NameEng') { edgeToLang = 'vi'; }
         var rawTranslatedText = edgeTranslateContent(text, from, edgeToLang, 0); 
         if (rawTranslatedText !== null) {
-            var lines = rawTranslatedText.split('\n');
-            var finalOutput = "";
-            for (var i = 0; i < lines.length; i++) { finalOutput += lines[i] + "\n"; }
-            
-            // BẮT ĐẦU THAY ĐỔI 1
-            // Nối thêm dữ liệu gốc vào cuối kết quả để gỡ lỗi
-            var debugResult = finalOutput.trim() + "\n\n--- DEBUG: DỮ LIỆU GỐC NHẬN ĐƯỢC ---\n\n" + text;
-            return Response.success(debugResult);
-            // KẾT THÚC THAY ĐỔI 1
-
-        } else { return Response.error("Lỗi Edge Translate."); }
+            return Response.success(rawTranslatedText); // Trả về kết quả sạch
+        } else { 
+            return Response.error("Lỗi Edge Translate."); 
+        }
     }
+    // --- KẾT THÚC LOGIC TỐI ƯU HÓA ---
     
-    // Xử lý với văn bản dài (Gemini AI)
-    console.log("Văn bản dài. Sử dụng quy trình Gemini AI với cơ chế retry.");
+    // Nếu là nội dung chương, tiếp tục với Gemini AI
+    console.log("Văn bản dài và chứa các dòng nội dung. Sử dụng quy trình Gemini AI.");
     if (!apiKeys || apiKeys.length < 2) {
         return Response.error("Vui lòng cấu hình ít nhất 2 API key cho cơ chế retry.");
     }
@@ -131,7 +136,7 @@ function execute(text, from, to) {
         console.log("Bắt đầu dịch phần " + (k + 1) + "/" + textChunks.length + "...");
         var chunkToSend;
         if (isPinyinRoute) {
-            try { load("phienam.js"); chunkToSend = phienAmToHanViet(textChunks[k]); } 
+            try { chunkToSend = phienAmToHanViet(textChunks[k]); } 
             catch (e) { return Response.error("LỖI: Không thể tải file phienam.js."); }
         } else {
             chunkToSend = textChunks[k];
@@ -148,15 +153,5 @@ function execute(text, from, to) {
     }
     
     var finalContent = finalParts.join('\n');
-    var lines = finalContent.split('\n');
-    var finalOutput = "";
-    for (var i = 0; i < lines.length; i++) {
-        finalOutput += lines[i] + "\n";
-    }
-
-    // BẮT ĐẦU THAY ĐỔI 2
-    // Nối thêm dữ liệu gốc vào cuối kết quả để gỡ lỗi
-    var debugResult = finalOutput.trim() + "\n\n--- DEBUG: DỮ LIỆU GỐC NHẬN ĐƯỢC ---\n\n" + text;
-    return Response.success(debugResult);
-    // KẾT THÚC THAY ĐỔI 2
+    return Response.success(finalContent.trim()); // Trả về kết quả sạch
 }
