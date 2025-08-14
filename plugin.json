@@ -246,7 +246,7 @@
     {
       "name": "Gemini Edge Translate change Model",
       "author": "369",
-      "version": 7,
+      "version": 8,
       "source": "https://generativelanguage.googleapis.com",
       "path": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-Edge-translate-change-model/plugin.zip",
       "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-Edge-translate-change-model/icon.png",
@@ -256,7 +256,7 @@
     {
       "name": "Gemini Baidu Translate change Model",
       "author": "369",
-      "version": 3,
+      "version": 4,
       "source": "https://generativelanguage.googleapis.com",
       "path": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-Baidu-translate-change-model/plugin.zip",
       "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-Baidu-translate-change-model/icon.png",
