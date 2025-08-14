@@ -9,8 +9,7 @@ load("baidutranslate.js");
 var modelsucess = "";
 var models = [
     "gemini-2.5-flash",
-    "gemini-2.5-pro",
-    "gemini-2.5-flash-lite" 
+    "gemini-2.5-flash-lite",
 ];
 // === THAY ĐỔI 2: CẬP NHẬT HÀM callGeminiAPI ĐỂ NHẬN THAM SỐ MODEL ===
 function callGeminiAPI(text, prompt, apiKey, model) {
