@@ -3,15 +3,11 @@ load("apikey.js");
 load("prompt.js");
 load("edgetranslate.js");
 
-// Biến toàn cục để theo dõi index của API key đang được sử dụng
-var currentKeyIndex = 0;
+// Bỏ biến toàn cục currentKeyIndex. Logic sẽ được xử lý cục bộ.
 
 /**
  * Hàm gọi API Gemini, chịu trách nhiệm gửi yêu cầu và xử lý phản hồi.
- * @param {string} text - Nội dung cần dịch (đã qua tiền xử lý nếu cần).
- * @param {string} prompt - Prompt hướng dẫn cho AI.
- * @param {string} apiKey - API key để xác thực.
- * @returns {object} - Một đối tượng chứa trạng thái ('success', 'blocked', 'error') và dữ liệu/thông báo.
+ * (Hàm này không thay đổi)
  */
 function callGeminiAPI(text, prompt, apiKey) {
     if (!apiKey) {
@@ -22,17 +18,13 @@ function callGeminiAPI(text, prompt, apiKey) {
     }
 
     var full_prompt = prompt + "\n\n---\n\n" + text;
-    // Sử dụng model 1.5 Pro cho chất lượng tốt nhất.
     var model = "gemini-2.5-flash";
     var url = "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent?key=" + apiKey;
 
     var body = {
         "contents": [{ "parts": [{ "text": full_prompt }] }],
         "generationConfig": {
-            "temperature": 1.0,
-            "topP": 0.95,
-            "topK": 40,
-            "maxOutputTokens": 65536
+            "temperature": 1.0, "topP": 0.95, "topK": 40, "maxOutputTokens": 65536
         },
         "safetySettings": [
             { "category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE" },
@@ -66,44 +58,41 @@ function callGeminiAPI(text, prompt, apiKey) {
 }
 
 /**
- * Dịch một chunk văn bản, tự động thử lại với các API key khác nếu có lỗi.
+ * Dịch một chunk văn bản với cơ chế "Thử và Sai" (Try-Failover).
+ * Luôn bắt đầu với key đầu tiên, chỉ chuyển sang key tiếp theo nếu key hiện tại lỗi.
  * @param {string} chunkText - Phần văn bản cần dịch.
  * @param {string} prompt - Prompt hướng dẫn.
- * @returns {object} - Kết quả từ callGeminiAPI sau khi đã thử các key.
+ * @returns {object} - Kết quả từ callGeminiAPI.
  */
 function translateSingleChunkWithRetry(chunkText, prompt) {
     var lastError = null;
-    var totalKeys = apiKeys.length;
 
-    // Vòng lặp này sẽ thử tối đa 'totalKeys' lần, mỗi lần với một key khác nhau.
-    for (var i = 0; i < totalKeys; i++) {
-        var apiKeyToUse = apiKeys[currentKeyIndex];
-        console.log("Đang dịch chunk với Key Index " + currentKeyIndex);
+    // Vòng lặp sẽ thử lần lượt từng key trong danh sách cho CHUNK HIỆN TẠI.
+    for (var i = 0; i < apiKeys.length; i++) {
+        var apiKeyToUse = apiKeys[i];
+        console.log("Đang thử dịch chunk với Key Index " + i);
 
         var result = callGeminiAPI(chunkText, prompt, apiKeyToUse);
 
-        // Chuyển sang key tiếp theo cho lần gọi kế tiếp (dù thành công hay thất bại)
-        // để phân bổ đều các yêu cầu.
-        currentKeyIndex = (currentKeyIndex + 1) % totalKeys;
-
+        // Nếu dịch thành công (hoặc bị chặn), trả về kết quả ngay lập tức.
         if (result.status === "success" || result.status === "blocked") {
-            return result; // Trả về kết quả ngay khi thành công
+            console.log("Thành công với Key Index " + i);
+            return result; 
         }
         
-        lastError = result; // Lưu lại lỗi để trả về nếu tất cả các key đều thất bại
-        console.log("Lỗi với key vừa dùng: " + result.message + ". Sẽ thử key tiếp theo cho chunk sau.");
+        // Nếu lỗi, lưu lại lỗi và vòng lặp sẽ tự động thử key tiếp theo.
+        lastError = result; 
+        console.log("Lỗi với Key Index " + i + ": " + result.message + ". Đang thử key tiếp theo...");
     }
 
+    // Nếu vòng lặp kết thúc mà không thành công, có nghĩa là tất cả các key đều đã lỗi.
     console.log("Tất cả API keys đều không thành công cho chunk này.");
     return lastError;
 }
 
 /**
  * HÀM CHÍNH: Được Vbook gọi đầu tiên để bắt đầu quá trình dịch.
- * @param {string} text - Văn bản gốc từ Vbook.
- * @param {string} from - Ngôn ngữ nguồn (thường là 'zh').
- * @param {string} to - Ngôn ngữ đích được chọn.
- * @returns {Response} - Đối tượng Response chứa kết quả dịch hoặc thông báo lỗi.
+ * (Hàm này không thay đổi logic, chỉ gọi hàm retry đã được cải tiến)
  */
 function execute(text, from, to) {
     if (!text || text.trim() === '') {
@@ -111,19 +100,18 @@ function execute(text, from, to) {
     }
 
     // --- PHÂN LUỒNG THÔNG MINH ---
-    // Xác định xem văn bản có phải là nội dung chương hay chỉ là danh sách chương/văn bản ngắn.
     var lines = text.split('\n');
     var isContent = false;
     if (text.length >= 100) {
         for (var i = 0; i < lines.length; i++) {
-            if (lines[i].length >= 50) { // Nếu có ít nhất 1 dòng dài, coi là nội dung chương
+            if (lines[i].length >= 50) {
                 isContent = true;
                 break;
             }
         }
     }
 
-    // LUỒNG 1: DÙNG EDGE TRANSLATE CHO VĂN BẢN NGẮN / DANH SÁCH CHƯƠNG
+    // LUỒNG 1: DÙNG EDGE TRANSLATE
     if (text.length < 100 || !isContent) {
         console.log("Phát hiện văn bản ngắn hoặc danh sách chương. Sử dụng Edge Translate.");
         var edgeToLang = (to === 'vi_sac' || to === 'vi_vietlai' || to === 'vi_NameEng') ? 'vi' : to;
@@ -136,7 +124,7 @@ function execute(text, from, to) {
         }
     }
     
-    // LUỒNG 2: DÙNG GEMINI AI CHO NỘI DUNG CHƯƠNG
+    // LUỒNG 2: DÙNG GEMINI AI
     console.log("Phát hiện nội dung chương. Bắt đầu quy trình Gemini AI.");
     if (!apiKeys || apiKeys.length === 0) {
         return Response.error("LỖI: Vui lòng cấu hình ít nhất 1 API key trong file apikey.js.");
@@ -145,7 +133,7 @@ function execute(text, from, to) {
     var selectedPrompt = prompts[to] || prompts["vi"];
     var isPinyinRoute = (to === 'vi' || to === 'vi_sac' || to === 'vi_NameEng');
 
-    // Chia văn bản thành các phần nhỏ (chunks) để xử lý
+    // Chia văn bản thành các phần nhỏ (chunks)
     var textChunks = [];
     const CHUNK_SIZE = 8000;
     const MIN_LAST_CHUNK_SIZE = 1000;
@@ -153,12 +141,10 @@ function execute(text, from, to) {
 
     for (var i = 0; i < lines.length; i++) {
         var paragraph = lines[i];
-        // Xử lý đoạn văn quá dài
         if (currentChunk.length === 0 && paragraph.length >= CHUNK_SIZE) {
             textChunks.push(paragraph);
             continue;
         }
-        // Gộp các đoạn văn lại cho đến khi đạt CHUNK_SIZE
         if (currentChunk.length + paragraph.length + 1 > CHUNK_SIZE && currentChunk.length > 0) {
             textChunks.push(currentChunk);
             currentChunk = paragraph;
@@ -169,7 +155,6 @@ function execute(text, from, to) {
     if (currentChunk.length > 0) {
         textChunks.push(currentChunk);
     }
-    // Gộp chunk cuối nếu nó quá nhỏ để tối ưu và giữ ngữ cảnh
     if (textChunks.length > 1 && textChunks[textChunks.length - 1].length < MIN_LAST_CHUNK_SIZE) {
         var lastChunk = textChunks.pop();
         var secondLastChunk = textChunks.pop();
@@ -185,7 +170,6 @@ function execute(text, from, to) {
         console.log("Bắt đầu xử lý phần " + (k + 1) + "/" + textChunks.length + "...");
         var chunkToSend = textChunks[k];
 
-        // Tiền xử lý: Chuyển sang Hán Việt nếu cần
         if (isPinyinRoute) {
             try {
                 load("phienam.js");
@@ -195,12 +179,12 @@ function execute(text, from, to) {
             }
         }
 
+        // Gọi hàm retry đã được cải tiến
         var chunkResult = translateSingleChunkWithRetry(chunkToSend, selectedPrompt);
         
         if (chunkResult.status === 'success' || (chunkResult.status === 'blocked' && chunkResult.data)) {
             finalParts.push(chunkResult.data);
         } else {
-            // Chèn thông báo lỗi vào đúng vị trí của chunk bị lỗi
             var errorString = "<<<<<--- LỖI DỊCH PHẦN " + (k + 1) + " (ĐÃ THỬ HẾT CÁC KEY) --->>>>>\n" 
                             + "Lý do: " + chunkResult.message + "\n" 
                             + "<<<<<--- KẾT THÚC LỖI --->>>>>";
@@ -208,7 +192,6 @@ function execute(text, from, to) {
         }
     }
     
-    // Ghép các phần đã dịch lại và trả về kết quả cuối cùng
     var finalContent = finalParts.join('\n\n');
     return Response.success(finalContent.trim());
 }
