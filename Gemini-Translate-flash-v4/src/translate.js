@@ -33,8 +33,6 @@ function callGeminiAPI(text, prompt, apiKey) {
         if (response.ok) {
             var result = JSON.parse(response.text());
 
-            // === BẮT ĐẦU SỬA LỖI CÚ PHÁP ===
-            // Thay thế cú pháp `?.` bằng cách kiểm tra từng thuộc tính một cách tường minh.
             if (result.candidates && result.candidates.length > 0 
                 && result.candidates[0].content 
                 && result.candidates[0].content.parts 
@@ -43,16 +41,13 @@ function callGeminiAPI(text, prompt, apiKey) {
                 return { status: "success", data: result.candidates[0].content.parts[0].text.trim() };
             }
             
-            // Sửa lại cách kiểm tra blockReason
             if (result.promptFeedback && result.promptFeedback.blockReason) { 
                 return { status: "blocked", message: "Bị chặn bởi Safety Settings: " + result.promptFeedback.blockReason };
             }
             
-            // Sửa lại cách kiểm tra trường hợp bị chặn không có parts
             if (result.candidates && result.candidates.length > 0 && (!result.candidates[0].content || !result.candidates[0].content.parts)) {
                 return { status: "blocked", message: "Bị chặn (không có nội dung trả về)." };
             }
-            // === KẾT THÚC SỬA LỖI CÚ PHÁP ===
 
             return { status: "error", message: "API không trả về nội dung hợp lệ. Phản hồi: " + response.text() };
         } else {
@@ -89,16 +84,16 @@ function execute(text, from, to) {
 
     var lines = text.split('\n');
     var isContent = false;
-    if (text.length >= 100) {
+    if (text.length >= 10) {
         for (var i = 0; i < lines.length; i++) {
-            if (lines[i].length >= 50) {
+            if (lines[i].length >= 5) {
                 isContent = true;
                 break;
             }
         }
     }
 
-    if (text.length < 100 || !isContent) {
+    if (text.length < 10 || !isContent) {
         console.log("Phát hiện văn bản ngắn hoặc danh sách chương. Sử dụng Edge Translate.");
         var edgeToLang = (to === 'vi_sac' || to === 'vi_vietlai' || to === 'vi_NameEng') ? 'vi' : to;
         var rawTranslatedText = edgeTranslateContent(text, from, edgeToLang, 0);
