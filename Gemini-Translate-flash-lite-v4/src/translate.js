@@ -12,7 +12,6 @@ function callGeminiAPI(text, prompt, apiKey) {
     }
 
     var full_prompt = prompt + "\n\n---\n\n" + text;
-    // Ghi chú: Đã đổi tên model thành gemini-1.5-flash-latest để tương thích tốt hơn với các key mới
     var model = "gemini-2.5-flash";
     var url = "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent?key=" + apiKey;
 
@@ -58,7 +57,7 @@ function callGeminiAPI(text, prompt, apiKey) {
 
             return { status: "error", message: "API không trả về nội dung hợp lệ. Phản hồi: " + response.text() };
         } else {
-            return { status: "key_error", message: "Lỗi HTTP " + response.status + " (API key hoặc tên model sai)./n" + text };
+            return { status: "key_error", message: "Lỗi HTTP " + response.status + " (API key hoặc tên model sai)." + apiKey + body };
         }
     } catch (e) {
         return { status: "error", message: "Ngoại lệ Javascript: " + e.toString() };
