@@ -1,7 +1,7 @@
 load("language_list.js"); 
 load("apikey.js");
 load("prompt.js");
-load("edgetranslate.js");
+load("baidutranslate.js");
 
 // === THAY ĐỔI 1: KHAI BÁO DANH SÁCH MODELS ===
 // Khai báo danh sách các model, model đầu tiên sẽ được ưu tiên sử dụng.
@@ -122,14 +122,14 @@ function execute(text, from, to) {
     }
 
     if (text.length < 100 || !isContent) {
-        console.log("Phát hiện văn bản ngắn hoặc danh sách chương. Sử dụng Edge Translate.");
-        var edgeToLang = (to === 'vi_sac' || to === 'vi_vietlai' || to === 'vi_NameEng') ? 'vi' : to;
-        var rawTranslatedText = edgeTranslateContent(text, from, edgeToLang, 0);
+        console.log("Phát hiện văn bản ngắn hoặc danh sách chương. Sử dụng Baidu Translate.");
+        var baiduToLang = (to === 'vi_sac' || to === 'vi_vietlai' || to === 'vi_NameEng') ? 'vi' : to;
+        var rawTranslatedText = baiduTranslateContent(text, from, baiduToLang, 0);
         
         if (rawTranslatedText !== null) {
             return Response.success(rawTranslatedText);
         } else { 
-            return Response.error("Lỗi Edge Translate. Vui lòng thử lại."); 
+            return Response.error("Lỗi Baidu Translate. Vui lòng thử lại."); 
         }
     }
     
