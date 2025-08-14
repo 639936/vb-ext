@@ -83,6 +83,7 @@ function translateSingleChunkWithRetry(chunkText, prompt) {
 }
 
 function execute(text, from, to) {
+    text = testtext; from = testfrom; to = testto;
     if (!text || text.trim() === '') {
         return Response.success("?");
     }
@@ -161,7 +162,7 @@ function execute(text, from, to) {
                 return Response.error("LỖI: Không thể tải hoặc thực thi file phienam.js.");
             }
         }
-
+        
         var chunkResult = translateSingleChunkWithRetry(chunkToSend, selectedPrompt);
         
         if (chunkResult.status === 'success' || (chunkResult.status === 'blocked' && chunkResult.data)) {
