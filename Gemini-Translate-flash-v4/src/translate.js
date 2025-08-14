@@ -83,7 +83,6 @@ function translateSingleChunkWithRetry(chunkText, prompt) {
 }
 
 function execute(text, from, to) {
-    text = testtext; from = testfrom; to = testto;
     if (!text || text.trim() === '') {
         return Response.success("?");
     }
