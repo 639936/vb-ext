@@ -87,3 +87,25 @@
       "description": "Dịch văn bản bằng Google Gemini API với nhiều key, prompt tùy chỉnh theo thể loại và xử lý lỗi an toàn thông minh.",
       "type": "translate"
     },
+    {
+      "name": "Báo Tin Tức",
+      "author": "369",
+      "version": 1,
+      "source": "https://baotintuc.vn",
+      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/VN-NEWS/bao-tin-tuc/plugin.zip",
+      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/VN-NEWS/bao-tin-tuc/icon.png",
+      "description": "Đọc báo Tin Tức",
+      "locale": "vi_VN",
+      "type": "novel"
+    },
+    {
+      "name": "Báo Dân tộc & Miền núi",
+      "author": "369",
+      "version": 1,
+      "source": "https://dantocmiennui.baotintuc.vn",
+      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/VN-NEWS/dan-toc-mien-nui/plugin.zip",
+      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/VN-NEWS/dan-toc-mien-nui/icon.png",
+      "description": "Đọc báo Tin Tức",
+      "locale": "vi_VN",
+      "type": "novel"
+    }
