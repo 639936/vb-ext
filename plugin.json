@@ -214,12 +214,12 @@
     "locale": "vi_VN"
     },
     {
-      "name": "Gemini Translate V4",
+      "name": "Gemini Translate Flash Thinking V4",
       "author": "369",
-      "version": 57,
+      "version": 1,
       "source": "https://generativelanguage.googleapis.com",
-      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-Translate-flash-lite-v4/plugin.zip",
-      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-Translate-flash-lite-v4/icon.png",
+      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-Translate-flash-v4/plugin.zip",
+      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-Translate-flash-v4/icon.png",
       "description": "Dịch văn bản bằng Google Gemini API với nhiều key, prompt tùy chỉnh theo thể loại và xử lý lỗi an toàn thông minh.",
       "type": "translate"
     },

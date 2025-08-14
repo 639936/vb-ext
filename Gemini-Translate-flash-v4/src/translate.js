@@ -28,8 +28,7 @@ function callGeminiAPI(text, prompt, apiKey) {
         ]
     };
 
-    try {
-        var response = fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+        let response = fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
         
         if (response.ok) {
             var result = JSON.parse(response.text());
@@ -59,9 +58,6 @@ function callGeminiAPI(text, prompt, apiKey) {
         } else {
             return { status: "key_error", message: "Lỗi HTTP " + response.status + " (API key hoặc tên model sai)." + apiKey + model + full_prompt };
         }
-    } catch (e) {
-        return { status: "error", message: "Ngoại lệ Javascript: " + e.toString() };
-    }
 }
 
 function translateSingleChunkWithRetry(chunkText, prompt) {
