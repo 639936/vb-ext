@@ -116,7 +116,7 @@ function execute(text, from, to) {
     var isUsingBaidu = false;
 
     // 1. Giữ lại điều kiện kiểm tra độ dài tổng thể, vì nó rất nhanh và hiệu quả
-    if (text.length < 100) {
+    if (text.length < 800) {
         isUsingBaidu = true;
     } else {
         // 2. Tính toán tỷ lệ các dòng ngắn (< 50 ký tự)
@@ -126,7 +126,7 @@ function execute(text, from, to) {
         // Tránh chia cho 0 nếu văn bản trống (mặc dù đã kiểm tra ở đầu)
         if (totalLines > 0) {
             for (var i = 0; i < totalLines; i++) {
-                if (lines[i].length < 50) {
+                if (lines[i].length < 25) {
                     shortLinesCount++;
                 }
             }
