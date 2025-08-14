@@ -112,18 +112,34 @@ function execute(text, from, to) {
     }
 
     var lines = text.split('\n');
-    var isContent = false;
-    if (text.length >= 100) {
-        for (var i = 0; i < lines.length; i++) {
-            if (lines[i].length >= 50) {
-                isContent = true;
-                break;
+    // --- BẮT ĐẦU THAY ĐỔI LOGIC PHÁT HIỆN DANH SÁCH CHƯƠNG ---
+    var isUsingEdge = false;
+
+    // 1. Giữ lại điều kiện kiểm tra độ dài tổng thể, vì nó rất nhanh và hiệu quả
+    if (text.length < 100) {
+        isUsingEdge = true;
+    } else {
+        // 2. Tính toán tỷ lệ các dòng ngắn (< 50 ký tự)
+        var shortLinesCount = 0;
+        var totalLines = lines.length;
+
+        // Tránh chia cho 0 nếu văn bản trống (mặc dù đã kiểm tra ở đầu)
+        if (totalLines > 0) {
+            for (var i = 0; i < totalLines; i++) {
+                if (lines[i].length < 50) {
+                    shortLinesCount++;
+                }
+            }
+            // 3. Nếu tỷ lệ dòng ngắn lớn hơn 80%, coi đó là danh sách chương
+            if ((shortLinesCount / totalLines) > 0.8) {
+                isUsingEdge = true;
             }
         }
     }
+    // --- KẾT THÚC THAY ĐỔI LOGIC ---
 
-    if (text.length < 100 || !isContent) {
-        console.log("Phát hiện văn bản ngắn hoặc danh sách chương. Sử dụng Edge Translate.");
+    if (isUsingEdge) {
+        console.log("Phát hiện văn bản ngắn hoặc danh sách chương (tỷ lệ dòng ngắn > 80%). Sử dụng Edge Translate.");
         var edgeToLang = (to === 'vi_sac' || to === 'vi_vietlai' || to === 'vi_NameEng') ? 'vi' : to;
         var rawTranslatedText = edgeTranslateContent(text, from, edgeToLang, 0);
         
@@ -133,7 +149,6 @@ function execute(text, from, to) {
             return Response.error("Lỗi Edge Translate. Vui lòng thử lại."); 
         }
     }
-    
     console.log("Phát hiện nội dung chương. Bắt đầu quy trình Gemini AI.");
     if (!apiKeys || apiKeys.length === 0) {
         return Response.error("LỖI: Vui lòng cấu hình ít nhất 1 API key trong file apikey.js.");
