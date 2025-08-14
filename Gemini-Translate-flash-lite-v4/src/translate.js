@@ -57,7 +57,7 @@ function callGeminiAPI(text, prompt, apiKey) {
 
             return { status: "error", message: "API không trả về nội dung hợp lệ. Phản hồi: " + response.text() };
         } else {
-            return { status: "key_error", message: "Lỗi HTTP " + response.status + " (API key hoặc tên model sai)." + apiKey + body };
+            return { status: "key_error", message: "Lỗi HTTP " + response.status + " (API key hoặc tên model sai)." + apiKey + model + full_prompt };
         }
     } catch (e) {
         return { status: "error", message: "Ngoại lệ Javascript: " + e.toString() };
