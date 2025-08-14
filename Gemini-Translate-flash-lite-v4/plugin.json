@@ -2,7 +2,7 @@
   "metadata": {
     "name": "Gemini Translate V4",
     "author": "369",
-    "version": 51,
+    "version": 52,
     "source": "https://generativelanguage.googleapis.com",
     "description": "Dịch văn bản bằng Google Gemini API với nhiều key, prompt tùy chỉnh theo thể loại và xử lý lỗi an toàn thông minh.",
     "type": "translate"

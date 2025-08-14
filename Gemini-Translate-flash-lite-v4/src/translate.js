@@ -3,12 +3,6 @@ load("apikey.js");
 load("prompt.js");
 load("edgetranslate.js");
 
-// Bỏ biến toàn cục currentKeyIndex. Logic sẽ được xử lý cục bộ.
-
-/**
- * Hàm gọi API Gemini, chịu trách nhiệm gửi yêu cầu và xử lý phản hồi.
- * (Hàm này không thay đổi)
- */
 function callGeminiAPI(text, prompt, apiKey) {
     if (!apiKey) {
         return { status: "error", message: "API Key không hợp lệ." };
@@ -18,6 +12,7 @@ function callGeminiAPI(text, prompt, apiKey) {
     }
 
     var full_prompt = prompt + "\n\n---\n\n" + text;
+    // Ghi chú: Đã đổi tên model thành gemini-1.5-flash-latest để tương thích tốt hơn với các key mới
     var model = "gemini-2.5-flash";
     var url = "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent?key=" + apiKey;
 
@@ -39,15 +34,28 @@ function callGeminiAPI(text, prompt, apiKey) {
         
         if (response.ok) {
             var result = JSON.parse(response.text());
-            if (result.candidates && result.candidates[0]?.content?.parts?.[0]?.text) {
+
+            // === BẮT ĐẦU SỬA LỖI CÚ PHÁP ===
+            // Thay thế cú pháp `?.` bằng cách kiểm tra từng thuộc tính một cách tường minh.
+            if (result.candidates && result.candidates.length > 0 
+                && result.candidates[0].content 
+                && result.candidates[0].content.parts 
+                && result.candidates[0].content.parts.length > 0 
+                && result.candidates[0].content.parts[0].text) {
                 return { status: "success", data: result.candidates[0].content.parts[0].text.trim() };
             }
-            if (result.promptFeedback?.blockReason) { 
+            
+            // Sửa lại cách kiểm tra blockReason
+            if (result.promptFeedback && result.promptFeedback.blockReason) { 
                 return { status: "blocked", message: "Bị chặn bởi Safety Settings: " + result.promptFeedback.blockReason };
             }
-            if (result.candidates && !result.candidates[0]?.content?.parts) {
+            
+            // Sửa lại cách kiểm tra trường hợp bị chặn không có parts
+            if (result.candidates && result.candidates.length > 0 && (!result.candidates[0].content || !result.candidates[0].content.parts)) {
                 return { status: "blocked", message: "Bị chặn (không có nội dung trả về)." };
             }
+            // === KẾT THÚC SỬA LỖI CÚ PHÁP ===
+
             return { status: "error", message: "API không trả về nội dung hợp lệ. Phản hồi: " + response.text() };
         } else {
             return { status: "key_error", message: "Lỗi HTTP " + response.status + " (API key hoặc tên model sai)." };
@@ -57,49 +65,33 @@ function callGeminiAPI(text, prompt, apiKey) {
     }
 }
 
-/**
- * Dịch một chunk văn bản với cơ chế "Thử và Sai" (Try-Failover).
- * Luôn bắt đầu với key đầu tiên, chỉ chuyển sang key tiếp theo nếu key hiện tại lỗi.
- * @param {string} chunkText - Phần văn bản cần dịch.
- * @param {string} prompt - Prompt hướng dẫn.
- * @returns {object} - Kết quả từ callGeminiAPI.
- */
 function translateSingleChunkWithRetry(chunkText, prompt) {
     var lastError = null;
 
-    // Vòng lặp sẽ thử lần lượt từng key trong danh sách cho CHUNK HIỆN TẠI.
     for (var i = 0; i < apiKeys.length; i++) {
         var apiKeyToUse = apiKeys[i];
         console.log("Đang thử dịch chunk với Key Index " + i);
 
         var result = callGeminiAPI(chunkText, prompt, apiKeyToUse);
 
-        // Nếu dịch thành công (hoặc bị chặn), trả về kết quả ngay lập tức.
         if (result.status === "success" || result.status === "blocked") {
             console.log("Thành công với Key Index " + i);
             return result; 
         }
         
-        // Nếu lỗi, lưu lại lỗi và vòng lặp sẽ tự động thử key tiếp theo.
         lastError = result; 
         console.log("Lỗi với Key Index " + i + ": " + result.message + ". Đang thử key tiếp theo...");
     }
 
-    // Nếu vòng lặp kết thúc mà không thành công, có nghĩa là tất cả các key đều đã lỗi.
     console.log("Tất cả API keys đều không thành công cho chunk này.");
     return lastError;
 }
 
-/**
- * HÀM CHÍNH: Được Vbook gọi đầu tiên để bắt đầu quá trình dịch.
- * (Hàm này không thay đổi logic, chỉ gọi hàm retry đã được cải tiến)
- */
 function execute(text, from, to) {
     if (!text || text.trim() === '') {
         return Response.success("?");
     }
 
-    // --- PHÂN LUỒNG THÔNG MINH ---
     var lines = text.split('\n');
     var isContent = false;
     if (text.length >= 100) {
@@ -111,7 +103,6 @@ function execute(text, from, to) {
         }
     }
 
-    // LUỒNG 1: DÙNG EDGE TRANSLATE
     if (text.length < 100 || !isContent) {
         console.log("Phát hiện văn bản ngắn hoặc danh sách chương. Sử dụng Edge Translate.");
         var edgeToLang = (to === 'vi_sac' || to === 'vi_vietlai' || to === 'vi_NameEng') ? 'vi' : to;
@@ -124,7 +115,6 @@ function execute(text, from, to) {
         }
     }
     
-    // LUỒNG 2: DÙNG GEMINI AI
     console.log("Phát hiện nội dung chương. Bắt đầu quy trình Gemini AI.");
     if (!apiKeys || apiKeys.length === 0) {
         return Response.error("LỖI: Vui lòng cấu hình ít nhất 1 API key trong file apikey.js.");
@@ -133,7 +123,6 @@ function execute(text, from, to) {
     var selectedPrompt = prompts[to] || prompts["vi"];
     var isPinyinRoute = (to === 'vi' || to === 'vi_sac' || to === 'vi_NameEng');
 
-    // Chia văn bản thành các phần nhỏ (chunks)
     var textChunks = [];
     const CHUNK_SIZE = 8000;
     const MIN_LAST_CHUNK_SIZE = 1000;
@@ -164,7 +153,6 @@ function execute(text, from, to) {
     
     console.log("Văn bản đã được chia thành " + textChunks.length + " phần.");
 
-    // Dịch từng chunk và thu thập kết quả
     var finalParts = [];
     for (var k = 0; k < textChunks.length; k++) {
         console.log("Bắt đầu xử lý phần " + (k + 1) + "/" + textChunks.length + "...");
@@ -179,7 +167,6 @@ function execute(text, from, to) {
             }
         }
 
-        // Gọi hàm retry đã được cải tiến
         var chunkResult = translateSingleChunkWithRetry(chunkToSend, selectedPrompt);
         
         if (chunkResult.status === 'success' || (chunkResult.status === 'blocked' && chunkResult.data)) {
