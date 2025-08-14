@@ -138,17 +138,36 @@ function execute(text, from, to) {
     }
     // --- KẾT THÚC THAY ĐỔI LOGIC ---
 
+    // --- BẮT ĐẦU THAY ĐỔI: LOGIC CHIA NHỎ DANH SÁCH CHƯƠNG ---
     if (isUsingBaidu) {
-        console.log("Phát hiện văn bản ngắn hoặc danh sách chương (tỷ lệ dòng ngắn > 80%). Sử dụng Baidu Translate.");
-        var baiduToLang = (to === 'vi_sac' || to === 'vi_vietlai' || to === 'vi_NameEng') ? 'vi' : to;
-        var rawTranslatedText = baiduTranslateContent(text, from, baiduToLang, 0);
+        console.log("Phát hiện văn bản ngắn hoặc danh sách chương. Sử dụng Baidu Translate theo từng phần.");
         
-        if (rawTranslatedText !== null) {
-            return Response.success(rawTranslatedText);
-        } else { 
-            return Response.error("Lỗi Baidu Translate. Vui lòng thử lại."); 
+        const BAIDU_CHUNK_SIZE = 500; // Chia thành các phần, mỗi phần tối đa 500 dòng
+        var baiduTranslatedParts = [];
+        var baiduToLang = (to === 'vi_sac' || to === 'vi_vietlai' || to === 'vi_NameEng') ? 'vi' : to;
+        var totalChunks = Math.ceil(lines.length / BAIDU_CHUNK_SIZE);
+
+        for (var i = 0; i < lines.length; i += BAIDU_CHUNK_SIZE) {
+            console.log("Đang dịch phần " + (i / BAIDU_CHUNK_SIZE + 1) + "/" + totalChunks + " bằng Baidu...");
+            var currentChunkLines = lines.slice(i, i + BAIDU_CHUNK_SIZE);
+            var chunkText = currentChunkLines.join('\n');
+            
+            var translatedChunk = baiduTranslateContent(chunkText, from, baiduToLang, 0);
+            
+            // Nếu một phần dịch bị lỗi, dừng lại và báo lỗi ngay
+            if (translatedChunk === null) {
+                console.log("Lỗi khi dịch phần " + (i / BAIDU_CHUNK_SIZE + 1) + " bằng Baidu.");
+                return Response.error("Lỗi Baidu Translate. Vui lòng thử lại.");
+            }
+            
+            baiduTranslatedParts.push(translatedChunk);
         }
+        
+        // Gộp kết quả từ các phần đã dịch và trả về
+        var finalBaiduResult = baiduTranslatedParts.join('\n');
+        return Response.success(finalBaiduResult);
     }
+    // --- KẾT THÚC THAY ĐỔI ---
     
     console.log("Phát hiện nội dung chương. Bắt đầu quy trình Gemini AI.");
     if (!apiKeys || apiKeys.length === 0) {
