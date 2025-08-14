@@ -12,7 +12,7 @@ function callGeminiAPI(text, prompt, apiKey) {
     }
 
     var full_prompt = prompt + "\n\nDưới đây là text\n\n---\n\n" + text;
-    var model = "gemini-2.5-flash";
+    var model = "gemini-2.5-flash-lite";
     var url = "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent?key=" + apiKey;
 
     var body = {
@@ -51,7 +51,7 @@ function callGeminiAPI(text, prompt, apiKey) {
 
             return { status: "error", message: "API không trả về nội dung hợp lệ. Phản hồi: " + response.text() };
         } else {
-            return { status: "key_error", message: "Lỗi HTTP " + response.status + " (API key hoặc tên model sai)." + apiKey + model + full_prompt };
+            return { status: "key_error", message: "Lỗi HTTP " + response.status + " response not ok!" + apiKey + model + full_prompt };
         }
 }
 
@@ -84,16 +84,16 @@ function execute(text, from, to) {
 
     var lines = text.split('\n');
     var isContent = false;
-    if (text.length >= 10) {
+    if (text.length >= 100) {
         for (var i = 0; i < lines.length; i++) {
-            if (lines[i].length >= 5) {
+            if (lines[i].length >= 50) {
                 isContent = true;
                 break;
             }
         }
     }
 
-    if (text.length < 10 || !isContent) {
+    if (text.length < 100 || !isContent) {
         console.log("Phát hiện văn bản ngắn hoặc danh sách chương. Sử dụng Edge Translate.");
         var edgeToLang = (to === 'vi_sac' || to === 'vi_vietlai' || to === 'vi_NameEng') ? 'vi' : to;
         var rawTranslatedText = edgeTranslateContent(text, from, edgeToLang, 0);
