@@ -6,6 +6,7 @@ load("edgetranslate.js");
 // === THAY ĐỔI 1: KHAI BÁO DANH SÁCH MODELS ===
 // Khai báo danh sách các model, model đầu tiên sẽ được ưu tiên sử dụng.
 // Nếu model đầu tiên thất bại với tất cả các key, hệ thống sẽ chuyển sang model tiếp theo.
+var modelsucess = "";
 var models = [
     "gemini-2.5-flash",
     "gemini-2.5-pro",
@@ -19,6 +20,7 @@ function callGeminiAPI(text, prompt, apiKey, model) {
     if (!text || text.trim() === '') {
         return { status: "success", data: "" };
     }
+    modelsucess = model;
 
     var full_prompt = prompt + "\n\n---\n\n" + text;
     var url = "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent?key=" + apiKey;
@@ -198,6 +200,6 @@ function execute(text, from, to) {
         }
     }
     
-    var finalContent = finalParts.join('\n\n');
+    var finalContent = modelsucess + ". " + finalParts.join('\n\n');
     return Response.success(finalContent.trim());
 }
