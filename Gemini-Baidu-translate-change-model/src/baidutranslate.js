@@ -6,7 +6,7 @@ var languageMap = {
 };
 
 function baiduTranslateContent(text, from, to, retryCount) {
-    if (retryCount > 3) return null;
+    if (retryCount > 5) return null;
 
     if (!from || from === "auto") {
         from = baiduDetectLanguage(text);

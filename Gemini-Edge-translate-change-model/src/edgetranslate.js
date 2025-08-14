@@ -1,5 +1,5 @@
 function edgeTranslateContent(text, from, to, retryCount) {
-    if (retryCount > 2) return null;
+    if (retryCount > 5) return null;
 
     var edgeFrom = (from === 'zh') ? 'zh-Hans' : from;
 
