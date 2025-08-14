@@ -19,7 +19,7 @@ function callGeminiAPI(text, prompt, apiKey) {
     var body = {
         "contents": [{ "parts": [{ "text": full_prompt }] }],
         "generationConfig": {
-            "temperature": 1.0, "topP": 0.95, "topK": 40, "maxOutputTokens": 65536
+            "temperature": 1.0, "topP": 1.0, "topK": 40, "maxOutputTokens": 65536
         },
         "safetySettings": [
             { "category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE" },
@@ -58,7 +58,7 @@ function callGeminiAPI(text, prompt, apiKey) {
 
             return { status: "error", message: "API không trả về nội dung hợp lệ. Phản hồi: " + response.text() };
         } else {
-            return { status: "key_error", message: "Lỗi HTTP " + response.status + " (API key hoặc tên model sai)." };
+            return { status: "key_error", message: "Lỗi HTTP " + response.status + " (API key hoặc tên model sai)./n" + text };
         }
     } catch (e) {
         return { status: "error", message: "Ngoại lệ Javascript: " + e.toString() };
