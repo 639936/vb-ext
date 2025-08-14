@@ -11,7 +11,7 @@ function callGeminiAPI(text, prompt, apiKey) {
         return { status: "success", data: "" };
     }
 
-    var full_prompt = prompt + "\n\n---\n\n" + text;
+    var full_prompt = prompt + "\n\nDưới đây là text\n\n---\n\n" + text;
     var model = "gemini-2.5-flash";
     var url = "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent?key=" + apiKey;
 
