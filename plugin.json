@@ -214,6 +214,16 @@
     "locale": "vi_VN"
     },
     {
+      "name": "Baidu Translate",
+      "author": "369",
+      "version": 1,
+      "source": "https://fanyi.baidu.com",
+      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/baidu-translate/plugin.zip",
+      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/baidu-translate/icon.png",
+      "description": "noDes",
+      "type": "translate"
+    },
+    {
       "name": "Gemini Translate Flash Thinking V4",
       "author": "369",
       "version": 7,
