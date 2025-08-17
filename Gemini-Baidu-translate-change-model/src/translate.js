@@ -4,7 +4,6 @@ load("prompt.js");
 load("baidutranslate.js");
 var modelsucess = "";
 var models = [
-    "gemini-2.5-pro",
     "gemini-2.5-flash",
     "gemini-2.5-flash-lite"
 ];
@@ -165,7 +164,7 @@ function execute(text, from, to) {
         var selectedPrompt = prompts[to] || prompts["vi"];
         var isPinyinRoute = (to === 'vi' || to === 'vi_sac' || to === 'vi_NameEng');
         var textChunks = [];
-        const CHUNK_SIZE = 2500;
+        const CHUNK_SIZE = 8000;
         const MIN_LAST_CHUNK_SIZE = 1000;
         var currentChunk = "";
         for (var i = 0; i < lines.length; i++) {

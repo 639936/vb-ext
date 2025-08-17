@@ -7,7 +7,7 @@ var prompts = {
           "   - Dialogue (1st/2nd Person): MUST use 'ta' / 'ngươi'.\n" +
           "   - 3rd Person (absent): Infer gender from context. Default: 'hắn' (male), 'nàng' (female). Use 'gã', 'ả', 'lão' for tone.\n" +
           "   - Possessive: Use 'của mình' for self-action/body parts. EXAMPLE: 'Hai tay nâng lấy cặp vú của mình'.\n" +
-          "   - FORBIDDEN: 'tôi, bạn, anh, em, chị, mày, tao, người đàn ông, người phụ nữ'.\n" +
+          "   - FORBIDDEN: 'ta, ngươi, tôi, bạn, anh, em, chị, mày, tao'.\n" +
           "3. [KEEP SINO-VIETNAMESE]: Keep all proper nouns (names, places) and terms (techniques, realms, items). EXAMPLE: Vương Lâm, Đạo Tâm, Thanh Vân Kiếm.\n" +
           "4. [TONE]: Adapt to context: daily life (natural), combat (epic), cultivation (elegant).\n" +
           "5. [OUTPUT FORMAT]: Keep original paragraph structure. RETURN ONLY Vietnamese text. ABSOLUTELY NO notes, explanations, or markdown.",
