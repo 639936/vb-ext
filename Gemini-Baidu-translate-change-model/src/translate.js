@@ -74,14 +74,6 @@ function translateSingleChunkWithRetry(chunkText, prompt) {
                 console.log("Thành công với Model '" + modelToUse + "', Key Index " + i);
                 return result; 
             }
-
-            // Nếu gặp lỗi 504 (hoặc lỗi mạng nói chung), hãy đợi một chút trước khi thử lại
-            if (result.status === "key_error") {
-                try {
-                    // Thêm khoảng nghỉ 10 giây
-                    java.lang.Thread.sleep(40000); 
-                } catch (e) { /* Bỏ qua lỗi nếu có */ }
-            }
             
             lastError = result; 
             console.log("Lỗi với Model '" + modelToUse + "', Key Index " + i + ": " + result.message + ". Đang thử key tiếp theo...");
