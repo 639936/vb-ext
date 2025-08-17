@@ -79,7 +79,7 @@ function translateSingleChunkWithRetry(chunkText, prompt) {
             if (result.status === "key_error") {
                 try {
                     // Thêm khoảng nghỉ 10 giây
-                    java.lang.Thread.sleep(10000); 
+                    java.lang.Thread.sleep(40000); 
                 } catch (e) { /* Bỏ qua lỗi nếu có */ }
             }
             
@@ -173,7 +173,7 @@ function execute(text, from, to) {
         var selectedPrompt = prompts[to] || prompts["vi"];
         var isPinyinRoute = (to === 'vi' || to === 'vi_sac' || to === 'vi_NameEng');
         var textChunks = [];
-        const CHUNK_SIZE = 8000;
+        const CHUNK_SIZE = 2500;
         const MIN_LAST_CHUNK_SIZE = 1000;
         var currentChunk = "";
         for (var i = 0; i < lines.length; i++) {
