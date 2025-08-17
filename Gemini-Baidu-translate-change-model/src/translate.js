@@ -2,10 +2,8 @@ load("language_list.js");
 load("apikey.js");
 load("prompt.js");
 load("baidutranslate.js");
-
 var modelsucess = "";
 var models = [
-    "gemini-2.5-pro",
     "gemini-2.5-flash",
     "gemini-2.5-flash-lite"
 ];
@@ -60,27 +58,42 @@ function callGeminiAPI(text, prompt, apiKey, model) {
 
 function translateSingleChunkWithRetry(chunkText, prompt) {
     var lastError = null;
+
     for (var m = 0; m < models.length; m++) {
         var modelToUse = models[m];
         console.log("----- Bắt đầu thử với Model: " + modelToUse + " -----");
+
         for (var i = 0; i < apiKeys.length; i++) {
             var apiKeyToUse = apiKeys[i];
             console.log("Đang thử Model '" + modelToUse + "' với Key Index " + i);
+
             var result = callGeminiAPI(chunkText, prompt, apiKeyToUse, modelToUse);
+            
             if (result.status === "success") {
                 console.log("Thành công với Model '" + modelToUse + "', Key Index " + i);
                 return result; 
             }
+
+            // Nếu gặp lỗi 504 (hoặc lỗi mạng nói chung), hãy đợi một chút trước khi thử lại
+            if (result.status === "key_error") {
+                try {
+                    // Thêm khoảng nghỉ 10 giây
+                    java.lang.Thread.sleep(10000); 
+                } catch (e) { /* Bỏ qua lỗi nếu có */ }
+            }
+            
             lastError = result; 
             console.log("Lỗi với Model '" + modelToUse + "', Key Index " + i + ": " + result.message + ". Đang thử key tiếp theo...");
         }
+
         console.log("----- Tất cả các key đều thất bại cho Model: " + modelToUse + ". Chuyển sang model tiếp theo (nếu có). -----");
     }
+
     console.log("Tất cả API keys và Models đều không thành công cho chunk này.");
     return lastError;
 }
 
-function execute(text, from, to) {
+function execute(text, from, to) { 
     if (!text || text.trim() === '') {
         return Response.success("?");
     }
