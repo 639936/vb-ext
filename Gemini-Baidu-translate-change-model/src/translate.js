@@ -70,7 +70,6 @@ function translateChunkWithApiRetry(chunkText, prompt, modelToUse) {
     }
     return lastError; 
 }
-// ---------------------------------------------
 
 function execute(text, from, to) {
     if (!text || text.trim() === '') {
@@ -238,13 +237,14 @@ function execute(text, from, to) {
                 translationSuccessful = true;
                 break; 
             }
+        } // <--- DẤU NGOẶC KẾT THÚC VÒNG LẶP MODEL Ở ĐÂY
 
+        // Khối lệnh này giờ đã nằm ĐÚNG VỊ TRÍ, bên ngoài vòng lặp
         if (!translationSuccessful) {
             var errorString = "<<<<<--- LỖI DỊCH (ĐÃ THỬ HẾT CÁC KEY VÀ MODEL) --->>>>>\n" + "Lý do cuối cùng: " + lastErrorMessage + "\n" + "<<<<<--- KẾT THÚC LỖI --->>>>>";
             finalContent = errorString;
         }
     }
-    // -----------------------------------------------------------------
 
     if (cacheKey && finalContent && !finalContent.includes("LỖI DỊCH")) {
         if (cacheableModels.indexOf(modelsucess) > -1) {
