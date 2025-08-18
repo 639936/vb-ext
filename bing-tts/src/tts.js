@@ -37,7 +37,8 @@ function findBingData() {
 }
 
 function generateSSML(text, voiceLang, voiceName, voiceGender) {
-    return "<speak version='1.0' xml:lang='" + voiceLang + "'><voice xml:lang='" + voiceLang + "' xml:gender='" + voiceGender + "' name='" + voiceName + "'><prosody rate='-20.00%'>" + escapeXml(text) + "</prosody></voice></speak>"
+    // Tăng âm lượng lên 6 decibel
+    return "<speak version='1.0' xml:lang='" + voiceLang + "'><voice xml:lang='" + voiceLang + "' xml:gender='" + voiceGender + "' name='" + voiceName + "'><prosody rate='0%' volume='+6dB'>" + escapeXml(text) + "</prosody></voice></speak>"
 }
 
 function escapeXml(unsafe) {

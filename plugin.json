@@ -214,6 +214,16 @@
     "locale": "vi_VN"
     },
     {
+      "name": "Bing TTS",
+      "author": "369",
+      "version": 1,
+      "source": "https://www.google.com",
+      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/bing-tts/plugin.zip",
+      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/bing-tts/icon.png",
+      "description": "Nghe truyện bằng Bing TTS",
+      "type": "tts"
+    },
+    {
       "name": "Baidu Translate",
       "author": "369",
       "version": 1,
@@ -221,36 +231,6 @@
       "path": "https://raw.githubusercontent.com/639936/vb-ext/main/baidu-translate/plugin.zip",
       "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/baidu-translate/icon.png",
       "description": "noDes",
-      "type": "translate"
-    },
-    {
-      "name": "Gemini Translate Flash Thinking V4",
-      "author": "369",
-      "version": 7,
-      "source": "https://generativelanguage.googleapis.com",
-      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-Translate-flash-v4/plugin.zip",
-      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-Translate-flash-v4/icon.png",
-      "description": "Dịch văn bản bằng Google Gemini API với nhiều key, prompt tùy chỉnh theo thể loại và xử lý lỗi an toàn thông minh.",
-      "type": "translate"
-    },
-    {
-      "name": "Gemini Translate Lite V4",
-      "author": "369",
-      "version": 7,
-      "source": "https://generativelanguage.googleapis.com",
-      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-Translate-lite-v4/plugin.zip",
-      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-Translate-lite-v4/icon.png",
-      "description": "Dịch văn bản bằng Google Gemini API với nhiều key, prompt tùy chỉnh theo thể loại và xử lý lỗi an toàn thông minh.",
-      "type": "translate"
-    },
-    {
-      "name": "Gemini Translate flash Pro",
-      "author": "369",
-      "version": 36,
-      "source": "https://generativelanguage.googleapis.com",
-      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-Translate-flash-Pro/plugin.zip",
-      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-Translate-flash-Pro/icon.png",
-      "description": "Dịch văn bản bằng Google Gemini API với nhiều key, prompt tùy chỉnh theo thể loại và xử lý lỗi an toàn thông minh.",
       "type": "translate"
     },
     {
