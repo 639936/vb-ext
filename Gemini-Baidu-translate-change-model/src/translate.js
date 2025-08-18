@@ -185,9 +185,10 @@ function execute(text, from, to) {
             console.log("----- Bắt đầu thử dịch TOÀN BỘ VĂN BẢN với Model: " + modelToUse + " -----");
 
             var CHUNK_SIZE = 8000;
-            var MIN_LAST_CHUNK_SIZE = 1000;
+            var MIN_LAST_CHUNK_SIZE = 3000;
             if (modelToUse === "gemini-2.5-flash" || modelToUse === "gemini-2.5-pro") {
                 CHUNK_SIZE = 2000;
+                MIN_LAST_CHUNK_SIZE = 500;
             }
             console.log("Sử dụng CHUNK_SIZE: " + CHUNK_SIZE);
 
