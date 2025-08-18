@@ -202,8 +202,8 @@ function execute(text, from, to) {
             var CHUNK_SIZE = 9000;
             var MIN_LAST_CHUNK_SIZE = 3000;
             if (modelToUse === "gemini-2.5-flash" || modelToUse === "gemini-2.5-pro") {
-                CHUNK_SIZE = 2000;
-                MIN_LAST_CHUNK_SIZE = 600;
+                CHUNK_SIZE = 1500;
+                MIN_LAST_CHUNK_SIZE = 500;
             }
             console.log("Sử dụng CHUNK_SIZE: " + CHUNK_SIZE);
 
