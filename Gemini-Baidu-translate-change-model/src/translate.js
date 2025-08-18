@@ -9,7 +9,7 @@ var models = [
     "gemini-2.5-flash",
     "gemini-2.5-flash-lite"
 ];
-var cacheableModels = ["gemini-2.5-flash", "gemini-2.5-pro","gemini-2.5-flash-lite"];
+var cacheableModels = ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.5-flash-lite"];
 
 function generateFingerprintCacheKey(lines) {
     var keyParts = "";
@@ -57,53 +57,44 @@ function callGeminiAPI(text, prompt, apiKey, model) {
     } catch (e) { return { status: "error", message: "Ngoại lệ Javascript: " + e.toString() }; }
 }
 
-function translateSingleChunkWithRetry(chunkText, prompt) {
+function translateChunkWithApiRetry(chunkText, prompt, modelToUse) {
     var lastError = null;
-    for (var m = 0; m < models.length; m++) {
-        var modelToUse = models[m];
-        console.log("----- Bắt đầu thử với Model: " + modelToUse + " -----");
-        for (var i = 0; i < apiKeys.length; i++) {
-            var apiKeyToUse = apiKeys[i];
-            console.log("Đang thử Model '" + modelToUse + "' với Key Index " + i);
-            var result = callGeminiAPI(chunkText, prompt, apiKeyToUse, modelToUse);
-            if (result.status === "success") {
-                console.log("Thành công với Model '" + modelToUse + "', Key Index " + i);
-                return result; 
-            }
-            lastError = result; 
-            console.log("Lỗi với Model '" + modelToUse + "', Key Index " + i + ": " + result.message + ". Đang thử key tiếp theo...");
+    for (var i = 0; i < apiKeys.length; i++) {
+        var apiKeyToUse = apiKeys[i];
+        console.log("    -> Đang thử Key Index " + i + " cho model '" + modelToUse + "'...");
+        var result = callGeminiAPI(chunkText, prompt, apiKeyToUse, modelToUse);
+        if (result.status === "success") {
+            return result; 
         }
-        console.log("----- Tất cả các key đều thất bại cho Model: " + modelToUse + ". Chuyển sang model tiếp theo (nếu có). -----");
+        lastError = result; 
     }
-    console.log("Tất cả API keys và Models đều không thành công cho chunk này.");
-    return lastError;
+    return lastError; 
 }
+// ---------------------------------------------
 
 function execute(text, from, to) {
     if (!text || text.trim() === '') {
         return Response.success("?");
     }
 
-    // --- THAY ĐỔI 1: ĐẢO NGƯỢC THỨ TỰ MODEL NẾU FROM = VI ---
     if (from === 'vi') {
         models.reverse();
         console.log("Phát hiện from = 'vi'. Đảo ngược thứ tự ưu tiên model: " + JSON.stringify(models));
     }
-    // -----------------------------------------------------------
 
     var lines = text.split('\n');
 
     if (to === 'vi_xoacache') {
         console.log("Chế độ xóa cache được kích hoạt.");
-        var isChapterContent = text.length >= 800;
-        if (isChapterContent) {
-            var shortLinesCount = 0;
+        var isChapterContentForDelete = text.length >= 800;
+        if (isChapterContentForDelete) {
+            var shortLinesCountForDelete = 0;
             if (lines.length > 0) {
-                for (var i = 0; i < lines.length; i++) { if (lines[i].length < 25) { shortLinesCount++; } }
-                if ((shortLinesCount / lines.length) > 0.8) { isChapterContent = false; }
+                for (var i = 0; i < lines.length; i++) { if (lines[i].length < 25) { shortLinesCountForDelete++; } }
+                if ((shortLinesCountForDelete / lines.length) > 0.8) { isChapterContentForDelete = false; }
             }
         }
-        if (isChapterContent) {
+        if (isChapterContentForDelete) {
             var cacheKeyToDelete = generateFingerprintCacheKey(lines);
             if (localStorage.getItem(cacheKeyToDelete) !== null) {
                 localStorage.removeItem(cacheKeyToDelete);
@@ -132,6 +123,11 @@ function execute(text, from, to) {
         }
     }
 
+    if (to === 'vi_vietlai' && isUsingBaidu) {
+        console.log("Phát hiện 'vi_vietlai' cho văn bản ngắn/danh sách chương. Trả về văn bản gốc.");
+        return Response.success(text);
+    }
+
     var cacheKey = null;
     var finalContent = "";
 
@@ -152,28 +148,21 @@ function execute(text, from, to) {
     
     if (isUsingBaidu) {
         console.log("Phát hiện văn bản ngắn hoặc danh sách chương. Sử dụng Baidu Translate.");
-        
-        // --- THAY ĐỔI 2: GHI ĐÈ NGÔN NGỮ NGUỒN CHO BAIDU ---
-        var baiduFromLang = from; // Mặc định là ngôn ngữ gốc
+        var baiduFromLang = from;
         var vietnameseToLanguages = ['vi_tieuchuan', 'vi_sac', 'vi_vietlai', 'vi_NameEng'];
         if (from === 'vi' && vietnameseToLanguages.indexOf(to) > -1) {
-            baiduFromLang = 'zh'; // "Nói dối" Baidu rằng nguồn là tiếng Trung
+            baiduFromLang = 'zh';
             console.log("Ghi đè ngôn ngữ nguồn cho Baidu thành 'zh'.");
         }
-        // --------------------------------------------------------
-
         const BAIDU_CHUNK_SIZE = 500;
         var baiduTranslatedParts = [];
         var baiduToLang = (to === 'vi_sac' || to === 'vi_vietlai' || to === 'vi_NameEng' || to === 'vi_tieuchuan') ? 'vi' : to;
         var totalChunks = Math.ceil(lines.length / BAIDU_CHUNK_SIZE);
-
         for (var i = 0; i < lines.length; i += BAIDU_CHUNK_SIZE) {
             console.log("Đang dịch phần " + (i / BAIDU_CHUNK_SIZE + 1) + "/" + totalChunks + " bằng Baidu...");
             var currentChunkLines = lines.slice(i, i + BAIDU_CHUNK_SIZE);
             var chunkText = currentChunkLines.join('\n');
-            // Sử dụng baiduFromLang đã được xử lý
             var translatedChunk = baiduTranslateContent(chunkText, baiduFromLang, baiduToLang, 0); 
-            
             if (translatedChunk === null) {
                 console.log("Lỗi khi dịch phần " + (i / BAIDU_CHUNK_SIZE + 1) + " bằng Baidu.");
                 return Response.error("Lỗi Baidu Translate. Vui lòng thử lại.");
@@ -182,59 +171,82 @@ function execute(text, from, to) {
         }
         finalContent = baiduTranslatedParts.join('\n');
     } else {
-        console.log("Phát hiện nội dung chương. Bắt đầu quy trình Gemini AI.");
-        if (!apiKeys || apiKeys.length === 0) { return Response.error("LỖI: Vui lòng cấu hình ít nhất 1 API key trong file apikey.js."); }
-        if (!models || models.length === 0) { return Response.error("LỖI: Vui lòng cấu hình ít nhất 1 model trong file translate.js."); }
+        console.log("Phát hiện nội dung chương. Bắt đầu quy trình Gemini AI Fallback.");
+        if (!apiKeys || apiKeys.length === 0) { return Response.error("LỖI: Vui lòng cấu hình ít nhất 1 API key."); }
+        if (!models || models.length === 0) { return Response.error("LỖI: Vui lòng cấu hình ít nhất 1 model."); }
         
         var selectedPrompt = prompts[to] || prompts["vi"];
-        
-        // --- THAY ĐỔI 3: CẬP NHẬT LOGIC PHIÊN ÂM ---
         var pinyinLanguages = ['vi_tieuchuan', 'vi_sac', 'vi_NameEng'];
         var isPinyinRoute = pinyinLanguages.indexOf(to) > -1;
-        // ---------------------------------------------
-        
-        var textChunks = [];
-        const CHUNK_SIZE = 2000;
-        const MIN_LAST_CHUNK_SIZE = 1000;
-        var currentChunk = "";
-        for (var i = 0; i < lines.length; i++) {
-            var paragraph = lines[i];
-            if (currentChunk.length === 0 && paragraph.length >= CHUNK_SIZE) { textChunks.push(paragraph); continue; }
-            if (currentChunk.length + paragraph.length + 1 > CHUNK_SIZE && currentChunk.length > 0) { textChunks.push(currentChunk); currentChunk = paragraph; } 
-            else { currentChunk = currentChunk ? (currentChunk + "\n" + paragraph) : paragraph; }
-        }
-        if (currentChunk.length > 0) { textChunks.push(currentChunk); }
-        if (textChunks.length > 1 && textChunks[textChunks.length - 1].length < MIN_LAST_CHUNK_SIZE) {
-            var lastChunk = textChunks.pop();
-            var secondLastChunk = textChunks.pop();
-            textChunks.push(secondLastChunk + "\n" + lastChunk);
-            console.log("Chunk cuối quá nhỏ, đã gộp vào chunk trước đó.");
-        }
-        
-        console.log("Văn bản đã được chia thành " + textChunks.length + " phần.");
-        var finalParts = [];
-        for (var k = 0; k < textChunks.length; k++) {
-            console.log("Bắt đầu xử lý phần " + (k + 1) + "/" + textChunks.length + "...");
-            var chunkToSend = textChunks[k];
-            if (isPinyinRoute) {
-                console.log("Kích hoạt luồng phiên âm cho ngôn ngữ '" + to + "'.");
-                try {
-                    load("phienam.js");
-                    chunkToSend = phienAmToHanViet(chunkToSend);
-                } catch (e) { return Response.error("LỖI: Không thể tải hoặc thực thi file phienam.js."); }
-            }
-            var chunkResult = translateSingleChunkWithRetry(chunkToSend, selectedPrompt);
-            if (chunkResult.status === 'success' || (chunkResult.status === 'blocked' && chunkResult.data)) {
-                finalParts.push(chunkResult.data);
-            } else {
-                var errorString = "<<<<<--- LỖI DỊCH PHẦN " + (k + 1) + " (ĐÃ THỬ HẾT CÁC KEY VÀ MODEL) --->>>>>\n" + "Lý do: " + chunkResult.message + "\n" + "<<<<<--- KẾT THÚC LỖI --->>>>>";
-                finalParts.push(errorString);
-            }
-        }
-        finalContent = modelsucess + ". " + finalParts.join('\n\n');
-    }
+        var translationSuccessful = false;
+        var lastErrorMessage = "Không có model nào hoạt động.";
 
-    if (cacheKey && finalContent && !finalContent.includes("LỖI DỊCH PHẦN")) {
+        for (var m = 0; m < models.length; m++) {
+            var modelToUse = models[m];
+            console.log("----- Bắt đầu thử dịch TOÀN BỘ VĂN BẢN với Model: " + modelToUse + " -----");
+
+            var CHUNK_SIZE = 8000;
+            var MIN_LAST_CHUNK_SIZE = 1000;
+            if (modelToUse === "gemini-2.5-flash" || modelToUse === "gemini-2.5-pro") {
+                CHUNK_SIZE = 2000;
+            }
+            console.log("Sử dụng CHUNK_SIZE: " + CHUNK_SIZE);
+
+            var textChunks = [];
+            var currentChunk = "";
+            for (var i = 0; i < lines.length; i++) {
+                var paragraph = lines[i];
+                if (currentChunk.length === 0 && paragraph.length >= CHUNK_SIZE) { textChunks.push(paragraph); continue; }
+                if (currentChunk.length + paragraph.length + 1 > CHUNK_SIZE && currentChunk.length > 0) { textChunks.push(currentChunk); currentChunk = paragraph; } 
+                else { currentChunk = currentChunk ? (currentChunk + "\n" + paragraph) : paragraph; }
+            }
+            if (currentChunk.length > 0) { textChunks.push(currentChunk); }
+            if (textChunks.length > 1 && textChunks[textChunks.length - 1].length < MIN_LAST_CHUNK_SIZE) {
+                var lastChunk = textChunks.pop();
+                var secondLastChunk = textChunks.pop();
+                textChunks.push(secondLastChunk + "\n" + lastChunk);
+            }
+            console.log("Văn bản được chia thành " + textChunks.length + " phần cho model này.");
+
+            var finalParts = [];
+            var currentModelFailed = false;
+            for (var k = 0; k < textChunks.length; k++) {
+                console.log("  Dịch phần " + (k + 1) + "/" + textChunks.length + " với model '" + modelToUse + "'...");
+                var chunkToSend = textChunks[k];
+                if (isPinyinRoute) {
+                    try {
+                        load("phienam.js");
+                        chunkToSend = phienAmToHanViet(chunkToSend);
+                    } catch (e) { return Response.error("LỖI: Không thể tải file phienam.js."); }
+                }
+                
+                var chunkResult = translateChunkWithApiRetry(chunkToSend, selectedPrompt, modelToUse);
+                
+                if (chunkResult.status === 'success') {
+                    finalParts.push(chunkResult.data);
+                } else {
+                    console.log("Lỗi khi dịch phần " + (k + 1) + " với model '" + modelToUse + "'. Lý do: " + chunkResult.message);
+                    lastErrorMessage = chunkResult.message;
+                    currentModelFailed = true;
+                    break; 
+                }
+            }
+
+            if (!currentModelFailed) {
+                console.log("----- Dịch TOÀN BỘ VĂN BẢN thành công với Model: " + modelToUse + " -----");
+                finalContent = modelsucess + ". " + finalParts.join('\n\n');
+                translationSuccessful = true;
+                break; 
+            }
+
+        if (!translationSuccessful) {
+            var errorString = "<<<<<--- LỖI DỊCH (ĐÃ THỬ HẾT CÁC KEY VÀ MODEL) --->>>>>\n" + "Lý do cuối cùng: " + lastErrorMessage + "\n" + "<<<<<--- KẾT THÚC LỖI --->>>>>";
+            finalContent = errorString;
+        }
+    }
+    // -----------------------------------------------------------------
+
+    if (cacheKey && finalContent && !finalContent.includes("LỖI DỊCH")) {
         if (cacheableModels.indexOf(modelsucess) > -1) {
             try {
                 localStorage.setItem(cacheKey, finalContent.trim());
