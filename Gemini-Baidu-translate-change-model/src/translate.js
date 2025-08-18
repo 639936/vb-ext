@@ -98,7 +98,7 @@ function execute(text, from, to) {
             if (localStorage.getItem(cacheKeyToDelete) !== null) {
                 localStorage.removeItem(cacheKeyToDelete);
                 console.log("Đã xóa cache cho key: " + cacheKeyToDelete);
-                return Response.success("Đã xóa cache thành công.");
+                return Response.success("Đã xóa cache thành công." + text);
             } else {
                 console.log("Không tìm thấy cache để xóa cho key: " + cacheKeyToDelete);
                 return Response.success(text); 
@@ -116,7 +116,7 @@ function execute(text, from, to) {
     
     if (to === 'vi_vietlai') {
         console.log("Áp dụng quy tắc nhận diện danh sách chương đặc biệt cho vi_vietlai.");
-        lengthThreshold = 1000;
+        lengthThreshold = 1500;
         lineLengthThreshold = 50;
     }
 
