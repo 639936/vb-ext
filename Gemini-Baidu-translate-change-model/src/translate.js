@@ -2,33 +2,48 @@ load("language_list.js");
 load("apikey.js");
 load("prompt.js");
 load("baidutranslate.js");
+
 var modelsucess = "";
 var models = [
+    "gemini-2.5-pro",
     "gemini-2.5-flash",
     "gemini-2.5-flash-lite"
 ];
-
-// --- THAY ĐỔI 1: ĐỊNH NGHĨA CÁC MODEL ĐƯỢC PHÉP LƯU VÀO CACHE ---
 var cacheableModels = ["gemini-2.5-flash", "gemini-2.5-pro"];
-// --------------------------------------------------------------------
+
+// --- BẮT ĐẦU THAY ĐỔI 1: TẠO HÀM TRỢ GIÚP ĐỂ TẠO CACHE KEY ---
+/**
+ * Tạo ra một "dấu vân tay" cache key từ nội dung văn bản.
+ * @param {string[]} lines - Mảng các dòng của văn bản.
+ * @returns {string} Cache key duy nhất.
+ */
+function generateFingerprintCacheKey(lines) {
+    var keyParts = "";
+    // Lấy tối đa 5 dòng đầu tiên để tạo key
+    var linesForId = lines.slice(0, 5); 
+    for (var i = 0; i < linesForId.length; i++) {
+        var line = linesForId[i].trim();
+        // Chỉ xử lý những dòng đủ dài để tránh lỗi
+        if (line.length >= 6) { 
+            keyParts += line.substring(0, 3) + line.slice(-3);
+        } else {
+            keyParts += line; // Nếu dòng quá ngắn, lấy cả dòng
+        }
+    }
+    // Thêm tiền tố để tránh trùng lặp với các key khác trong localStorage
+    return "vbook_fp_cache_" + keyParts;
+}
+// --- KẾT THÚC THAY ĐỔI 1 ---
 
 function callGeminiAPI(text, prompt, apiKey, model) {
-    if (!apiKey) {
-        return { status: "error", message: "API Key không hợp lệ." };
-    }
-    if (!text || text.trim() === '') {
-        return { status: "success", data: "" };
-    }
+    if (!apiKey) { return { status: "error", message: "API Key không hợp lệ." }; }
+    if (!text || text.trim() === '') { return { status: "success", data: "" }; }
     modelsucess = model;
-
     var full_prompt = prompt + "\n\n---\n\n" + text;
     var url = "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent?key=" + apiKey;
-
     var body = {
         "contents": [{ "parts": [{ "text": full_prompt }] }],
-        "generationConfig": {
-            "temperature": 1.0, "topP": 1.0, "topK": 40, "maxOutputTokens": 65536
-        },
+        "generationConfig": { "temperature": 1.0, "topP": 1.0, "topK": 40, "maxOutputTokens": 65536 },
         "safetySettings": [
             { "category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE" },
             { "category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE" },
@@ -36,10 +51,8 @@ function callGeminiAPI(text, prompt, apiKey, model) {
             { "category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE" }
         ]
     };
-
     try {
         var response = fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
-        
         if (response.ok) {
             var result = JSON.parse(response.text());
             if (result.candidates && result.candidates.length > 0 && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts.length > 0 && result.candidates[0].content.parts[0].text) {
@@ -51,60 +64,80 @@ function callGeminiAPI(text, prompt, apiKey, model) {
         } else {
             return { status: "key_error", message: "Lỗi HTTP " + response.status + " (response not ok model '" + model + "' đã thử cuối cùng)." };
         }
-    } catch (e) {
-        return { status: "error", message: "Ngoại lệ Javascript: " + e.toString() };
-    }
+    } catch (e) { return { status: "error", message: "Ngoại lệ Javascript: " + e.toString() }; }
 }
 
 function translateSingleChunkWithRetry(chunkText, prompt) {
     var lastError = null;
-
     for (var m = 0; m < models.length; m++) {
         var modelToUse = models[m];
         console.log("----- Bắt đầu thử với Model: " + modelToUse + " -----");
-
         for (var i = 0; i < apiKeys.length; i++) {
             var apiKeyToUse = apiKeys[i];
             console.log("Đang thử Model '" + modelToUse + "' với Key Index " + i);
-
             var result = callGeminiAPI(chunkText, prompt, apiKeyToUse, modelToUse);
-            
             if (result.status === "success") {
                 console.log("Thành công với Model '" + modelToUse + "', Key Index " + i);
                 return result; 
             }
-            
             lastError = result; 
             console.log("Lỗi với Model '" + modelToUse + "', Key Index " + i + ": " + result.message + ". Đang thử key tiếp theo...");
         }
-
         console.log("----- Tất cả các key đều thất bại cho Model: " + modelToUse + ". Chuyển sang model tiếp theo (nếu có). -----");
     }
-
     console.log("Tất cả API keys và Models đều không thành công cho chunk này.");
     return lastError;
 }
 
-function execute(text, from, to) { 
+function execute(text, from, to) {
     if (!text || text.trim() === '') {
         return Response.success("?");
     }
 
     var lines = text.split('\n');
-    var isUsingBaidu = false;
 
+    // --- BẮT ĐẦU THAY ĐỔI 2: LOGIC ĐẶC BIỆT XỬ LÝ VIỆC XÓA CACHE ---
+    if (to === 'vi_xoacache') {
+        console.log("Chế độ xóa cache được kích hoạt.");
+        // Chỉ xóa cache cho nội dung chương, không xóa cho danh sách chương
+        var isChapterContent = text.length >= 800;
+        if (isChapterContent) {
+            var shortLinesCount = 0;
+            if (lines.length > 0) {
+                for (var i = 0; i < lines.length; i++) { if (lines[i].length < 25) { shortLinesCount++; } }
+                if ((shortLinesCount / lines.length) > 0.8) {
+                    isChapterContent = false;
+                }
+            }
+        }
+        
+        if (isChapterContent) {
+            var cacheKeyToDelete = generateFingerprintCacheKey(lines);
+            if (localStorage.getItem(cacheKeyToDelete) !== null) {
+                localStorage.removeItem(cacheKeyToDelete);
+                console.log("Đã xóa cache cho key: " + cacheKeyToDelete);
+                return Response.success("Đã xóa cache thành công.");
+            } else {
+                console.log("Không tìm thấy cache để xóa cho key: " + cacheKeyToDelete);
+                // Trả về văn bản gốc như yêu cầu
+                return Response.success(text); 
+            }
+        } else {
+             // Nếu là danh sách chương, không làm gì cả và trả về text gốc
+            console.log("Đây là danh sách chương, không thực hiện xóa cache.");
+            return Response.success(text);
+        }
+    }
+    // --- KẾT THÚC THAY ĐỔI 2 ---
+
+    var isUsingBaidu = false;
     if (text.length < 800) {
         isUsingBaidu = true;
     } else {
         var shortLinesCount = 0;
-        var totalLines = lines.length;
-        if (totalLines > 0) {
-            for (var i = 0; i < totalLines; i++) {
-                if (lines[i].length < 25) {
-                    shortLinesCount++;
-                }
-            }
-            if ((shortLinesCount / totalLines) > 0.8) {
+        if (lines.length > 0) {
+            for (var i = 0; i < lines.length; i++) { if (lines[i].length < 25) { shortLinesCount++; } }
+            if ((shortLinesCount / lines.length) > 0.8) {
                 isUsingBaidu = true;
             }
         }
@@ -115,17 +148,8 @@ function execute(text, from, to) {
 
     if (!isUsingBaidu) {
         try {
-            var keyParts = "";
-            var linesForId = lines.slice(0, 5);
-            for (var i = 0; i < linesForId.length; i++) {
-                var line = linesForId[i].trim();
-                if (line.length >= 6) {
-                    keyParts += line.substring(0, 3) + line.slice(-3);
-                } else {
-                    keyParts += line;
-                }
-            }
-            cacheKey = "vbook_fp_cache_" + keyParts;
+            // Sử dụng hàm trợ giúp để tạo key
+            cacheKey = generateFingerprintCacheKey(lines);
             var cachedTranslation = localStorage.getItem(cacheKey);
             if (cachedTranslation) {
                 console.log("Tìm thấy cache theo dấu vân tay. Key: " + cacheKey);
@@ -137,7 +161,8 @@ function execute(text, from, to) {
             cacheKey = null;
         }
     }
-
+    
+    // Phần dịch thuật giữ nguyên...
     if (isUsingBaidu) {
         console.log("Phát hiện văn bản ngắn hoặc danh sách chương. Sử dụng Baidu Translate theo từng phần.");
         const BAIDU_CHUNK_SIZE = 500;
@@ -164,7 +189,7 @@ function execute(text, from, to) {
         var selectedPrompt = prompts[to] || prompts["vi"];
         var isPinyinRoute = (to === 'vi' || to === 'vi_sac' || to === 'vi_NameEng');
         var textChunks = [];
-        const CHUNK_SIZE = 8000;
+        const CHUNK_SIZE = 2000;
         const MIN_LAST_CHUNK_SIZE = 1000;
         var currentChunk = "";
         for (var i = 0; i < lines.length; i++) {
@@ -203,10 +228,8 @@ function execute(text, from, to) {
         finalContent = modelsucess + ". " + finalParts.join('\n\n');
     }
 
-    // --- THAY ĐỔI 2: THÊM ĐIỀU KIỆN KIỂM TRA MODEL TRƯỚC KHI LƯU ---
+    // Phần lưu cache giữ nguyên...
     if (cacheKey && finalContent && !finalContent.includes("LỖI DỊCH PHẦN")) {
-        // Kiểm tra xem model thành công có nằm trong danh sách cacheableModels không
-        // Môi trường Rhino cũ có thể không có .includes(), dùng .indexOf() sẽ an toàn hơn
         if (cacheableModels.indexOf(modelsucess) > -1) {
             try {
                 localStorage.setItem(cacheKey, finalContent.trim());
@@ -218,7 +241,6 @@ function execute(text, from, to) {
             console.log("Bỏ qua lưu cache. Model '" + modelsucess + "' không nằm trong danh sách được phép cache.");
         }
     }
-    // --------------------------------------------------------------------
     
     return Response.success(finalContent.trim());
 }
