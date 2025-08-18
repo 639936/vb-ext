@@ -9,7 +9,7 @@ var models = [
     "gemini-2.5-flash",
     "gemini-2.5-flash-lite"
 ];
-var cacheableModels = ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.5-flash-lite"];
+var cacheableModels = ["gemini-2.5-flash", "gemini-2.5-pro","gemini-2.5-flash-lite"];
 
 function generateFingerprintCacheKey(lines) {
     var keyParts = "";
@@ -19,7 +19,7 @@ function generateFingerprintCacheKey(lines) {
         if (line.length >= 6) { 
             keyParts += line.substring(0, 3) + line.slice(-3);
         } else {
-            keyParts += line; 
+            keyParts += line;
         }
     }
     return "vbook_fp_cache_" + keyParts;
@@ -84,6 +84,13 @@ function execute(text, from, to) {
         return Response.success("?");
     }
 
+    // --- THAY ĐỔI 1: ĐẢO NGƯỢC THỨ TỰ MODEL NẾU FROM = VI ---
+    if (from === 'vi') {
+        models.reverse();
+        console.log("Phát hiện from = 'vi'. Đảo ngược thứ tự ưu tiên model: " + JSON.stringify(models));
+    }
+    // -----------------------------------------------------------
+
     var lines = text.split('\n');
 
     if (to === 'vi_xoacache') {
@@ -93,12 +100,9 @@ function execute(text, from, to) {
             var shortLinesCount = 0;
             if (lines.length > 0) {
                 for (var i = 0; i < lines.length; i++) { if (lines[i].length < 25) { shortLinesCount++; } }
-                if ((shortLinesCount / lines.length) > 0.8) {
-                    isChapterContent = false;
-                }
+                if ((shortLinesCount / lines.length) > 0.8) { isChapterContent = false; }
             }
         }
-        
         if (isChapterContent) {
             var cacheKeyToDelete = generateFingerprintCacheKey(lines);
             if (localStorage.getItem(cacheKeyToDelete) !== null) {
@@ -147,16 +151,29 @@ function execute(text, from, to) {
     }
     
     if (isUsingBaidu) {
-        console.log("Phát hiện văn bản ngắn hoặc danh sách chương. Sử dụng Baidu Translate theo từng phần.");
+        console.log("Phát hiện văn bản ngắn hoặc danh sách chương. Sử dụng Baidu Translate.");
+        
+        // --- THAY ĐỔI 2: GHI ĐÈ NGÔN NGỮ NGUỒN CHO BAIDU ---
+        var baiduFromLang = from; // Mặc định là ngôn ngữ gốc
+        var vietnameseToLanguages = ['vi_tieuchuan', 'vi_sac', 'vi_vietlai', 'vi_NameEng'];
+        if (from === 'vi' && vietnameseToLanguages.indexOf(to) > -1) {
+            baiduFromLang = 'zh'; // "Nói dối" Baidu rằng nguồn là tiếng Trung
+            console.log("Ghi đè ngôn ngữ nguồn cho Baidu thành 'zh'.");
+        }
+        // --------------------------------------------------------
+
         const BAIDU_CHUNK_SIZE = 500;
         var baiduTranslatedParts = [];
-        var baiduToLang = (to === 'vi_sac' || to === 'vi_vietlai' || to === 'vi_NameEng') ? 'vi' : to;
+        var baiduToLang = (to === 'vi_sac' || to === 'vi_vietlai' || to === 'vi_NameEng' || to === 'vi_tieuchuan') ? 'vi' : to;
         var totalChunks = Math.ceil(lines.length / BAIDU_CHUNK_SIZE);
+
         for (var i = 0; i < lines.length; i += BAIDU_CHUNK_SIZE) {
             console.log("Đang dịch phần " + (i / BAIDU_CHUNK_SIZE + 1) + "/" + totalChunks + " bằng Baidu...");
             var currentChunkLines = lines.slice(i, i + BAIDU_CHUNK_SIZE);
             var chunkText = currentChunkLines.join('\n');
-            var translatedChunk = baiduTranslateContent(chunkText, from, baiduToLang, 0);
+            // Sử dụng baiduFromLang đã được xử lý
+            var translatedChunk = baiduTranslateContent(chunkText, baiduFromLang, baiduToLang, 0); 
+            
             if (translatedChunk === null) {
                 console.log("Lỗi khi dịch phần " + (i / BAIDU_CHUNK_SIZE + 1) + " bằng Baidu.");
                 return Response.error("Lỗi Baidu Translate. Vui lòng thử lại.");
@@ -170,7 +187,12 @@ function execute(text, from, to) {
         if (!models || models.length === 0) { return Response.error("LỖI: Vui lòng cấu hình ít nhất 1 model trong file translate.js."); }
         
         var selectedPrompt = prompts[to] || prompts["vi"];
-        var isPinyinRoute = (to === 'vi' || to === 'vi_sac' || to === 'vi_NameEng');
+        
+        // --- THAY ĐỔI 3: CẬP NHẬT LOGIC PHIÊN ÂM ---
+        var pinyinLanguages = ['vi_tieuchuan', 'vi_sac', 'vi_NameEng'];
+        var isPinyinRoute = pinyinLanguages.indexOf(to) > -1;
+        // ---------------------------------------------
+        
         var textChunks = [];
         const CHUNK_SIZE = 2000;
         const MIN_LAST_CHUNK_SIZE = 1000;
@@ -195,6 +217,7 @@ function execute(text, from, to) {
             console.log("Bắt đầu xử lý phần " + (k + 1) + "/" + textChunks.length + "...");
             var chunkToSend = textChunks[k];
             if (isPinyinRoute) {
+                console.log("Kích hoạt luồng phiên âm cho ngôn ngữ '" + to + "'.");
                 try {
                     load("phienam.js");
                     chunkToSend = phienAmToHanViet(chunkToSend);
