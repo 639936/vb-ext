@@ -2,7 +2,7 @@
   "metadata": {
     "name": "Bing TTS",
     "author": "369",
-    "version": 4,
+    "version": 5,
     "source": "https://www.bing.com/translator",
     "description": "Nghe truyện bằng Bing TTS",
     "type": "tts"
