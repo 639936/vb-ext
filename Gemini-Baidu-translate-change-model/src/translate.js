@@ -9,31 +9,21 @@ var models = [
     "gemini-2.5-flash",
     "gemini-2.5-flash-lite"
 ];
-var cacheableModels = ["gemini-2.5-flash", "gemini-2.5-pro"];
+var cacheableModels = ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.5-flash-lite"];
 
-// --- BẮT ĐẦU THAY ĐỔI 1: TẠO HÀM TRỢ GIÚP ĐỂ TẠO CACHE KEY ---
-/**
- * Tạo ra một "dấu vân tay" cache key từ nội dung văn bản.
- * @param {string[]} lines - Mảng các dòng của văn bản.
- * @returns {string} Cache key duy nhất.
- */
 function generateFingerprintCacheKey(lines) {
     var keyParts = "";
-    // Lấy tối đa 5 dòng đầu tiên để tạo key
     var linesForId = lines.slice(0, 5); 
     for (var i = 0; i < linesForId.length; i++) {
         var line = linesForId[i].trim();
-        // Chỉ xử lý những dòng đủ dài để tránh lỗi
         if (line.length >= 6) { 
             keyParts += line.substring(0, 3) + line.slice(-3);
         } else {
-            keyParts += line; // Nếu dòng quá ngắn, lấy cả dòng
+            keyParts += line; 
         }
     }
-    // Thêm tiền tố để tránh trùng lặp với các key khác trong localStorage
     return "vbook_fp_cache_" + keyParts;
 }
-// --- KẾT THÚC THAY ĐỔI 1 ---
 
 function callGeminiAPI(text, prompt, apiKey, model) {
     if (!apiKey) { return { status: "error", message: "API Key không hợp lệ." }; }
@@ -96,10 +86,8 @@ function execute(text, from, to) {
 
     var lines = text.split('\n');
 
-    // --- BẮT ĐẦU THAY ĐỔI 2: LOGIC ĐẶC BIỆT XỬ LÝ VIỆC XÓA CACHE ---
     if (to === 'vi_xoacache') {
         console.log("Chế độ xóa cache được kích hoạt.");
-        // Chỉ xóa cache cho nội dung chương, không xóa cho danh sách chương
         var isChapterContent = text.length >= 800;
         if (isChapterContent) {
             var shortLinesCount = 0;
@@ -119,16 +107,13 @@ function execute(text, from, to) {
                 return Response.success("Đã xóa cache thành công.");
             } else {
                 console.log("Không tìm thấy cache để xóa cho key: " + cacheKeyToDelete);
-                // Trả về văn bản gốc như yêu cầu
                 return Response.success(text); 
             }
         } else {
-             // Nếu là danh sách chương, không làm gì cả và trả về text gốc
             console.log("Đây là danh sách chương, không thực hiện xóa cache.");
             return Response.success(text);
         }
     }
-    // --- KẾT THÚC THAY ĐỔI 2 ---
 
     var isUsingBaidu = false;
     if (text.length < 800) {
@@ -148,7 +133,6 @@ function execute(text, from, to) {
 
     if (!isUsingBaidu) {
         try {
-            // Sử dụng hàm trợ giúp để tạo key
             cacheKey = generateFingerprintCacheKey(lines);
             var cachedTranslation = localStorage.getItem(cacheKey);
             if (cachedTranslation) {
@@ -162,7 +146,6 @@ function execute(text, from, to) {
         }
     }
     
-    // Phần dịch thuật giữ nguyên...
     if (isUsingBaidu) {
         console.log("Phát hiện văn bản ngắn hoặc danh sách chương. Sử dụng Baidu Translate theo từng phần.");
         const BAIDU_CHUNK_SIZE = 500;
@@ -228,7 +211,6 @@ function execute(text, from, to) {
         finalContent = modelsucess + ". " + finalParts.join('\n\n');
     }
 
-    // Phần lưu cache giữ nguyên...
     if (cacheKey && finalContent && !finalContent.includes("LỖI DỊCH PHẦN")) {
         if (cacheableModels.indexOf(modelsucess) > -1) {
             try {
