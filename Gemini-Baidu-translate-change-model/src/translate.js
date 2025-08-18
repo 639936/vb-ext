@@ -9,7 +9,7 @@ var models = [
     "gemini-2.5-flash",
     "gemini-2.5-flash-lite"
 ];
-var cacheableModels = ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.5-flash-lite"];
+var cacheableModels = ["gemini-2.5-flash", "gemini-2.5-pro"];
 
 function generateFingerprintCacheKey(lines) {
     var keyParts = "";
