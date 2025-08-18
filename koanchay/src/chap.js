@@ -4,7 +4,7 @@ function execute(url) {
     let response = fetch(url);
     if (response.ok) {
         let doc = response.html();
-        return Response.success(doc.select("div#bookContentBody").html());
+        return Response.success(doc.select("#bookContentBody").html());
     }
 
     return null;
