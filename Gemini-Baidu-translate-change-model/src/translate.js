@@ -249,7 +249,7 @@ function execute(text, from, to) {
 
             if (!currentModelFailed) {
                 console.log("----- Dịch TOÀN BỘ VĂN BẢN thành công với Model: " + modelToUse + " -----");
-                finalContent = modelsucess + ". " + finalParts.join('\n\n');
+                finalContent = modelsucess + " . " + finalParts.join('\n\n');
                 translationSuccessful = true;
                 break; 
             }
