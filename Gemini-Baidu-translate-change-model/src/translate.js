@@ -108,15 +108,30 @@ function execute(text, from, to) {
             return Response.success(text);
         }
     }
-
+    
     var isUsingBaidu = false;
-    if (text.length < 800) {
+    
+    var lengthThreshold = 800;   
+    var lineLengthThreshold = 25; 
+    
+    if (to === 'vi_vietlai') {
+        console.log("Áp dụng quy tắc nhận diện danh sách chương đặc biệt cho vi_vietlai.");
+        lengthThreshold = 1000;
+        lineLengthThreshold = 50;
+    }
+
+    if (text.length < lengthThreshold) {
         isUsingBaidu = true;
     } else {
         var shortLinesCount = 0;
-        if (lines.length > 0) {
-            for (var i = 0; i < lines.length; i++) { if (lines[i].length < 25) { shortLinesCount++; } }
-            if ((shortLinesCount / lines.length) > 0.8) {
+        var totalLines = lines.length;
+        if (totalLines > 0) {
+            for (var i = 0; i < totalLines; i++) {
+                if (lines[i].length < lineLengthThreshold) {
+                    shortLinesCount++;
+                }
+            }
+            if ((shortLinesCount / totalLines) > 0.8) {
                 isUsingBaidu = true;
             }
         }
@@ -184,11 +199,11 @@ function execute(text, from, to) {
             var modelToUse = models[m];
             console.log("----- Bắt đầu thử dịch TOÀN BỘ VĂN BẢN với Model: " + modelToUse + " -----");
 
-            var CHUNK_SIZE = 8000;
+            var CHUNK_SIZE = 9000;
             var MIN_LAST_CHUNK_SIZE = 3000;
             if (modelToUse === "gemini-2.5-flash" || modelToUse === "gemini-2.5-pro") {
                 CHUNK_SIZE = 2000;
-                MIN_LAST_CHUNK_SIZE = 500;
+                MIN_LAST_CHUNK_SIZE = 600;
             }
             console.log("Sử dụng CHUNK_SIZE: " + CHUNK_SIZE);
 
@@ -238,9 +253,8 @@ function execute(text, from, to) {
                 translationSuccessful = true;
                 break; 
             }
-        } // <--- DẤU NGOẶC KẾT THÚC VÒNG LẶP MODEL Ở ĐÂY
+        } 
 
-        // Khối lệnh này giờ đã nằm ĐÚNG VỊ TRÍ, bên ngoài vòng lặp
         if (!translationSuccessful) {
             var errorString = "<<<<<--- LỖI DỊCH (ĐÃ THỬ HẾT CÁC KEY VÀ MODEL) --->>>>>\n" + "Lý do cuối cùng: " + lastErrorMessage + "\n" + "<<<<<--- KẾT THÚC LỖI --->>>>>";
             finalContent = errorString;
