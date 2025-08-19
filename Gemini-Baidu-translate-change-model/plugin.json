@@ -2,7 +2,7 @@
   "metadata": {
     "name": "Gemini Baidu Translate change Model",
     "author": "369",
-    "version": 37,
+    "version": 38,
     "source": "https://generativelanguage.googleapis.com",
     "description": "Dịch văn bản bằng Google Gemini API với nhiều key, prompt, tùy chỉnh theo thể loại và xử lý lỗi an toàn thông minh.",
     "type": "translate"
