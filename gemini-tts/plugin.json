@@ -12,7 +12,7 @@
     "tts": "tts.js"
   },
   "config": {
-    "preload_size": 3,
+    "preload_size": 2,
     "max_length": 1000,
     "required_api_key": false,
     "support_url": "https://gemini.google.com"
