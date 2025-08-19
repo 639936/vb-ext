@@ -18,7 +18,8 @@ function execute(url) {
         el.forEach(e => {
             chapters.push({
                 name: e.text(),
-                url: e.attr('href')
+                url: e.attr('href'),
+                host: BASE_URL
             })
         });
         return Response.success(chapters);
