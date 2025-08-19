@@ -171,7 +171,6 @@ function execute(text, from, to) {
     }
     
     if (isUsingBaidu) {
-        // --- BẮT ĐẦU PHẦN LOGIC BAIDU ĐÃ ĐƯỢC KHÔI PHỤC ---
         console.log("Phát hiện văn bản ngắn hoặc danh sách chương. Sử dụng Baidu Translate.");
         var baiduFromLang = from;
         var vietnameseToLanguages = ['vi_tieuchuan', 'vi_sac', 'vi_vietlai', 'vi_NameEng'];
@@ -195,7 +194,6 @@ function execute(text, from, to) {
             baiduTranslatedParts.push(translatedChunk);
         }
         finalContent = baiduTranslatedParts.join('\n');
-        // --- KẾT THÚC PHẦN LOGIC BAIDU ---
     } else {
         console.log("Phát hiện nội dung chương. Bắt đầu quy trình Gemini AI Fallback.");
         if (!rotatedApiKeys || rotatedApiKeys.length === 0) { return Response.error("LỖI: Vui lòng cấu hình ít nhất 1 API key."); }
