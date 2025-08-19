@@ -1,5 +1,5 @@
 load('config.js');
-function execute(url) {
+function execute(url,name) {
     // --- Bắt đầu phần mã thêm vào ---
     let current_host = localStorage.getItem('vp_local_ip');
     if (!current_host) {
@@ -19,7 +19,7 @@ function execute(url) {
             if (item.directory === false && item.name !== "..") {
                 data.push({
                     name: item.name.replace(/\.html/gi, ""),
-                    url: current_host + "/vBook/Book/" + url + "/" + encodeURIComponent(item.name),
+                    url: current_host + "/vBook/Book/" + name + "/" + encodeURIComponent(item.name),
                 });
             }
         });

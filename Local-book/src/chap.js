@@ -6,5 +6,5 @@ function execute(url) {
         var content = doc.select(".content").html();
         return Response.success(content);
     }
-    return null;
+    return Response.success(url);
 }
