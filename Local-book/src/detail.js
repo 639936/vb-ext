@@ -10,7 +10,7 @@ function execute(url) {
     // --- Kết thúc phần mã thêm vào ---
     url = url.replace("/vBook/Book/", "");
     url = url.replace("http://localhost", "");
-    var response = fetch(current_host + "/vbook/Book/" + url);
+    var response = fetch(current_host + "/vBook/Book/" + url);
     if (response.ok) {
         var doc = response.html();
         return Response.success({
