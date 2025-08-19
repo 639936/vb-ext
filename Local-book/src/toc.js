@@ -18,7 +18,8 @@ function execute(url) {
         return Response.success(data);
     } else {
          return Response.success([{
-             name: url
+             name: url,
+             url: url
          }])
     }
 }
