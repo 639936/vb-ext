@@ -1,21 +1,19 @@
 load('config.js');
-function execute(key, page) {
-    if (!page) page = '1';
-    var key = encodeURIComponent(key)
-    let response = fetch(BASE_URL +  "/search_top_" + key + "_130_" + page + ".html")
-    if (response.ok) {
-        let doc1 = response.html();
-        var data = [];
-        doc1.select(".mod.block.book-all-list ul li").forEach(e => {
-            data.push({
-                name: e.select("a.name").text(),
-                link: e.select("a.name").attr("href"),
-                description: e.select(".info").text(),
-                host: BASE_URL
-            });
-        });
-        let nextPage = parseInt(page) + 1;
-        return Response.success(data,nextPage.toString());
+function execute(key) {
+    if (key) {
+        // Lưu địa chỉ IP mới vào localStorage
+        localStorage.setItem('vp_local_ip', key);
+
+        // Trả về một kết quả duy nhất để thông báo thành công
+        // Bạn có thể tùy chỉnh thông báo này
+        var data = [{
+            name: "Đã cập nhật IP thành công!",
+            link: "http://localhost", // Link giả, không quan trọng
+            description: "Địa chỉ mới là: " + key,
+            host: "http://" + key
+        }];
+        return Response.success(data);
     }
-    return null;
+    // Trả về mảng rỗng nếu không có key
+    return Response.success([]);
 }

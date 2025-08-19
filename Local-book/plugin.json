@@ -2,10 +2,10 @@
   "metadata": {
     "name": "Local BOOK",
     "author": "369",
-    "version": 7,
-    "source": "http://53.31.146.194:8080/vBook/Book",
-    "regexp": "(www.)?53.31.146.194:8080/vBook/Book/[^/]+",
-    "description": "Đọc truyện Local",
+    "version": 8,
+    "source": "http://localhost/vBook/Book",
+    "regexp": "https?:\/\/[^/]+\/vBook\/Book\/[^/]+",
+    "description": "Đọc truyện Local với địa chỉ IP có thể thay đổi",
     "language": "javascript",
     "type": "novel"
   },
