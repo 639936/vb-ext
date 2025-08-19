@@ -2,7 +2,7 @@
   "metadata": {
     "name": "Local BOOK",
     "author": "369",
-    "version": 10,
+    "version": 11,
     "source": "http://localhost/vBook/Book",
     "regexp": "https?:\/\/[^/]+\/vBook\/Book\/[^/]+",
     "description": "Đọc truyện Local với địa chỉ IP có thể thay đổi",
@@ -13,6 +13,7 @@
     "home": "home.js",
     "detail": "detail.js",
     "search": "search.js",
+    "page" : "page.js",
     "toc": "toc.js",
     "chap": "chap.js"
   }

@@ -21,8 +21,7 @@ function execute(url) {
             if (item.directory === true && item.name !== "..") {
                 data.push({
                     name: item.name,
-                    link: "/vbook/Book/" + encodeURIComponent(item.name),
-                    host: current_host
+                    link: encodeURIComponent(item.name),
                 });
             }
         });
