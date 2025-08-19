@@ -8,12 +8,12 @@ function execute(url) {
         current_host = 'http://' + current_host; // Tự động thêm http:// nếu người dùng quên
     }
     // --- Kết thúc phần mã thêm vào ---
-    var response = fetch(current_host + "/vbook/Book" + url);
+    var response = fetch(current_host + "/vbook/Book/" + url);
     if (response.ok) {
         var doc = response.html();
         return Response.success({
                 name: doc.select("#path").text().replace("/vBook/Book/", ""),
                 });
     }
-    return null
+    return Response.success(url)
 }

@@ -12,6 +12,6 @@ function execute(url) {
     url = url.replace(current_host, ""); // Xóa host cũ nếu có
     url = url.replace("/vBook/Book/", "");
     var page = [];
-    page = current_host + "/api/file/list?path=%2FvBook%2FBook%2F" + url + "%2F&sort=modified&sort-reversed=false"
+    page.push(current_host + "/api/file/list?path=%2FvBook%2FBook%2F" + url + "%2F&sort=modified&sort-reversed=false")
     return Response.success(page)
 }
