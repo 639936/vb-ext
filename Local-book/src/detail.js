@@ -15,5 +15,6 @@ function execute(url) {
                 name: doc.select("#path").text().replace("/vBook/Book/", ""),
                 });
     }
-    return Response.success(url)
+    else
+    return Response.success({name: url})
 }
