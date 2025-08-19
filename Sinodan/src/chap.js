@@ -8,7 +8,7 @@ function execute(url) {
         doc.select("center").remove();
         let htm = doc.select("#nr1").html();
         htm = cleanHtml(htm);
-        return Response.success(htm);
+        return Response.success(url);
     }
     return null;
 }
