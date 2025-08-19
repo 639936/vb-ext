@@ -22,6 +22,7 @@ function execute(url) {
                 data.push({
                     name: item.name,
                     link: encodeURIComponent(item.name),
+                    host: current_host
                 });
             }
         });
