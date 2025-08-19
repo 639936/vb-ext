@@ -11,7 +11,8 @@ function execute(url) {
 
     url = url.replace("/vBook/Book/", "");
     url = url.replace("http://localhost", "");
+    var nameT = url;
     var page = [];
     page.push(current_host + "/api/file/list?path=%2FvBook%2FBook%2F" + url + "%2F&sort=modified&sort-reversed=false")
-    return Response.success(page,url)
+    return Response.success(page,nameT)
 }
