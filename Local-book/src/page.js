@@ -9,7 +9,6 @@ function execute(url) {
     }
     // --- Kết thúc phần mã thêm vào ---
 
-    url = url.replace(current_host, ""); // Xóa host cũ nếu có
     url = url.replace("/vBook/Book/", "");
     url = url.replace("http://localhost", "");
     var page = [];
