@@ -2,7 +2,7 @@
   "metadata": {
     "name": "Sinodan",
     "author": "369",
-    "version": 13,
+    "version": 15,
     "source": "https://www.sinodan.link/",
     "regexp": "(www.)?sinodan.link/[^/]+",
     "description": "Đọc truyện trên sinodan.link",
