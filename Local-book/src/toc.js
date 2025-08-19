@@ -1,5 +1,20 @@
 load('config.js');
-function execute(url,nameT) {
+function execute(urlinput) {
+    // 1. Tìm vị trí (index) của dấu '/' cuối cùng trong chuỗi
+    const lastSlashIndex = urlinput.lastIndexOf('/');
+
+    // 2. Tách chuỗi
+    if (lastSlashIndex !== -1) {
+        // Phần 1: Lấy từ đầu chuỗi đến ngay trước dấu '/' cuối cùng
+        const part1 = urlinput.substring(0, lastSlashIndex);
+
+        // Phần 2: Lấy từ sau dấu '/' cuối cùng cho đến hết chuỗi
+        const part2 = urlinput.substring(lastSlashIndex + 1);
+
+        // In kết quả
+        console.log("Phần 1:", part1); // Kết quả: http://abc.xyz/vBook/Book/tenchuong
+        console.log("Phần 2:", part2); // Kết quả: stt
+    }
     // --- Bắt đầu phần mã thêm vào ---
     let current_host = localStorage.getItem('vp_local_ip');
     if (!current_host) {
@@ -8,7 +23,7 @@ function execute(url,nameT) {
         current_host = 'http://' + current_host; // Tự động thêm http:// nếu người dùng quên
     }
     // --- Kết thúc phần mã thêm vào ---
-    var response = fetch(url, {
+    var response = fetch(part1, {
         method: "GET"
     });
 
@@ -19,7 +34,7 @@ function execute(url,nameT) {
             if (item.directory === false && item.name !== "..") {
                 data.push({
                     name: item.name.replace(/\.html/gi, ""),
-                    url: current_host + "/vBook/Book/" + nameT + "/" + encodeURIComponent(item.name),
+                    url: current_host + "/vBook/Book/" + part2 + "/" + encodeURIComponent(item.name),
                 });
             }
         });
