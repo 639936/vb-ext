@@ -8,6 +8,8 @@ function execute(url) {
         current_host = 'http://' + current_host; // Tự động thêm http:// nếu người dùng quên
     }
     // --- Kết thúc phần mã thêm vào ---
+    url = url.replace("/vBook/Book/", "");
+    url = url.replace("http://localhost", "");
     var response = fetch(current_host + "/vbook/Book/" + url);
     if (response.ok) {
         var doc = response.html();
