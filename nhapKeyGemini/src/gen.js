@@ -7,7 +7,7 @@ function execute(url) {
 
     // Thêm các dòng hướng dẫn vào đầu
     data.push({
-        name: "--- HƯỚNG DẪN SỬ DỤNG ---",
+        name: "--- HƯỚNG DẪN SỬ DỤNG ---" + url,
         link: "https://vbook.app", // Link giả để không bị lỗi
         description: "1. Thêm key: Vào ô tìm kiếm và nhập API key của bạn rồi bấm tìm kiếm.",
         host: "https://vbook.app"
