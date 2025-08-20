@@ -6,10 +6,11 @@ load("baidutranslate.js");
 var modelsucess = "";
 var models = [
     "gemini-2.5-pro",
+    "gemini-2.5-flash-preview-05-20",
     "gemini-2.5-flash",
     "gemini-2.5-flash-lite"
 ];
-var cacheableModels = ["gemini-2.5-flash", "gemini-2.5-pro"];
+var cacheableModels = ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.5-flash-preview-05-20"];
 
 function generateFingerprintCacheKey(lines) {
     var keyParts = "";
