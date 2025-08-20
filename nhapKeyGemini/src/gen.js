@@ -1,5 +1,5 @@
 
-function execute(input) {
+function execute(url) {
     // input và page không được sử dụng nhưng cần có trong định nghĩa hàm
     
     var data = []; // Mảng kết quả trả về
