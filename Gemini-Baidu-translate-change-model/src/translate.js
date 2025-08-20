@@ -106,7 +106,7 @@ function execute(text, from, to) {
         rotatedApiKeys = apiKeys;
     }
 
-    if (from === 'vi') {
+    if (from === 'vi' || to === 'vi') {
         models.reverse();
         console.log("Phát hiện from = 'vi'. Đảo ngược thứ tự ưu tiên model: " + JSON.stringify(models));
     }
