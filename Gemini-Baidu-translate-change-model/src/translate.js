@@ -80,7 +80,7 @@ function translateChunkWithApiRetry(chunkText, prompt, modelToUse, keysToTry) {
         if (i < keysToTry.length - 1) {
             console.log("    -> Thất bại. Đợi 1 giây trước khi thử lại...");
             try {
-                java.lang.Thread.sleep(2000); 
+                java.lang.Thread.sleep(100); 
             } catch (e) {
                 console.log("    -> Lỗi khi thực hiện delay: " + e.toString());
             }
@@ -231,10 +231,10 @@ function execute(text, from, to) {
             var modelToUse = models[m];
             console.log("----- Bắt đầu thử dịch TOÀN BỘ VĂN BẢN với Model: " + modelToUse + " -----");
 
-            var CHUNK_SIZE = 9000;
-            var MIN_LAST_CHUNK_SIZE = 3000;
+            var CHUNK_SIZE = 6000;
+            var MIN_LAST_CHUNK_SIZE = 2000;
             if (modelToUse === "gemini-2.5-flash" || modelToUse === "gemini-2.5-pro") {
-                CHUNK_SIZE = 1500;
+                CHUNK_SIZE = 1000;
                 MIN_LAST_CHUNK_SIZE = 500;
             }
             console.log("Sử dụng CHUNK_SIZE: " + CHUNK_SIZE);
