@@ -266,7 +266,7 @@
     {
       "name": "Quản lý Key Gemini",
       "author": "369",
-      "version": 1,
+      "version": 2,
       "source": "https://generativelanguage.googleapis.com",
       "path": "https://raw.githubusercontent.com/639936/vb-ext/main/nhapKeyGemini/plugin.zip",
       "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/nhapKeyGemini/icon.png",
