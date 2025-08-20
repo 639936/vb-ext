@@ -266,7 +266,7 @@
     {
       "name": "Quản lý Key Gemini",
       "author": "369",
-      "version": 4,
+      "version": 5,
       "source": "https://generativelanguage.googleapis.com",
       "path": "https://raw.githubusercontent.com/639936/vb-ext/main/nhapKeyGemini/plugin.zip",
       "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/nhapKeyGemini/icon.png",
@@ -276,7 +276,7 @@
     {
       "name": "Gemini Baidu Translate change Model",
       "author": "369",
-      "version": 43,
+      "version": 44,
       "source": "https://generativelanguage.googleapis.com",
       "path": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-Baidu-translate-change-model/plugin.zip",
       "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-Baidu-translate-change-model/icon.png",
