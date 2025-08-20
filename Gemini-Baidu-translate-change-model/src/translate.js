@@ -5,28 +5,9 @@ load("baidutranslate.js");
 
 var modelsucess = "";
 var models = [
-    "gemini-2.5-pro",
-    "gemini-2.5-flash-preview-05-20",
-    "gemini-2.5-flash",
-    "gemini-2.5-flash-lite-06-17",
-    "gemini-2.5-flash-lite",
-    "gemini-2.5-flash-lite-06-17"
+    "gemini-2.5-pro"
 ];
 var cacheableModels = ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.5-flash-preview-05-20"];
-
-function generateFingerprintCacheKey(lines) {
-    var keyParts = "";
-    var linesForId = lines.slice(0, 5); 
-    for (var i = 0; i < linesForId.length; i++) {
-        var line = linesForId[i].trim();
-        if (line.length >= 6) { 
-            keyParts += line.substring(0, 3) + line.slice(-3);
-        } else {
-            keyParts += line;
-        }
-    }
-    return "vbook_fp_cache_" + keyParts;
-}
 
 function callGeminiAPI(text, prompt, apiKey, model) {
     if (!apiKey) { return { status: "error", message: "API Key không hợp lệ." }; }
@@ -46,16 +27,19 @@ function callGeminiAPI(text, prompt, apiKey, model) {
     };
     try {
         var response = fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+        var responseText = response.text(); 
+
         if (response.ok) {
-            var result = JSON.parse(response.text());
+            var result = JSON.parse(responseText);
             if (result.candidates && result.candidates.length > 0 && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts.length > 0 && result.candidates[0].content.parts[0].text) {
                 return { status: "success", data: result.candidates[0].content.parts[0].text.trim() };
             }
             if (result.promptFeedback && result.promptFeedback.blockReason) { return { status: "blocked", message: "Bị chặn bởi Safety Settings: " + result.promptFeedback.blockReason }; }
             if (result.candidates && result.candidates.length > 0 && (!result.candidates[0].content || !result.candidates[0].content.parts)) { return { status: "blocked", message: "Bị chặn (không có nội dung trả về)." }; }
-            return { status: "error", message: "API không trả về nội dung hợp lệ. Phản hồi: " + response.text() };
+            return { status: "error", message: "API không trả về nội dung hợp lệ. Phản hồi: " + responseText };
         } else {
-            return { status: "key_error", message: "Lỗi HTTP " + response.status + " (response not ok model '" + model + "' đã thử cuối cùng)." };
+            return { status: "key_error", message: "Lỗi HTTP " + response.status + ". Phản hồi từ server:\n" + responseText };
+            // --------------------------
         }
     } catch (e) { return { status: "error", message: "Ngoại lệ Javascript: " + e.toString() }; }
 }
@@ -78,9 +62,11 @@ function translateChunkWithApiRetry(chunkText, prompt, modelToUse, keysToTry) {
             }
         }
         
-        keyErrors.push("  + Key " + (i + 1) + " (" + apiKeyToUse + "...): " + result.message);
+        keyErrors.push("  + Key " + (i + 1) + " (" + apiKeyToUse + "):\n    " + result.message.replace(/\n/g, '\n    '));
+        // ----------------------------------------
+
         if (i < keysToTry.length - 1) {
-            console.log("    -> Thất bại. Đợi 1 giây trước khi thử lại...");
+            console.log("    -> Thất bại. Đợi một chút trước khi thử lại..."); // Thay đổi câu log
             try {
                 sleep(100); 
             } catch (e) {
@@ -236,8 +222,8 @@ function execute(text, from, to) {
             var CHUNK_SIZE = 6000;
             var MIN_LAST_CHUNK_SIZE = 2000;
             if (modelToUse === "gemini-2.5-flash" || modelToUse === "gemini-2.5-pro") {
-                CHUNK_SIZE = 1900;
-                MIN_LAST_CHUNK_SIZE = 900;
+                CHUNK_SIZE = 8000;
+                MIN_LAST_CHUNK_SIZE = 1000;
             }
             console.log("Sử dụng CHUNK_SIZE: " + CHUNK_SIZE);
 
