@@ -266,7 +266,7 @@
     {
       "name": "Gemini Baidu Translate change Model",
       "author": "369",
-      "version": 48,
+      "version": 49,
       "source": "https://generativelanguage.googleapis.com",
       "path": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-Baidu-translate-change-model/plugin.zip",
       "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/Gemini-Baidu-translate-change-model/icon.png",
