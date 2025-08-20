@@ -66,13 +66,19 @@ function translateChunkWithApiRetry(chunkText, prompt, modelToUse, keysToTry) {
         var result = callGeminiAPI(chunkText, prompt, apiKeyToUse, modelToUse);
         
         if (result.status === "success") {
-            return result; 
+            if ((result.data.length / chunkText.length) < 0.9) {
+                console.log("    -> KẾT QUẢ THÀNH CÔNG NHƯNG QUÁ NGẮN (" + result.data.length + " vs " + chunkText.length + " ký tự). Coi như lỗi và thử lại...");
+                result.status = "short_result_error";
+                result.message = "Kết quả trả về ngắn hơn một nửa so với văn bản gốc.";
+            } else {
+                return result; 
+            }
         }
         
         lastError = result; 
 
         if (i < keysToTry.length - 1) {
-            console.log("    -> Thất bại. Đợi 1 giây trước khi thử lại với key tiếp theo...");
+            console.log("    -> Thất bại. Đợi 2 giây trước khi thử lại với key tiếp theo...");
             try {
                 java.lang.Thread.sleep(2000); 
             } catch (e) {
