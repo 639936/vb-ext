@@ -58,7 +58,7 @@ function callGeminiAPI(text, prompt, apiKey, model) {
 }
 
 function translateChunkWithApiRetry(chunkText, prompt, modelToUse, keysToTry) {
-    var lastError = null;
+    var keyErrors = [];
     for (var i = 0; i < keysToTry.length; i++) {
         var apiKeyToUse = keysToTry[i];
         console.log("    -> Đang thử với API key: " + apiKeyToUse.substring(0, 4) + "..." + " cho model '" + modelToUse + "'...");
@@ -67,18 +67,18 @@ function translateChunkWithApiRetry(chunkText, prompt, modelToUse, keysToTry) {
         
         if (result.status === "success") {
             if ((result.data.length / chunkText.length) < 0.9) {
-                console.log("    -> KẾT QUẢ THÀNH CÔNG NHƯNG QUÁ NGẮN (" + result.data.length + " vs " + chunkText.length + " ký tự). Coi như lỗi và thử lại...");
+                console.log("    -> KẾT QUẢ THÀNH CÔNG NHƯNG QUÁ NGẮN. Coi như lỗi...");
                 result.status = "short_result_error";
-                result.message = "Kết quả trả về ngắn hơn một nửa so với văn bản gốc.";
+                result.message = "Kết quả trả về ngắn hơn 90% so với văn bản gốc.";
             } else {
                 return result; 
             }
         }
         
-        lastError = result; 
+        keyErrors.push("  + Key " + (i + 1) + " (" + apiKeyToUse.substring(0, 4) + "...): " + result.message);
 
         if (i < keysToTry.length - 1) {
-            console.log("    -> Thất bại. Đợi 2 giây trước khi thử lại với key tiếp theo...");
+            console.log("    -> Thất bại. Đợi 1 giây trước khi thử lại...");
             try {
                 java.lang.Thread.sleep(2000); 
             } catch (e) {
@@ -86,10 +86,14 @@ function translateChunkWithApiRetry(chunkText, prompt, modelToUse, keysToTry) {
             }
         }
     }
-    return lastError; 
+    return { 
+        status: 'all_keys_failed', 
+        message: 'Tất cả API keys đều thất bại cho chunk này.',
+        details: keyErrors 
+    }; 
 }
 
-function execute(text, from, to) { 
+function execute(text, from, to) {
     if (!text || text.trim() === '') {
         return Response.success("?");
     }
@@ -221,17 +225,17 @@ function execute(text, from, to) {
         var pinyinLanguages = ['vi_tieuchuan', 'vi_sac', 'vi_NameEng'];
         var isPinyinRoute = pinyinLanguages.indexOf(to) > -1;
         var translationSuccessful = false;
-        var lastErrorMessage = "Không có model nào hoạt động.";
+        var errorLog = {};
 
         for (var m = 0; m < models.length; m++) {
             var modelToUse = models[m];
             console.log("----- Bắt đầu thử dịch TOÀN BỘ VĂN BẢN với Model: " + modelToUse + " -----");
 
-            var CHUNK_SIZE = 7000;
-            var MIN_LAST_CHUNK_SIZE = 2000;
+            var CHUNK_SIZE = 9000;
+            var MIN_LAST_CHUNK_SIZE = 3000;
             if (modelToUse === "gemini-2.5-flash" || modelToUse === "gemini-2.5-pro") {
                 CHUNK_SIZE = 1500;
-                MIN_LAST_CHUNK_SIZE = 600;
+                MIN_LAST_CHUNK_SIZE = 500;
             }
             console.log("Sử dụng CHUNK_SIZE: " + CHUNK_SIZE);
 
@@ -269,7 +273,7 @@ function execute(text, from, to) {
                     finalParts.push(chunkResult.data);
                 } else {
                     console.log("Lỗi khi dịch phần " + (k + 1) + " với model '" + modelToUse + "'. Lý do: " + chunkResult.message);
-                    lastErrorMessage = chunkResult.message;
+                    errorLog[modelToUse] = chunkResult.details;
                     currentModelFailed = true;
                     break; 
                 }
@@ -284,7 +288,13 @@ function execute(text, from, to) {
         } 
 
         if (!translationSuccessful) {
-            var errorString = "<<<<<--- LỖI DỊCH (ĐÃ THỬ HẾT CÁC KEY VÀ MODEL) --->>>>>\n" + "Lý do cuối cùng: " + lastErrorMessage + "\n" + "<<<<<--- KẾT THÚC LỖI --->>>>>";
+            var errorString = "<<<<<--- LỖI DỊCH (ĐÃ THỬ HẾT CÁC MODEL) --->>>>>\n";
+            for (var modelName in errorLog) {
+                errorString += "\n--- Chi tiết lỗi với Model: " + modelName + " ---\n";
+                errorString += errorLog[modelName].join("\n");
+                errorString += "\n";
+            }
+            errorString += "\n<<<<<--- KẾT THÚC BÁO CÁO LỖI --->>>>>";
             finalContent = errorString;
         }
     }
