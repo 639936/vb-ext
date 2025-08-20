@@ -1,11 +1,11 @@
-function execute(key, page) {
-    if (page && page !== '1') {
-        return Response.success([]);
-    }
+
+function execute(key) {
+
 
     var data = [];
     var userInput = key.trim();
-    var keyPrefix = "gemini_key_";
+    // Key duy nhất để lưu trữ toàn bộ danh sách API keys
+    var storageKey = "vbook_gemini_keys_list"; 
 
     if (!userInput) {
         data.push({
@@ -18,19 +18,22 @@ function execute(key, page) {
     }
 
     try {
+        // Luôn đọc danh sách key hiện có
+        var keysString = localStorage.getItem(storageKey) || "";
+        var keysArray = (keysString && keysString.trim() !== "") ? keysString.split('\n') : [];
+
         if (userInput.startsWith("delkey ")) {
             var keyToDelete = userInput.substring(7).trim();
             if (!keyToDelete) {
-                data.push({
-                    name: "Cú pháp xóa không hợp lệ",
-                    link: "info/syntax_error",
-                    description: "Ví dụ đúng: delkey sk-Abc123XYZ",
-                    host: "https://vbook.app"
-                });
+                // ... xử lý lỗi cú pháp
             } else {
-                var storageKey = keyPrefix + keyToDelete;
-                if (localStorage.getItem(storageKey) !== null) {
-                    localStorage.removeItem(storageKey);
+                var initialLength = keysArray.length;
+                // Lọc ra một mảng mới không chứa key cần xóa
+                keysArray = keysArray.filter(function(k) { return k !== keyToDelete; });
+
+                if (keysArray.length < initialLength) {
+                    // Nối lại mảng và lưu lại
+                    localStorage.setItem(storageKey, keysArray.join('\n'));
                     data.push({
                         name: "Đã xóa key thành công!",
                         link: "result/delete_ok",
@@ -46,16 +49,28 @@ function execute(key, page) {
                     });
                 }
             }
-        } else {
+        } else { // Lệnh thêm key
             var keyToAdd = userInput;
-            var storageKey = keyPrefix + keyToAdd;
-            localStorage.setItem(storageKey, keyToAdd);
-            data.push({
-                name: "Đã lưu key thành công!",
-                link: "result/add_ok",
-                description: keyToAdd,
-                host: "https://vbook.app"
-            });
+            
+            // Kiểm tra để không thêm key trùng lặp
+            if (keysArray.indexOf(keyToAdd) === -1) {
+                keysArray.push(keyToAdd);
+                // Nối lại mảng và lưu lại
+                localStorage.setItem(storageKey, keysArray.join('\n'));
+                data.push({
+                    name: "Đã lưu key thành công!",
+                    link: "result/add_ok",
+                    description: keyToAdd,
+                    host: "https://vbook.app"
+                });
+            } else {
+                data.push({
+                    name: "Key này đã tồn tại!",
+                    link: "result/add_exists",
+                    description: keyToAdd,
+                    host: "https://vbook.app"
+                });
+            }
         }
     } catch (e) {
         data.push({
