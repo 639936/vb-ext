@@ -1,28 +1,21 @@
-
-function execute(url) {
-    // input và page không được sử dụng nhưng cần có trong định nghĩa hàm
-    
-    var data = []; // Mảng kết quả trả về
+function execute(url, page) {
+    var data = [];
     var keyPrefix = "gemini_key_";
-
-    // Thêm các dòng hướng dẫn vào đầu
     data.push({
-        name: "--- HƯỚNG DẪN SỬ DỤNG ---" + url,
-        link: "https://vbook.app", // Link giả để không bị lỗi
-        description: "1. Thêm key: Vào ô tìm kiếm và nhập API key của bạn rồi bấm tìm kiếm.",
-        host: "https://vbook.app"
+        name: "--- HƯỚNG DẪN ---",
+        link: "guide/1" // Link giả để không bị lỗi khi click
     });
     data.push({
-        name: "2. Xóa key: Nhập 'delkey [API key]' vào ô tìm kiếm.",
-        link: "https://vbook.app",
-        description: "Ví dụ: delkey sk-Abc123XYZ",
-        host: "https://vbook.app"
+        name: "Thêm key: Dùng chức năng TÌM KIẾM, nhập API key rồi tìm.",
+        link: "guide/2"
     });
     data.push({
-        name: "---------------------------------",
-        link: "https://vbook.app",
-        description: "DANH SÁCH KEY ĐÃ LƯU:",
-        host: "https://vbook.app"
+        name: "Xóa key: Dùng TÌM KIẾM, nhập 'delkey [API key]'.",
+        link: "guide/3"
+    });
+     data.push({
+        name: "--- DANH SÁCH KEY ĐÃ LƯU ---",
+        link: "guide/4"
     });
 
     try {
@@ -36,31 +29,24 @@ function execute(url) {
 
         if (existingKeys.length === 0) {
             data.push({
-                name: "Hiện tại không có API key nào được lưu.",
-                link: "https://vbook.app",
-                description: "Vui lòng sử dụng chức năng tìm kiếm để thêm key.",
-                host: "https://vbook.app"
+                name: "(Chưa có key nào được lưu)",
+                link: "info/no_keys"
             });
         } else {
-            // Hiển thị mỗi key trên một dòng riêng biệt
+            // Hiển thị mỗi key như một "quyển sách"
             existingKeys.forEach(function(key) {
                 data.push({
-                    name: key, // Tên item là chính API key
-                    link: "https://vbook.app",
-                    description: "Đây là một key đang được lưu trữ.",
-                    host: "https://vbook.app"
+                    name: key,
+                    link: encodeURIComponent(key) 
                 });
             });
         }
     } catch (e) {
         data.push({
             name: "Lỗi khi đọc localStorage",
-            link: "https://vbook.app",
-            description: e.toString(),
-            host: "https://vbook.app"
+            link: "error/" + encodeURIComponent(e.toString())
         });
     }
 
-    // Luôn trả về một mảng các đối tượng hợp lệ
     return Response.success(data);
 }

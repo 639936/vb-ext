@@ -2,7 +2,7 @@
   "metadata": {
     "name": "Quản lý Key Gemini",
     "author": "369",
-    "version": 5,
+    "version": 2,
     "source": "https://vbook.app",
     "description": "Dùng chức năng tìm kiếm để Thêm / Xóa API Key cho Gemini Translate.",
     "language": "javascript",
@@ -10,6 +10,10 @@
   },
   "script": {
     "home": "home.js",
-    "search": "search.js"
+    "gen": "gen.js",
+    "detail": "detail.js",
+    "search": "search.js",
+    "toc": "toc.js",
+    "chap": "chap.js"
   }
 }

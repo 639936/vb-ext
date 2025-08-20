@@ -1,14 +1,16 @@
+function execute(key, page) {
+    if (page && page !== '1') {
+        return Response.success([]);
+    }
 
-function execute(key) {
-
-    var data = []; // Mảng kết quả trả về
+    var data = [];
     var userInput = key.trim();
     var keyPrefix = "gemini_key_";
 
     if (!userInput) {
         data.push({
             name: "Lệnh không hợp lệ",
-            link: "https://vbook.app",
+            link: "info/invalid",
             description: "Vui lòng nhập API key hoặc lệnh xóa vào ô tìm kiếm.",
             host: "https://vbook.app"
         });
@@ -21,7 +23,7 @@ function execute(key) {
             if (!keyToDelete) {
                 data.push({
                     name: "Cú pháp xóa không hợp lệ",
-                    link: "https://vbook.app",
+                    link: "info/syntax_error",
                     description: "Ví dụ đúng: delkey sk-Abc123XYZ",
                     host: "https://vbook.app"
                 });
@@ -31,28 +33,26 @@ function execute(key) {
                     localStorage.removeItem(storageKey);
                     data.push({
                         name: "Đã xóa key thành công!",
-                        link: "https://vbook.app",
+                        link: "result/delete_ok",
                         description: keyToDelete,
                         host: "https://vbook.app"
                     });
                 } else {
                     data.push({
                         name: "Không tìm thấy key để xóa",
-                        link: "https://vbook.app",
+                        link: "result/delete_not_found",
                         description: keyToDelete,
                         host: "https://vbook.app"
                     });
                 }
             }
         } else {
-            // Lệnh thêm key
             var keyToAdd = userInput;
             var storageKey = keyPrefix + keyToAdd;
             localStorage.setItem(storageKey, keyToAdd);
-
             data.push({
                 name: "Đã lưu key thành công!",
-                link: "https://vbook.app",
+                link: "result/add_ok",
                 description: keyToAdd,
                 host: "https://vbook.app"
             });
@@ -60,12 +60,11 @@ function execute(key) {
     } catch (e) {
         data.push({
             name: "Lỗi thao tác với localStorage",
-            link: "https://vbook.app",
+            link: "error/storage",
             description: e.toString(),
             host: "https://vbook.app"
         });
     }
 
-    // Chỉ trả về kết quả, không có trang tiếp theo
     return Response.success(data);
 }
