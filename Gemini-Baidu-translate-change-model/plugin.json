@@ -18,6 +18,6 @@
     "required_api_key": "false",
     "support_url": "https://aistudio.google.com/app/apikey",
     "thread_num": 3,
-    "delay": 1000
+    "delay": 2000
   }
 }

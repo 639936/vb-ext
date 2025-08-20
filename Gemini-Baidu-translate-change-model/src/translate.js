@@ -62,16 +62,28 @@ function translateChunkWithApiRetry(chunkText, prompt, modelToUse, keysToTry) {
     for (var i = 0; i < keysToTry.length; i++) {
         var apiKeyToUse = keysToTry[i];
         console.log("    -> Đang thử với API key: " + apiKeyToUse.substring(0, 4) + "..." + " cho model '" + modelToUse + "'...");
+        
         var result = callGeminiAPI(chunkText, prompt, apiKeyToUse, modelToUse);
+        
         if (result.status === "success") {
             return result; 
         }
+        
         lastError = result; 
+
+        if (i < keysToTry.length - 1) {
+            console.log("    -> Thất bại. Đợi 1 giây trước khi thử lại với key tiếp theo...");
+            try {
+                java.lang.Thread.sleep(2000); 
+            } catch (e) {
+                console.log("    -> Lỗi khi thực hiện delay: " + e.toString());
+            }
+        }
     }
     return lastError; 
 }
 
-function execute(text, from, to) {
+function execute(text, from, to) { 
     if (!text || text.trim() === '') {
         return Response.success("?");
     }
@@ -179,7 +191,7 @@ function execute(text, from, to) {
             console.log("Ghi đè ngôn ngữ nguồn cho Baidu thành 'zh'.");
         }
         const BAIDU_CHUNK_SIZE = 500;
-        var baiduTranslatedParts = []; // <--- Dòng khai báo quan trọng bị thiếu
+        var baiduTranslatedParts = [];
         var baiduToLang = (to === 'vi_sac' || to === 'vi_vietlai' || to === 'vi_NameEng' || to === 'vi_tieuchuan') ? 'vi' : to;
         var totalChunks = Math.ceil(lines.length / BAIDU_CHUNK_SIZE);
         for (var i = 0; i < lines.length; i += BAIDU_CHUNK_SIZE) {
@@ -209,11 +221,11 @@ function execute(text, from, to) {
             var modelToUse = models[m];
             console.log("----- Bắt đầu thử dịch TOÀN BỘ VĂN BẢN với Model: " + modelToUse + " -----");
 
-            var CHUNK_SIZE = 9000;
-            var MIN_LAST_CHUNK_SIZE = 3000;
+            var CHUNK_SIZE = 7000;
+            var MIN_LAST_CHUNK_SIZE = 2000;
             if (modelToUse === "gemini-2.5-flash" || modelToUse === "gemini-2.5-pro") {
                 CHUNK_SIZE = 1500;
-                MIN_LAST_CHUNK_SIZE = 700;
+                MIN_LAST_CHUNK_SIZE = 600;
             }
             console.log("Sử dụng CHUNK_SIZE: " + CHUNK_SIZE);
 
