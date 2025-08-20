@@ -75,7 +75,7 @@ function translateChunkWithApiRetry(chunkText, prompt, modelToUse, keysToTry) {
             }
         }
         
-        keyErrors.push("  + Key " + (i + 1) + " (" + apiKeyToUse.substring(0, 4) + "...): " + result.message);
+        keyErrors.push("  + Key " + (i + 1) + " (" + apiKeyToUse + "...): " + result.message);
 
         if (i < keysToTry.length - 1) {
             console.log("    -> Thất bại. Đợi 1 giây trước khi thử lại...");
