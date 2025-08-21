@@ -6,7 +6,6 @@ load("baidutranslate.js");
 var modelsucess = "";
 var models = [
     "gemini-2.5-pro",
-    "gemini-2.5-flash-preview-05-20"
 ];
 var cacheableModels = ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.5-flash-preview-05-20"];
 
@@ -234,11 +233,11 @@ function execute(text, from, to) {
             var modelToUse = models[m];
             console.log("----- Bắt đầu thử dịch TOÀN BỘ VĂN BẢN với Model: " + modelToUse + " -----");
 
-            var CHUNK_SIZE = 5000;
+            var CHUNK_SIZE = 4000;
             var MIN_LAST_CHUNK_SIZE = 1000;
             if (modelToUse === "gemini-2.5-flash" || modelToUse === "gemini-2.5-flash-preview-05-20" || modelToUse === "gemini-2.5-pro") {
-                CHUNK_SIZE = 3000;
-                MIN_LAST_CHUNK_SIZE = 1000;
+                CHUNK_SIZE = 1500;
+                MIN_LAST_CHUNK_SIZE = 600;
             }
             console.log("Sử dụng CHUNK_SIZE: " + CHUNK_SIZE);
 
