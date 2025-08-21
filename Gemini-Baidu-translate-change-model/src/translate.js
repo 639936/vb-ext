@@ -41,16 +41,19 @@ function callGeminiAPI(text, prompt, apiKey, model) {
     };
     try {
         var response = fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+        var responseText = response.text(); 
+
         if (response.ok) {
-            var result = JSON.parse(response.text());
+            var result = JSON.parse(responseText);
             if (result.candidates && result.candidates.length > 0 && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts.length > 0 && result.candidates[0].content.parts[0].text) {
                 return { status: "success", data: result.candidates[0].content.parts[0].text.trim() };
             }
             if (result.promptFeedback && result.promptFeedback.blockReason) { return { status: "blocked", message: "Bị chặn bởi Safety Settings: " + result.promptFeedback.blockReason }; }
             if (result.candidates && result.candidates.length > 0 && (!result.candidates[0].content || !result.candidates[0].content.parts)) { return { status: "blocked", message: "Bị chặn (không có nội dung trả về)." }; }
-            return { status: "error", message: "API không trả về nội dung hợp lệ. Phản hồi: " + response.text() };
+            return { status: "error", message: "API không trả về nội dung hợp lệ. Phản hồi: " + responseText };
         } else {
-            return { status: "key_error", message: "Lỗi HTTP " + response.status + " (response not ok model '" + model + "' đã thử cuối cùng)." };
+            return { status: "key_error", message: "Lỗi HTTP " + response.status + ". Phản hồi từ server:\n" + responseText };
+            // --------------------------
         }
     } catch (e) { return { status: "error", message: "Ngoại lệ Javascript: " + e.toString() }; }
 }
@@ -73,7 +76,17 @@ function translateChunkWithApiRetry(chunkText, prompt, modelToUse, keysToTry) {
             }
         }
         
-        keyErrors.push("  + Key " + (i + 1) + " (" + apiKeyToUse + "...): " + result.message);
+        keyErrors.push("  + Key " + (i + 1) + " (" + apiKeyToUse + "):\n    " + result.message.replace(/\n/g, '\n    '));
+        // ----------------------------------------
+
+        if (i < keysToTry.length - 1) {
+            console.log("    -> Thất bại. Đợi một chút trước khi thử lại..."); 
+            try {
+                sleep(100); 
+            } catch (e) {
+                console.log("    -> Lỗi khi thực hiện delay: " + e.toString());
+            }
+        }
     }
     return { 
         status: 'all_keys_failed', 
@@ -220,11 +233,11 @@ function execute(text, from, to) {
             var modelToUse = models[m];
             console.log("----- Bắt đầu thử dịch TOÀN BỘ VĂN BẢN với Model: " + modelToUse + " -----");
 
-            var CHUNK_SIZE = 3000;
+            var CHUNK_SIZE = 5000;
             var MIN_LAST_CHUNK_SIZE = 1000;
             if (modelToUse === "gemini-2.5-flash" || modelToUse === "gemini-2.5-flash-preview-05-20" || modelToUse === "gemini-2.5-pro") {
-                CHUNK_SIZE = 1000;
-                MIN_LAST_CHUNK_SIZE = 500;
+                CHUNK_SIZE = 4000;
+                MIN_LAST_CHUNK_SIZE = 1000;
             }
             console.log("Sử dụng CHUNK_SIZE: " + CHUNK_SIZE);
 
@@ -284,7 +297,9 @@ function execute(text, from, to) {
                 errorString += "\n";
             }
             errorString += "\n<<<<<--- KẾT THÚC BÁO CÁO LỖI --->>>>>";
+            //finalContent = errorString;
             console.log(errorString);
+            return Response.error
         }
     }
 
