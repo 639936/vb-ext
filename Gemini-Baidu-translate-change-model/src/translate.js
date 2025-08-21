@@ -12,6 +12,20 @@ var models = [
 ];
 var cacheableModels = ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.5-flash-preview-05-20"];
 
+function generateFingerprintCacheKey(lines) {
+    var keyParts = "";
+    var linesForId = lines.slice(0, 5); 
+    for (var i = 0; i < linesForId.length; i++) {
+        var line = linesForId[i].trim();
+        if (line.length >= 6) { 
+            keyParts += line.substring(0, 3) + line.slice(-3);
+        } else {
+            keyParts += line;
+        }
+    }
+    return "vbook_fp_cache_" + keyParts;
+}
+
 function callGeminiAPI(text, prompt, apiKey, model) {
     if (!apiKey) { return { status: "error", message: "API Key không hợp lệ." }; }
     if (!text || text.trim() === '') { return { status: "success", data: "" }; }
@@ -30,19 +44,16 @@ function callGeminiAPI(text, prompt, apiKey, model) {
     };
     try {
         var response = fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
-        var responseText = response.text(); 
-
         if (response.ok) {
-            var result = JSON.parse(responseText);
+            var result = JSON.parse(response.text());
             if (result.candidates && result.candidates.length > 0 && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts.length > 0 && result.candidates[0].content.parts[0].text) {
                 return { status: "success", data: result.candidates[0].content.parts[0].text.trim() };
             }
             if (result.promptFeedback && result.promptFeedback.blockReason) { return { status: "blocked", message: "Bị chặn bởi Safety Settings: " + result.promptFeedback.blockReason }; }
             if (result.candidates && result.candidates.length > 0 && (!result.candidates[0].content || !result.candidates[0].content.parts)) { return { status: "blocked", message: "Bị chặn (không có nội dung trả về)." }; }
-            return { status: "error", message: "API không trả về nội dung hợp lệ. Phản hồi: " + responseText };
+            return { status: "error", message: "API không trả về nội dung hợp lệ. Phản hồi: " + response.text() };
         } else {
-            return { status: "key_error", message: "Lỗi HTTP " + response.status + ". Phản hồi từ server:\n" + responseText };
-            // --------------------------
+            return { status: "key_error", message: "Lỗi HTTP " + response.status + " (response not ok model '" + model + "' đã thử cuối cùng)." };
         }
     } catch (e) { return { status: "error", message: "Ngoại lệ Javascript: " + e.toString() }; }
 }
@@ -65,17 +76,7 @@ function translateChunkWithApiRetry(chunkText, prompt, modelToUse, keysToTry) {
             }
         }
         
-        keyErrors.push("  + Key " + (i + 1) + " (" + apiKeyToUse + "):\n    " + result.message.replace(/\n/g, '\n    '));
-        // ----------------------------------------
-
-        if (i < keysToTry.length - 1) {
-            console.log("    -> Thất bại. Đợi một chút trước khi thử lại..."); 
-            try {
-                sleep(100); 
-            } catch (e) {
-                console.log("    -> Lỗi khi thực hiện delay: " + e.toString());
-            }
-        }
+        keyErrors.push("  + Key " + (i + 1) + " (" + apiKeyToUse + "...): " + result.message);
     }
     return { 
         status: 'all_keys_failed', 
@@ -104,9 +105,9 @@ function execute(text, from, to) {
         rotatedApiKeys = apiKeys;
     }
 
-    if (from === 'vi' || to === 'vi') {
+    if (from === 'vi') {
         models.reverse();
-        console.log("Phát hiện = 'vi'. Đảo ngược thứ tự ưu tiên model: " + JSON.stringify(models));
+        console.log("Phát hiện from = 'vi'. Đảo ngược thứ tự ưu tiên model: " + JSON.stringify(models));
     }
 
     var lines = text.split('\n');
@@ -138,7 +139,7 @@ function execute(text, from, to) {
     }
     
     var isUsingBaidu = false;
-    var lengthThreshold = 800;   
+    var lengthThreshold = 1000;   
     var lineLengthThreshold = 25; 
     if (to === 'vi_vietlai') {
         console.log("Áp dụng quy tắc nhận diện danh sách chương đặc biệt cho vi_vietlai.");
@@ -223,9 +224,9 @@ function execute(text, from, to) {
             console.log("----- Bắt đầu thử dịch TOÀN BỘ VĂN BẢN với Model: " + modelToUse + " -----");
 
             var CHUNK_SIZE = 6000;
-            var MIN_LAST_CHUNK_SIZE = 1000;
-            if (modelToUse === "gemini-2.5-flash" || modelToUse === "gemini-2.5-flash-preview-05-20" || modelToUse === "gemini-2.5-pro") {
-                CHUNK_SIZE = 6000;
+            var MIN_LAST_CHUNK_SIZE = 2000;
+            if (modelToUse === "gemini-2.5-flash" || modelToUse === "gemini-2.5-pro") {
+                CHUNK_SIZE = 5000;
                 MIN_LAST_CHUNK_SIZE = 1000;
             }
             console.log("Sử dụng CHUNK_SIZE: " + CHUNK_SIZE);
