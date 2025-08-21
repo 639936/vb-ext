@@ -69,7 +69,7 @@ function translateChunkWithApiRetry(chunkText, prompt, modelToUse, keysToTry) {
         // ----------------------------------------
 
         if (i < keysToTry.length - 1) {
-            console.log("    -> Thất bại. Đợi một chút trước khi thử lại..."); // Thay đổi câu log
+            console.log("    -> Thất bại. Đợi một chút trước khi thử lại..."); 
             try {
                 sleep(100); 
             } catch (e) {
