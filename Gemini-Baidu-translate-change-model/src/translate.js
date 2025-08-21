@@ -8,9 +8,7 @@ var models = [
     "gemini-2.5-pro",
     "gemini-2.5-flash-preview-05-20",
     "gemini-2.5-flash",
-    "gemini-2.5-flash-lite-06-17",
-    "gemini-2.5-flash-lite",
-    "gemini-2.5-flash-lite-06-17"
+    "gemini-2.5-flash-lite"
 ];
 var cacheableModels = ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.5-flash-preview-05-20"];
 
@@ -108,7 +106,7 @@ function execute(text, from, to) {
 
     if (from === 'vi' || to === 'vi') {
         models.reverse();
-        console.log("Phát hiện from = 'vi'. Đảo ngược thứ tự ưu tiên model: " + JSON.stringify(models));
+        console.log("Phát hiện = 'vi'. Đảo ngược thứ tự ưu tiên model: " + JSON.stringify(models));
     }
 
     var lines = text.split('\n');
@@ -225,9 +223,9 @@ function execute(text, from, to) {
             console.log("----- Bắt đầu thử dịch TOÀN BỘ VĂN BẢN với Model: " + modelToUse + " -----");
 
             var CHUNK_SIZE = 6000;
-            var MIN_LAST_CHUNK_SIZE = 999;
+            var MIN_LAST_CHUNK_SIZE = 1000;
             if (modelToUse === "gemini-2.5-flash" || modelToUse === "gemini-2.5-pro") {
-                CHUNK_SIZE = 1900;
+                CHUNK_SIZE = 9000;
                 MIN_LAST_CHUNK_SIZE = 900;
             }
             console.log("Sử dụng CHUNK_SIZE: " + CHUNK_SIZE);
