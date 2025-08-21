@@ -284,7 +284,7 @@ function execute(text, from, to) {
                 errorString += "\n";
             }
             errorString += "\n<<<<<--- KẾT THÚC BÁO CÁO LỖI --->>>>>";
-            finalContent = errorString;
+            console.log(errorString);
         }
     }
 
