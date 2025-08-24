@@ -33,7 +33,7 @@ function execute(urlinput) {
         jsonList.forEach(item => {
             if (item.directory === false && item.name !== "..") {
                 data.push({
-                    name: item.name.replace(/\.html/gi, ""),
+                    name: item.name.replace(/\.html/gi, "").substring(0, 24),
                     url: current_host + "/vBook/Book/" + part2 + "/" + encodeURIComponent(item.name),
                 });
             }

@@ -85,7 +85,7 @@ function translateChunkWithApiRetry(chunkText, prompt, modelToUse, keysToTry) {
         if (i < keysToTry.length - 1) {
             console.log("    -> Thất bại. Đợi một chút trước khi thử lại..."); 
             try {
-                sleep(100); 
+                sleep(100); //hàm của vbook
             } catch (e) {
                 console.log("    -> Lỗi khi thực hiện delay: " + e.toString());
             }
@@ -300,7 +300,7 @@ function execute(text, from, to) {
                 errorString += "\n";
             }
             errorString += "\n<<<<<--- KẾT THÚC BÁO CÁO LỖI --->>>>>";
-            //finalContent = errorString;
+            //finalContent = errorString; khi nào cần debug sẽ biến nó thành lệnh thay cho kết quả error
             console.log(errorString);
             return Response.error
         }
