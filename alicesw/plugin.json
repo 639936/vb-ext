@@ -2,13 +2,13 @@
   "metadata": {
     "name": "alicesw",
     "author": "369",
-    "version": 5,
+    "version": 6,
     "source": "https://www.alicesw.com/",
     "regexp": "(www\\.)?alicesw\\.com.*",
     "description": "Đọc truyện trên alicesw.com",
     "locale": "zh_CN",
     "language": "javascript",
-    "type": "novel"
+    "type": "chinese_novel"
   },
   "script": {
     "home": "home.js",
