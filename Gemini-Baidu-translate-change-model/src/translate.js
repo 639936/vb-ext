@@ -239,20 +239,44 @@ function execute(text, from, to) {
             var CHUNK_SIZE = 3000;
             var MIN_LAST_CHUNK_SIZE = 1000;
             if (modelToUse === "gemini-2.5-flash" || modelToUse === "gemini-2.5-flash-preview-05-20" || modelToUse === "gemini-2.5-pro") {
-                CHUNK_SIZE = 1500;
-                MIN_LAST_CHUNK_SIZE = 600;
+                CHUNK_SIZE = 2500;
+                MIN_LAST_CHUNK_SIZE = 1000;
             }
             console.log("Sử dụng CHUNK_SIZE: " + CHUNK_SIZE);
 
             var textChunks = [];
             var currentChunk = "";
+            var currentChunkLineCount = 0; // Biến đếm số dòng
+            const MAX_LINES_PER_CHUNK = 60; // Ngưỡng 100 dòng
+
             for (var i = 0; i < lines.length; i++) {
                 var paragraph = lines[i];
-                if (currentChunk.length === 0 && paragraph.length >= CHUNK_SIZE) { textChunks.push(paragraph); continue; }
-                if (currentChunk.length + paragraph.length + 1 > CHUNK_SIZE && currentChunk.length > 0) { textChunks.push(currentChunk); currentChunk = paragraph; } 
-                else { currentChunk = currentChunk ? (currentChunk + "\n" + paragraph) : paragraph; }
+
+                // Quy tắc 1: Một dòng đơn lẻ quá lớn
+                if (currentChunk.length === 0 && paragraph.length >= CHUNK_SIZE) {
+                    textChunks.push(paragraph);
+                    // Bỏ qua việc tăng biến đếm vì đây là chunk riêng lẻ
+                    continue;
+                }
+
+                // Quy tắc 2: Thêm dòng mới sẽ vượt quá giới hạn (hoặc độ dài, hoặc số dòng)
+                if ( (currentChunk.length + paragraph.length + 1 > CHUNK_SIZE || currentChunkLineCount >= MAX_LINES_PER_CHUNK) && currentChunk.length > 0 ) {
+                    textChunks.push(currentChunk); // Chốt chunk hiện tại
+                    
+                    // Bắt đầu chunk mới với dòng hiện tại
+                    currentChunk = paragraph;
+                    currentChunkLineCount = 1;
+                } else {
+                    // Thêm dòng vào chunk hiện tại
+                    currentChunk = currentChunk ? (currentChunk + "\n" + paragraph) : paragraph;
+                    currentChunkLineCount++;
+                }
             }
-            if (currentChunk.length > 0) { textChunks.push(currentChunk); }
+
+            // Đừng quên thêm chunk cuối cùng nếu nó còn tồn tại
+            if (currentChunk.length > 0) {
+                textChunks.push(currentChunk);
+            }
             if (textChunks.length > 1 && textChunks[textChunks.length - 1].length < MIN_LAST_CHUNK_SIZE) {
                 var lastChunk = textChunks.pop();
                 var secondLastChunk = textChunks.pop();
