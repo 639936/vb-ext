@@ -239,13 +239,13 @@ function execute(text, from, to) {
     
     if (isUsingBaidu) {
         var baiduFromLang = from;
-        var vietnameseToLanguages = ['vi_tieuchuan', 'vi_sac', 'vi_vietlai', 'vi_NameEng'];
+        var vietnameseToLanguages = ['vi_tieuchuan', 'vi_sac', 'vi_vietlai', 'vi_NameEng', 'vi_layname'];
         if (from === 'vi' && vietnameseToLanguages.indexOf(to) > -1) {
             baiduFromLang = 'zh';
         }
         const BAIDU_CHUNK_SIZE = 500;
         var baiduTranslatedParts = [];
-        var baiduToLang = (to === 'vi_sac' || to === 'vi_vietlai' || to === 'vi_NameEng' || to === 'vi_tieuchuan') ? 'vi' : to;
+        var baiduToLang = (to === 'vi_sac' || to === 'vi_vietlai' || to === 'vi_NameEng' || to === 'vi_tieuchuan' || to === 'vi_layname') ? 'vi' : to;
         for (var i = 0; i < lines.length; i += BAIDU_CHUNK_SIZE) {
             var currentChunkLines = lines.slice(i, i + BAIDU_CHUNK_SIZE);
             var chunkText = currentChunkLines.join('\n');
@@ -271,7 +271,7 @@ function execute(text, from, to) {
             var CHUNK_SIZE = 4000;
             var MIN_LAST_CHUNK_SIZE = 1000;
             if (modelToUse === "gemini-2.5-flash" || modelToUse === "gemini-2.5-flash-preview-05-20" || modelToUse === "gemini-2.5-pro") {
-                CHUNK_SIZE = 2000;
+                CHUNK_SIZE = 3000;
                 MIN_LAST_CHUNK_SIZE = 1000;
             }
 
@@ -346,7 +346,7 @@ function execute(text, from, to) {
         }
     }
 
-    if (cacheKey && finalContent && !finalContent.includes("LỖI DỊCH")) {
+    if (cacheKey && finalContent && !finalContent.includes("LỖI DỊCH") && to !== 'vi_layname') {
         if (cacheableModels.indexOf(modelsucess) > -1) {
             manageCacheAndSave(cacheKey, finalContent.trim());
         }
