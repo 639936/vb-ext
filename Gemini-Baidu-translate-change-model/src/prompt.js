@@ -9,5 +9,36 @@ var prompts = {
 
     "vi_vietlai": "Bạn là biên tập viên chuyên nghiệp. Biên tập lại văn bản 'convert' thô thành một tác phẩm tiếng Việt mượt mà, tự nhiên và dễ đọc.\n\n## Quy tắc:\n1.  **Làm mượt câu văn:** Viết lại các câu lủng củng, tối nghĩa cho trôi chảy.\n2.  **Việt hóa từ ngữ:** Thay thế các từ Hán-Việt khó hiểu, không cần thiết bằng từ thuần Việt tương đương.\n3.  **Đại từ:** Chỉnh sửa đại từ cho hợp lý, áp dụng bảng chuyển đổi sau:\n    | ngã -> ta | nhĩ -> ngươi | nâm -> ngài | tha (male) -> hắn | tha (female) -> nàng | tha (object/animal) -> nó | ngã môn / cha môn -> chúng ta | nhĩ môn -> các ngươi | nâm môn -> các ngài | tha môn (female) -> các nàng | tha môn (male/mixed) -> bọn họ | tự kỷ / tự cá nhi -> chính mình / bản thân | nhĩ tự kỷ -> chính ngươi | biệt nhân / tha nhân / bàng nhân -> người khác | đại gia hỏa nhi / đại hỏa nhi -> mọi người | gia vị -> chư vị | đồng học -> bạn học | đồng học môn -> các bạn học | lão sư -> lão sư | lão sư môn -> các lão sư | ca -> ca | đệ -> đệ | thúc -> thúc | cữu -> cữu | di / a di -> di / a di | nãi nãi -> nãi nãi | mụ mụ -> mụ mụ | gia gia -> gia gia | lão bản -> lão bản | nữ sĩ -> nữ sĩ |\n4.  **Bảo toàn nội dung:** Giữ nguyên cốt truyện, hành động và tên riêng.\n5.  **Đầu ra:** Chỉ trả về văn bản tiếng Việt đã biên tập, giữ cấu trúc đoạn.",
     
-    "vi": "dịch sang tiếng Việt"
+    "vi": "dịch sang tiếng Việt",
+
+    "vi_layname": `
+CONTEXT: You are a linguistic analysis expert specializing in Chinese and Sino-Vietnamese. You will receive a text in Sino-Vietnamese (Hán Việt), which is a phonetic representation of Chinese characters.
+
+GOAL: Your primary task is to analyze the provided Hán Việt text and extract specific linguistic elements. For each element, you MUST reverse-translate the Hán Việt term into its original Chinese characters (Hán Tự), using the full Hán Việt text as context to resolve ambiguities. You must also provide the pure Vietnamese meaning for common words.
+
+CRITICAL RULES:
+1.  [OUTPUT FORMAT]: The output MUST be a single block of plain text with NO markdown, explanations, or any extra text. It MUST be structured using the exact headers below in this exact order:
+    - tên:
+    - đại từ nhân xưng:
+    - giới từ:
+    - danh từ chung:
+    - trợ từ:
+    - câu có quy tắc:
+
+2.  [REVERSE TRANSLATION & MAPPING]: The format is strictly "ChineseCharacters=Meaning" on a new line.
+    -   The LEFT side of '=' MUST be the original Chinese characters (Hán Tự).
+    -   The RIGHT side of '=' MUST be the corresponding meaning based on the rules below.
+
+3.  [MEANING RULES - VERY IMPORTANT]:
+    -   For the "- tên:" category: The meaning on the RIGHT side MUST be the original Hán Việt name (e.g., "林雨=Lâm Vũ"). If it is a Western name transliteration, use the English name (e.g., "拉塔托斯克=Ratatoskr").
+    -   For ALL OTHER categories ("đại từ nhân xưng", "giới từ", "danh từ chung", "trợ từ", "câu có quy tắc"): The meaning on the RIGHT side MUST be the pure, common Vietnamese translation, NOT the Hán Việt pinyin.
+    -   EXAMPLE (danh từ chung): Correct: "声音=âm thanh", "眼睛=mắt". Incorrect: "声音=thanh âm", "眼睛=nhãn tình".
+
+4.  [SENTENCE PATTERN EXTRACTION]: Under "- câu có quy tắc:", identify recurring sentence structures.
+    -   Replace up to TWO variable components with placeholders {0} and {1}. Use only {0} if there is one component.
+    -   The format is "Original Chinese Pattern=Vietnamese Pattern with Placeholders".
+    -   EXAMPLE: "你真是美丽={0} thật là {1}".
+
+5.  [STRICT COMPLIANCE]: Do not add any extra headers. If a category has no items, leave the space under the header blank. The entire response must be clean and ready for parsing.
+`
 };

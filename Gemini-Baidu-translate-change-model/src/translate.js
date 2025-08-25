@@ -261,24 +261,24 @@ function execute(text, from, to) {
         if (!models || models.length === 0) { return Response.error("LỖI: Vui lòng cấu hình ít nhất 1 model."); }
         
         var selectedPrompt = prompts[to] || prompts["vi"];
-        var pinyinLanguages = ['vi_tieuchuan', 'vi_sac', 'vi_NameEng'];
+        var pinyinLanguages = ['vi_tieuchuan', 'vi_sac', 'vi_NameEng', 'vi_layname'];
         var isPinyinRoute = pinyinLanguages.indexOf(to) > -1;
         var translationSuccessful = false;
         var errorLog = {};
 
         for (var m = 0; m < models.length; m++) {
             var modelToUse = models[m];
-            var CHUNK_SIZE = 3000;
+            var CHUNK_SIZE = 4000;
             var MIN_LAST_CHUNK_SIZE = 1000;
             if (modelToUse === "gemini-2.5-flash" || modelToUse === "gemini-2.5-flash-preview-05-20" || modelToUse === "gemini-2.5-pro") {
-                CHUNK_SIZE = 3000;
+                CHUNK_SIZE = 2000;
                 MIN_LAST_CHUNK_SIZE = 1000;
             }
 
             var textChunks = [];
             var currentChunk = "";
             var currentChunkLineCount = 0;
-            const MAX_LINES_PER_CHUNK = 60;
+            const MAX_LINES_PER_CHUNK = 50;
 
             for (var i = 0; i < lines.length; i++) {
                 var paragraph = lines[i];
@@ -341,7 +341,7 @@ function execute(text, from, to) {
                 errorString += "\n";
             }
             errorString += "\n<<<<<--- KẾT THÚC BÁO CÁO LỖI --->>>>>";
-            //finalContent = errorString;
+            finalContent = errorString;
             return Response.error;
         }
     }
