@@ -5,9 +5,7 @@ load("baidutranslate.js");
 
 var modelsucess = "";
 var models = [
-    "gemini-2.5-pro",
     "gemini-2.5-flash-preview-05-20",
-    "gemini-2.5-flash",
     "gemini-2.5-flash-lite"
 ];
 var cacheableModels = ["gemini-2.5-pro", "gemini-2.5-flash-preview-05-20"];
@@ -122,7 +120,7 @@ function translateChunkWithApiRetry(chunkText, prompt, modelToUse, keysToTry) {
 
         if (i < keysToTry.length - 1) {
             try {
-                sleep(100); 
+                sleep(1000); 
             } catch (e) {
                 // Bỏ qua lỗi
             }
@@ -268,10 +266,10 @@ function execute(text, from, to) {
 
         for (var m = 0; m < models.length; m++) {
             var modelToUse = models[m];
-            var CHUNK_SIZE = 4000;
+            var CHUNK_SIZE = 9000;
             var MIN_LAST_CHUNK_SIZE = 1000;
             if (modelToUse === "gemini-2.5-flash" || modelToUse === "gemini-2.5-flash-preview-05-20" || modelToUse === "gemini-2.5-pro") {
-                CHUNK_SIZE = 2000;
+                CHUNK_SIZE = 6000;
                 MIN_LAST_CHUNK_SIZE = 1000;
             }
 
