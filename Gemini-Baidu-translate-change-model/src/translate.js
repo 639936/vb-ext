@@ -120,7 +120,7 @@ function translateChunkWithApiRetry(chunkText, prompt, modelToUse, keysToTry) {
 
         if (i < keysToTry.length - 1) {
             try {
-                sleep(1000); 
+                sleep(100); 
             } catch (e) {
                 // Bỏ qua lỗi
             }
@@ -269,8 +269,8 @@ function execute(text, from, to) {
             var CHUNK_SIZE = 9000;
             var MIN_LAST_CHUNK_SIZE = 1000;
             if (modelToUse === "gemini-2.5-flash" || modelToUse === "gemini-2.5-flash-preview-05-20" || modelToUse === "gemini-2.5-pro") {
-                CHUNK_SIZE = 6000;
-                MIN_LAST_CHUNK_SIZE = 1000;
+                CHUNK_SIZE = 2000;
+                MIN_LAST_CHUNK_SIZE = 600;
             }
 
             var textChunks = [];
