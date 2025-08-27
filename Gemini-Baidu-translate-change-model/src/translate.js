@@ -73,10 +73,10 @@ function callGeminiAPI(text, prompt, apiKey, model) {
     if (!apiKey) { return { status: "error", message: "API Key không hợp lệ." }; }
     if (!text || text.trim() === '') { return { status: "success", data: "" }; }
     modelsucess = model;
-    var full_prompt = prompt + "\n\n---\n\n" + text;
+    var full_prompt = prompt + "\n\nDưới đây là văn bản cần xử lý\n\n" + text;
     var url = "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent?key=" + apiKey;
     var body = {
-        "contents": [{ "parts": [{ "text": full_prompt }] }],
+        "contents": [{ "role": "user", "parts": [{ "text": full_prompt }] }],
         "generationConfig": { "temperature": 1.0, "topP": 1.0, "topK": 40, "maxOutputTokens": 65536 },
         "safetySettings": [
             { "category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE" },
