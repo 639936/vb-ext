@@ -13,8 +13,6 @@ var models = [
 ];
 var cacheableModels = ["gemini-2.5-pro", "gemini-2.5-flash-preview-05-20"];
 
-// --- CÁC HÀM TIỆN ÍCH (KHÔNG THAY ĐỔI) ---
-
 function generateFingerprintCacheKey(lines) {
     var keyParts = "";
     var linesForId = lines.slice(0, 5); 
@@ -88,9 +86,6 @@ function callGeminiAPI(text, prompt, apiKey, model) {
     } catch (e) { return { status: "error", message: "Ngoại lệ Javascript: " + e.toString() }; }
 }
 
-
-// --- CÁC HÀM CẢI TIẾN VÀ TÁI CẤU TRÚC ---
-
 function translateChunkWithApiRetry(chunkText, prompt, modelToUse, keysToTry) {
     var keyErrors = [];
     var failedKeys = [];
@@ -158,7 +153,6 @@ function handleGeminiTranslation(lines, from, to, rotatedApiKeys) {
     for (var m = 0; m < modelsToAttempt.length; m++) {
         var modelToUse = modelsToAttempt[m];
         
-        // [CẢI TIẾN] Khai báo CHUNK_SIZE rõ ràng, dễ tùy chỉnh
         var CHUNK_SIZE;
         var MIN_LAST_CHUNK_SIZE;
 
@@ -169,20 +163,21 @@ function handleGeminiTranslation(lines, from, to, rotatedApiKeys) {
              CHUNK_SIZE = 1500;
              MIN_LAST_CHUNK_SIZE = 600;
         }else {
-            // Giá trị mặc định cho các model khác (nếu có)
             CHUNK_SIZE = 4000;
             MIN_LAST_CHUNK_SIZE = 1000;
         }
-        // Bạn có thể thêm các điều kiện khác ở đây, ví dụ:
-        // else if (modelToUse === "some-future-model") {
-        //     CHUNK_SIZE = 3000;
-        //     MIN_LAST_CHUNK_SIZE = 800;
-        // }
 
         var textChunks = [];
         var currentChunk = "";
         for (var i = 0; i < lines.length; i++) {
             var paragraph = lines[i];
+
+            // [SỬA LỖI] Thêm bước kiểm tra cho đoạn văn siêu dài
+            if (currentChunk.length === 0 && paragraph.length >= CHUNK_SIZE) {
+                textChunks.push(paragraph);
+                continue; 
+            }
+            
             if ((currentChunk.length + paragraph.length + 1 > CHUNK_SIZE) && currentChunk.length > 0) {
                 textChunks.push(currentChunk);
                 currentChunk = paragraph;
@@ -241,12 +236,10 @@ function handleGeminiTranslation(lines, from, to, rotatedApiKeys) {
 }
 
 function determineTranslationStrategy(text, lines, from, to) {
-    // [CẢI TIẾN] Khai báo các ngưỡng rõ ràng ở đầu hàm để dễ tùy chỉnh
     var lengthThreshold = 1000;
     var lineLengthThreshold = 25;
     var shortLineRatio = 0.8;
 
-    // Tùy chỉnh ngưỡng cho 'vi_vietlai'
     if (to === 'vi_vietlai') {
         lengthThreshold = 1500;
         lineLengthThreshold = 50;
@@ -270,12 +263,10 @@ function determineTranslationStrategy(text, lines, from, to) {
 
     var useBaidu = isShortContent || isChapterList;
 
-    // Logic đặc biệt cho vi_vietlai: không dịch text ngắn/danh sách chương
     if (to === 'vi_vietlai' && useBaidu) {
         return { strategy: 'return_original' };
     }
 
-    // Logic đặc biệt: Ưu tiên Gemini cho text ngắn nếu là cặp ngôn ngữ phổ thông
     var isShortTextForcedGemini = (['zh', 'en', 'vi'].indexOf(from) > -1) && (['zh', 'en', 'vi'].indexOf(to) > -1);
     if (useBaidu && !isChapterList && isShortTextForcedGemini) {
         return { strategy: 'gemini' };
