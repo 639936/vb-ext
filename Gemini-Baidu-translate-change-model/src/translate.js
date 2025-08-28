@@ -292,6 +292,14 @@ function execute(text, from, to) {
 
     var lines = text.split('\n');
 
+    var validToList = [
+        'vi_xoacache', 'vi', 'vi_tieuchuan', 'vi_sac', 
+        'vi_NameEng', 'vi_vietlai', 'vi_layname', 'en', 'zh'
+    ];
+    if (validToList.indexOf(to) === -1) {
+        to = 'vi';
+    }
+
     if (to === 'vi_xoacache') {
         var isChapterContentForDelete = text.length >= 800;
         if (isChapterContentForDelete) {
