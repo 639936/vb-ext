@@ -162,10 +162,13 @@ function handleGeminiTranslation(lines, from, to, rotatedApiKeys) {
         var CHUNK_SIZE;
         var MIN_LAST_CHUNK_SIZE;
 
-        if (modelToUse === "gemini-2.5-pro" || modelToUse === "gemini-2.5-flash-preview-05-20" || modelToUse === "gemini-2.5-flash") {
+        if (modelToUse === "gemini-2.5-flash-preview-05-20" || modelToUse === "gemini-2.5-flash") {
             CHUNK_SIZE = 2000;
             MIN_LAST_CHUNK_SIZE = 600;
-        } else {
+        }  else if (modelToUse === "gemini-2.5-pro") {
+             CHUNK_SIZE = 1500;
+             MIN_LAST_CHUNK_SIZE = 600;
+        }else {
             // Giá trị mặc định cho các model khác (nếu có)
             CHUNK_SIZE = 4000;
             MIN_LAST_CHUNK_SIZE = 1000;
