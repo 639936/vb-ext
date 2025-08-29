@@ -1,16 +1,15 @@
-
 load("language_list.js"); 
 load("apikey.js");
 load("prompt.js");
 load("baidutranslate.js");
 
 var modelsucess = "";
+// Danh sách model mặc định khi người dùng không chỉ định
 var models = [
-    "gemini-2.5-pro",
     "gemini-2.5-flash-preview-05-20",
-    "gemini-2.5-flash",
     "gemini-2.5-flash-lite"
 ];
+// Danh sách các model có kết quả được lưu vào cache
 var cacheableModels = ["gemini-2.5-pro", "gemini-2.5-flash-preview-05-20"];
 
 function generateFingerprintCacheKey(lines) {
@@ -30,12 +29,14 @@ function generateFingerprintCacheKey(lines) {
 function manageCacheAndSave(cacheKey, contentToSave) {
     const MAX_CACHE_SIZE = 50;
     const CACHE_MANIFEST_KEY = "vbook_cache_manifest";
+
     try {
         var manifest = [];
         var rawManifest = localStorage.getItem(CACHE_MANIFEST_KEY);
         if (rawManifest) {
             manifest = JSON.parse(rawManifest);
         }
+
         while (manifest.length >= MAX_CACHE_SIZE) {
             manifest.sort(function(a, b) { return a.ts - b.ts; });
             var oldestItem = manifest.shift();
@@ -43,13 +44,17 @@ function manageCacheAndSave(cacheKey, contentToSave) {
                 localStorage.removeItem(oldestItem.key);
             }
         }
+
         manifest.push({ key: cacheKey, ts: Date.now() });
         localStorage.setItem(CACHE_MANIFEST_KEY, JSON.stringify(manifest));
         localStorage.setItem(cacheKey, contentToSave);
+
     } catch (e) {
         try {
             localStorage.setItem(cacheKey, contentToSave);
-        } catch (e2) {}
+        } catch (e2) {
+            // Bỏ qua nếu vẫn lỗi
+        }
     }
 }
 
@@ -72,6 +77,7 @@ function callGeminiAPI(text, prompt, apiKey, model) {
     try {
         var response = fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
         var responseText = response.text(); 
+
         if (response.ok) {
             var result = JSON.parse(responseText);
             if (result.candidates && result.candidates.length > 0 && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts.length > 0 && result.candidates[0].content.parts[0].text) {
@@ -88,195 +94,30 @@ function callGeminiAPI(text, prompt, apiKey, model) {
 
 function translateChunkWithApiRetry(chunkText, prompt, modelToUse, keysToTry) {
     var keyErrors = [];
-    var failedKeys = [];
     for (var i = 0; i < keysToTry.length; i++) {
         var apiKeyToUse = keysToTry[i];
         var result = callGeminiAPI(chunkText, prompt, apiKeyToUse, modelToUse);
+        
         if (result.status === "success") {
             if ((result.data.length / chunkText.length) < 0.8) {
                 result.status = "short_result_error";
                 result.message = "Kết quả trả về ngắn hơn 80% so với văn bản gốc.";
-                keyErrors.push("  + Key " + (i + 1) + " (" + apiKeyToUse.substring(0, 5) + "...):\n    " + result.message.replace(/\n/g, '\n    '));
             } else {
-                return result;
+                return result; 
             }
-        } else if (result.status === "key_error") {
-            failedKeys.push(apiKeyToUse);
-            keyErrors.push("  + Key " + (i + 1) + " (" + apiKeyToUse.substring(0, 5) + "...):\n    " + result.message.replace(/\n/g, '\n    '));
-        } else {
-            keyErrors.push("  + Key " + (i + 1) + " (" + apiKeyToUse.substring(0, 5) + "...):\n    " + result.message.replace(/\n/g, '\n    '));
-            return { status: result.status, message: result.message, details: keyErrors, failedKeys: failedKeys };
         }
+        
+        keyErrors.push("  + Key " + (i + 1) + " (" + apiKeyToUse.substring(0, 4) + "...):\n    " + result.message.replace(/\n/g, '\n    '));
+
         if (i < keysToTry.length - 1) {
             try { sleep(100); } catch (e) {}
         }
     }
-    return { status: 'all_keys_failed', message: 'Tất cả API keys đều thất bại.', details: keyErrors, failedKeys: failedKeys }; 
-}
-
-function handleBaiduTranslation(lines, to) {
-    var baiduFromLang = "auto";
-    var baiduToLang = (['vi', 'zh', 'en'].indexOf(to) > -1) ? to : 'vi';
-    const BAIDU_CHUNK_SIZE = 500;
-    var baiduTranslatedParts = [];
-    for (var i = 0; i < lines.length; i += BAIDU_CHUNK_SIZE) {
-        var currentChunkLines = lines.slice(i, i + BAIDU_CHUNK_SIZE);
-        var chunkText = currentChunkLines.join('\n');
-        var translatedChunk = baiduTranslateContent(chunkText, baiduFromLang, baiduToLang, 0); 
-        if (translatedChunk === null) {
-            return { success: false, content: "Lỗi Baidu Translate. Vui lòng thử lại." };
-        }
-        baiduTranslatedParts.push(translatedChunk);
-    }
-    return { success: true, content: baiduTranslatedParts.join('\n') };
-}
-
-function handleGeminiTranslation(lines, from, to, rotatedApiKeys) {
-    if (!rotatedApiKeys || rotatedApiKeys.length === 0) { return { success: false, content: "LỖI: Vui lòng cấu hình ít nhất 1 API key." }; }
-    if (!models || models.length === 0) { return { success: false, content: "LỖI: Vui lòng cấu hình ít nhất 1 model." }; }
-    
-    var modelsToAttempt = [];
-    var originalTo = to;
-    if (from.startsWith("gen_")) {
-        modelsToAttempt.push(from.substring(4));
-    } else {
-        if (from === 'en') { to = 'vi'; } 
-        else if (from !== 'zh') { from = 'zh'; }
-        modelsToAttempt = models;
-    }
-
-    var selectedPrompt = prompts[originalTo] || prompts["vi"];
-    var isPinyinRoute = ['vi_tieuchuan', 'vi_sac', 'vi_NameEng', 'vi_layname'].indexOf(originalTo) > -1;
-    var errorLog = {};
-    var activeApiKeys = rotatedApiKeys.slice();
-
-    for (var m = 0; m < modelsToAttempt.length; m++) {
-        var modelToUse = modelsToAttempt[m];
-        
-        var CHUNK_SIZE;
-        var MIN_LAST_CHUNK_SIZE;
-
-        if (modelToUse === "gemini-2.5-flash-preview-05-20" || modelToUse === "gemini-2.5-flash") {
-            CHUNK_SIZE = 2000;
-            MIN_LAST_CHUNK_SIZE = 600;
-        }  else if (modelToUse === "gemini-2.5-pro") {
-             CHUNK_SIZE = 1500;
-             MIN_LAST_CHUNK_SIZE = 600;
-        }else {
-            CHUNK_SIZE = 4000;
-            MIN_LAST_CHUNK_SIZE = 1000;
-        }
-
-        var textChunks = [];
-        var currentChunk = "";
-        for (var i = 0; i < lines.length; i++) {
-            var paragraph = lines[i];
-
-            // [SỬA LỖI] Thêm bước kiểm tra cho đoạn văn siêu dài
-            if (currentChunk.length === 0 && paragraph.length >= CHUNK_SIZE) {
-                textChunks.push(paragraph);
-                continue; 
-            }
-            
-            if ((currentChunk.length + paragraph.length + 1 > CHUNK_SIZE) && currentChunk.length > 0) {
-                textChunks.push(currentChunk);
-                currentChunk = paragraph;
-            } else {
-                currentChunk = currentChunk ? (currentChunk + "\n" + paragraph) : paragraph;
-            }
-        }
-        if (currentChunk.length > 0) textChunks.push(currentChunk);
-        if (textChunks.length > 1 && textChunks[textChunks.length - 1].length < MIN_LAST_CHUNK_SIZE) {
-            var lastChunk = textChunks.pop();
-            textChunks.push(textChunks.pop() + "\n" + lastChunk);
-        }
-
-        var finalParts = [];
-        var currentModelFailed = false;
-        for (var k = 0; k < textChunks.length; k++) {
-            var chunkToSend = textChunks[k];
-            if (isPinyinRoute) {
-                try {
-                    load("phienam.js");
-                    chunkToSend = phienAmToHanViet(chunkToSend);
-                } catch (e) { return { success: false, content: "LỖI: Không thể tải file phienam.js." }; }
-            }
-            if (activeApiKeys.length === 0) {
-                currentModelFailed = true;
-                errorLog[modelToUse] = ["Không còn API key hợp lệ để thử."];
-                break;
-            }
-            var chunkResult = translateChunkWithApiRetry(chunkToSend, selectedPrompt, modelToUse, activeApiKeys);
-            if (chunkResult.status === 'success') {
-                finalParts.push(chunkResult.data);
-            } else {
-                errorLog[modelToUse] = chunkResult.details;
-                currentModelFailed = true;
-                if (chunkResult.failedKeys && chunkResult.failedKeys.length > 0) {
-                    activeApiKeys = activeApiKeys.filter(function(key) { return chunkResult.failedKeys.indexOf(key) === -1; });
-                }
-                break; 
-            }
-        }
-
-        if (!currentModelFailed) {
-            var finalContent = modelsucess + " . " + finalParts.join('\n\n');
-            return { success: true, content: finalContent, modelUsed: modelsucess };
-        }
-    } 
-
-    var errorString = "<<<<<--- LỖI DỊCH (ĐÃ THỬ HẾT CÁC MODEL) --->>>>>\n";
-    for (var modelName in errorLog) {
-        errorString += "\n--- Chi tiết lỗi với Model: " + modelName + " ---\n";
-        if (errorLog[modelName]) errorString += errorLog[modelName].join("\n");
-        errorString += "\n";
-    }
-    errorString += "\n<<<<<--- KẾT THÚC BÁO CÁO LỖI --->>>>>";
-    return { success: false, content: errorString };
-}
-
-function determineTranslationStrategy(text, lines, from, to) {
-    var lengthThreshold = 1000;
-    var lineLengthThreshold = 25;
-    var shortLineRatio = 0.8;
-
-    if (to === 'vi_vietlai') {
-        lengthThreshold = 1500;
-        lineLengthThreshold = 50;
-    }
-
-    var isShortContent = text.length < lengthThreshold;
-    var isChapterList = false;
-    
-    var totalLines = lines.length;
-    if (totalLines > 0) {
-        var shortLinesCount = 0;
-        for (var i = 0; i < totalLines; i++) {
-            if (lines[i].length < lineLengthThreshold) {
-                shortLinesCount++;
-            }
-        }
-        if ((shortLinesCount / totalLines) > shortLineRatio) {
-            isChapterList = true;
-        }
-    }
-
-    var useBaidu = isShortContent || isChapterList;
-
-    if (to === 'vi_vietlai' && useBaidu) {
-        return { strategy: 'return_original' };
-    }
-
-    var isShortTextForcedGemini = (['zh', 'en', 'vi'].indexOf(from) > -1) && (['zh', 'en', 'vi'].indexOf(to) > -1);
-    if (useBaidu && !isChapterList && isShortTextForcedGemini) {
-        return { strategy: 'gemini' };
-    }
-    
-    if (useBaidu) {
-        return { strategy: 'baidu' };
-    }
-
-    return { strategy: 'gemini' };
+    return { 
+        status: 'all_keys_failed', 
+        message: 'Tất cả API keys đều thất bại cho chunk này.',
+        details: keyErrors 
+    }; 
 }
 
 function execute(text, from, to) {
@@ -284,16 +125,22 @@ function execute(text, from, to) {
         return Response.success("?");
     }
 
-    var lines = text.split('\n');
-
-    var validToList = [
-        'vi_xoacache', 'vi', 'vi_tieuchuan', 'vi_sac', 
-        'vi_NameEng', 'vi_vietlai', 'vi_layname', 'en', 'zh'
-    ];
-    if (validToList.indexOf(to) === -1) {
-        to = 'vi';
+    var apiKeyStorageKey = "vbook_last_api_key_index";
+    var rotatedApiKeys = apiKeys; 
+    try {
+        if (apiKeys && apiKeys.length > 1) {
+            var lastUsedIndex = parseInt(localStorage.getItem(apiKeyStorageKey) || "-1");
+            var nextIndex = (lastUsedIndex + 1) % apiKeys.length;
+            rotatedApiKeys = apiKeys.slice(nextIndex).concat(apiKeys.slice(0, nextIndex));
+            localStorage.setItem(apiKeyStorageKey, nextIndex.toString());
+        }
+    } catch (e) {
+        rotatedApiKeys = apiKeys;
     }
 
+    var lines = text.split('\n');
+
+    // Logic xóa cache được ưu tiên chạy trước
     if (to === 'vi_xoacache') {
         var isChapterContentForDelete = text.length >= 800;
         if (isChapterContentForDelete) {
@@ -312,57 +159,216 @@ function execute(text, from, to) {
                     var rawManifest = localStorage.getItem(CACHE_MANIFEST_KEY);
                     if (rawManifest) {
                         var manifest = JSON.parse(rawManifest);
-                        var updatedManifest = manifest.filter(function(item) { return item.key !== cacheKeyToDelete; });
+                        var updatedManifest = manifest.filter(function(item) {
+                            return item.key !== cacheKeyToDelete;
+                        });
                         localStorage.setItem(CACHE_MANIFEST_KEY, JSON.stringify(updatedManifest));
                     }
                 } catch (e) {}
                 return Response.success("Đã xóa cache thành công." + text);
-            } else { return Response.success(text); }
-        } else { return Response.success(text); }
-    }
-
-    var rotatedApiKeys = apiKeys; 
-    try {
-        if (apiKeys && apiKeys.length > 1) {
-            var apiKeyStorageKey = "vbook_last_api_key_index";
-            var lastUsedIndex = parseInt(localStorage.getItem(apiKeyStorageKey) || "-1");
-            var nextIndex = (lastUsedIndex + 1) % apiKeys.length;
-            rotatedApiKeys = apiKeys.slice(nextIndex).concat(apiKeys.slice(0, nextIndex));
-            localStorage.setItem(apiKeyStorageKey, nextIndex.toString());
+            }
         }
-    } catch (e) {}
+        return Response.success(text); // Trả về text gốc nếu không có gì để xóa hoặc không phải nội dung chương
+    }
     
-    var strategyResult = determineTranslationStrategy(text, lines, from, to);
-    var finalResult;
-
-    if (strategyResult.strategy === 'return_original') {
-        return Response.success(text);
-    } 
-    else if (strategyResult.strategy === 'baidu') {
-        finalResult = handleBaiduTranslation(lines, to);
-    } 
-    else { // 'gemini'
-        var cacheKey = null;
-        try {
-            cacheKey = generateFingerprintCacheKey(lines);
-            var cachedTranslation = localStorage.getItem(cacheKey);
-            if (cachedTranslation) {
-                return Response.success(cachedTranslation);
+    // Logic xác định loại văn bản (ngắn/danh sách hay nội dung chương)
+    var isShortTextOrList = false;
+    var lengthThreshold = 1000;   
+    var lineLengthThreshold = 25; 
+    if (to === 'vi_vietlai') {
+        lengthThreshold = 1500;
+        lineLengthThreshold = 50;
+    }
+    if (text.length < lengthThreshold) {
+        isShortTextOrList = true;
+    } else {
+        var shortLinesCount = 0;
+        var totalLines = lines.length;
+        if (totalLines > 0) {
+            for (var i = 0; i < totalLines; i++) {
+                if (lines[i].length < lineLengthThreshold) { shortLinesCount++; }
             }
-        } catch (e) {}
-
-        finalResult = handleGeminiTranslation(lines, from, to, rotatedApiKeys);
-
-        if (finalResult.success && cacheKey && !finalResult.content.includes("LỖI DỊCH") && to !== 'vi_layname') {
-            if (finalResult.modelUsed && cacheableModels.indexOf(finalResult.modelUsed) > -1) {
-                manageCacheAndSave(cacheKey, finalResult.content.trim());
+            if ((shortLinesCount / totalLines) > 0.8) {
+                isShortTextOrList = true;
             }
         }
     }
-
-    if (finalResult.success) {
-        return Response.success(finalResult.content.trim());
-    } else {
-        return Response.error(finalResult.content);
+    if (to === 'vi_vietlai' && isShortTextOrList) {
+        return Response.success(text);
     }
+
+    var finalContent = "";
+    var useGeminiForShortText = false;
+    
+    // Phân luồng xử lý chính
+    if (isShortTextOrList) {
+        // Trường hợp đặc biệt: Dùng Gemini cho text ngắn nếu from/to là ngôn ngữ cơ bản
+        var basicLangs = ['zh', 'en', 'vi', 'auto'];
+        if (basicLangs.indexOf(from) > -1 && basicLangs.indexOf(to) > -1) {
+            useGeminiForShortText = true;
+        }
+    }
+
+    if (isShortTextOrList && !useGeminiForShortText) {
+        // LUỒNG 1: Dịch bằng Baidu cho text ngắn/danh sách
+        const BAIDU_CHUNK_SIZE = 500;
+        var baiduTranslatedParts = [];
+        var basicBaiduLangs = ['vi', 'zh', 'en'];
+        var baiduToLang = basicBaiduLangs.indexOf(to) > -1 ? to : 'vi';
+
+        for (var i = 0; i < lines.length; i += BAIDU_CHUNK_SIZE) {
+            var currentChunkLines = lines.slice(i, i + BAIDU_CHUNK_SIZE);
+            var chunkText = currentChunkLines.join('\n');
+            // Gán 'from' là 'auto' cho Baidu
+            var translatedChunk = baiduTranslateContent(chunkText, 'auto', baiduToLang, 0); 
+            if (translatedChunk === null) {
+                return Response.error("Lỗi Baidu Translate. Vui lòng thử lại.");
+            }
+            baiduTranslatedParts.push(translatedChunk);
+        }
+        finalContent = baiduTranslatedParts.join('\n');
+    } else {
+        // LUỒNG 2: Dịch bằng Gemini (cho nội dung chương hoặc trường hợp đặc biệt)
+        if (!rotatedApiKeys || rotatedApiKeys.length === 0) { return Response.error("LỖI: Vui lòng cấu hình ít nhất 1 API key."); }
+        
+        var cacheKey = null;
+        if (!isShortTextOrList) { // Chỉ kiểm tra cache cho nội dung chương
+             try {
+                cacheKey = generateFingerprintCacheKey(lines);
+                var cachedTranslation = localStorage.getItem(cacheKey);
+                if (cachedTranslation) {
+                    return Response.success(cachedTranslation);
+                }
+            } catch (e) {
+                cacheKey = null;
+            }
+        }
+        
+        // --- Logic mới để xác định model và cách chạy ---
+        var modelToUse = null;
+        var useModelLoop = true;
+        var finalTo = to; 
+        var isPinyinRoute = false; // Mặc định là không dùng phiên âm
+        var validModels = ["gemini-2.5-pro", "gemini-2.5-flash-preview-05-20", "gemini-2.5-flash", "gemini-2.5-flash-lite"];
+        var pinyinLangs = ['vi_tieuchuan', 'vi_sac', 'vi_NameEng', 'vi_layname'];
+
+        if (validModels.indexOf(from) > -1) {
+            modelToUse = from;
+            useModelLoop = false;
+            // Nếu dùng model và to là ngôn ngữ convert -> dùng phiên âm
+            if (pinyinLangs.indexOf(to) > -1) {
+                isPinyinRoute = true;
+            }
+        } else if (from === 'en' || from === 'vi') {
+            // Trường hợp nguồn là Anh hoặc Việt -> Không dùng phiên âm
+            var validTargets = ['zh', 'vi', 'en'];
+            if (validTargets.indexOf(finalTo) === -1) {
+                finalTo = 'vi';
+            }
+            isPinyinRoute = false; 
+        } else {
+            // Các trường hợp còn lại mặc định là 'zh' -> Có thể dùng phiên âm
+            if (pinyinLangs.indexOf(to) > -1) {
+                isPinyinRoute = true;
+            }
+        }
+
+        var selectedPrompt = prompts[finalTo] || prompts["vi"];
+        
+        // Điều kiện sử dụng phienam.js
+        var pinyinLangs = ['vi_tieuchuan', 'vi_sac', 'vi_NameEng', 'vi_layname'];
+        var isPinyinRoute = (validModels.indexOf(from) > -1 || from === 'zh') && pinyinLangs.indexOf(to) > -1;
+
+        var translationSuccessful = false;
+        var errorLog = {};
+        var modelsToIterate = useModelLoop ? models : [modelToUse];
+
+        for (var m = 0; m < modelsToIterate.length; m++) {
+            var currentModel = modelsToIterate[m];
+            var CHUNK_SIZE = 4000;
+            var MIN_LAST_CHUNK_SIZE = 1000;
+            if (currentModel === "gemini-2.5-pro") {
+                CHUNK_SIZE = 1500;
+                MIN_LAST_CHUNK_SIZE = 600;
+            } else if (currentModel === "gemini-2.5-flash" || currentModel === "gemini-2.5-flash-preview-05-20") {
+                CHUNK_SIZE = 2000;
+                MIN_LAST_CHUNK_SIZE = 600;
+            }; 
+
+            var textChunks = [];
+            var currentChunk = "";
+            var currentChunkLineCount = 0;
+            const MAX_LINES_PER_CHUNK = 50;
+            for (var i = 0; i < lines.length; i++) {
+                var paragraph = lines[i];
+                if (currentChunk.length === 0 && paragraph.length >= CHUNK_SIZE) {
+                    textChunks.push(paragraph);
+                    continue;
+                }
+                if ((currentChunk.length + paragraph.length + 1 > CHUNK_SIZE || currentChunkLineCount >= MAX_LINES_PER_CHUNK) && currentChunk.length > 0 ) {
+                    textChunks.push(currentChunk);
+                    currentChunk = paragraph;
+                    currentChunkLineCount = 1;
+                } else {
+                    currentChunk = currentChunk ? (currentChunk + "\n" + paragraph) : paragraph;
+                    currentChunkLineCount++;
+                }
+            }
+            if (currentChunk.length > 0) textChunks.push(currentChunk);
+            if (textChunks.length > 1 && textChunks[textChunks.length - 1].length < MIN_LAST_CHUNK_SIZE) {
+                var lastChunk = textChunks.pop();
+                var secondLastChunk = textChunks.pop();
+                textChunks.push(secondLastChunk + "\n" + lastChunk);
+            }
+
+            var finalParts = [];
+            var currentModelFailed = false;
+            for (var k = 0; k < textChunks.length; k++) {
+                var chunkToSend = textChunks[k];
+                if (isPinyinRoute && !isShortTextOrList) { // Chỉ phiên âm cho nội dung chương
+                    try {
+                        load("phienam.js");
+                        chunkToSend = phienAmToHanViet(chunkToSend);
+                    } catch (e) { return Response.error("LỖI: Không thể tải file phienam.js."); }
+                }
+                
+                var chunkResult = translateChunkWithApiRetry(chunkToSend, selectedPrompt, currentModel, rotatedApiKeys);
+                
+                if (chunkResult.status === 'success') {
+                    finalParts.push(chunkResult.data);
+                } else {
+                    errorLog[currentModel] = chunkResult.details;
+                    currentModelFailed = true;
+                    break; 
+                }
+            }
+
+            if (!currentModelFailed) {
+                finalContent = modelsucess + " . " + finalParts.join('\n\n');
+                translationSuccessful = true;
+                break; 
+            }
+        } 
+
+        if (!translationSuccessful) {
+            var errorString = "<<<<<--- LỖI DỊCH (ĐÃ THỬ HẾT CÁC MODEL) --->>>>>\n";
+            for (var modelName in errorLog) {
+                errorString += "\n--- Chi tiết lỗi với Model: " + modelName + " ---\n";
+                if(errorLog[modelName]) errorString += errorLog[modelName].join("\n");
+                errorString += "\n";
+            }
+            errorString += "\n<<<<<--- KẾT THÚC BÁO CÁO LỖI --->>>>>";
+            return Response.error(errorString);
+        }
+    }
+
+    // --- Logic lưu cache mới ---
+    if (cacheKey && finalContent && !finalContent.includes("LỖI DỊCH")) {
+        // Chỉ lưu cache khi model nằm trong danh sách cho phép và 'to' không phải 'vi_layname'
+        if (cacheableModels.indexOf(modelsucess) > -1 && to !== 'vi_layname') {
+            manageCacheAndSave(cacheKey, finalContent.trim());
+        }
+    }
+    
+    return Response.success(finalContent.trim());
 }
