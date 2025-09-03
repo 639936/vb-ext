@@ -1,11 +1,7 @@
 load("language_list.js"); 
+load("apikey.js");
 load("prompt.js");
 load("baidutranslate.js");
-
-let apiKeys = [];
-try {
-    apiKeys = (api_keys || "").split("\n").filter(k => k !== "");
-} catch (e) {}
 
 var modelsucess = "";
 var models = [
