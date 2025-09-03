@@ -4,9 +4,7 @@ load("baidutranslate.js");
 
 var apiKeys = [];
 try {
-    if (typeof api_keys !== 'undefined' && api_keys) {
-        apiKeys = (api_keys || "").split("\n").filter(function(k) { return k.trim() !== ""; });
-    }
+    apiKeys = (api_keys || "").split("\n").filter(k => k !== "");
 } catch (e) {}
 
 var modelsucess = "";
