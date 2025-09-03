@@ -1,15 +1,19 @@
 load("language_list.js"); 
-load("apikey.js");
 load("prompt.js");
 load("baidutranslate.js");
 
+var apiKeys = [];
+try {
+    if (typeof api_keys !== 'undefined' && api_keys) {
+        apiKeys = (api_keys || "").split("\n").filter(function(k) { return k.trim() !== ""; });
+    }
+} catch (e) {}
+
 var modelsucess = "";
-// Danh sách model mặc định khi người dùng không chỉ định
 var models = [
     "gemini-2.5-flash-preview-05-20",
     "gemini-2.5-flash-lite"
 ];
-// Danh sách các model có kết quả được lưu vào cache
 var cacheableModels = ["gemini-2.5-pro", "gemini-2.5-flash-preview-05-20"];
 
 function generateFingerprintCacheKey(lines) {
@@ -27,7 +31,7 @@ function generateFingerprintCacheKey(lines) {
 }
 
 function manageCacheAndSave(cacheKey, contentToSave) {
-    const MAX_CACHE_SIZE = 50;
+    const MAX_CACHE_SIZE = 40;
     const CACHE_MANIFEST_KEY = "vbook_cache_manifest";
 
     try {
@@ -52,9 +56,7 @@ function manageCacheAndSave(cacheKey, contentToSave) {
     } catch (e) {
         try {
             localStorage.setItem(cacheKey, contentToSave);
-        } catch (e2) {
-            // Bỏ qua nếu vẫn lỗi
-        }
+        } catch (e2) {}
     }
 }
 
@@ -140,7 +142,6 @@ function execute(text, from, to) {
 
     var lines = text.split('\n');
 
-    // Logic xóa cache được ưu tiên chạy trước
     if (to === 'vi_xoacache') {
         var isChapterContentForDelete = text.length >= 800;
         if (isChapterContentForDelete) {
@@ -168,10 +169,9 @@ function execute(text, from, to) {
                 return Response.success("Đã xóa cache thành công." + text);
             }
         }
-        return Response.success(text); // Trả về text gốc nếu không có gì để xóa hoặc không phải nội dung chương
+        return Response.success(text); 
     }
     
-    // Logic xác định loại văn bản (ngắn/danh sách hay nội dung chương)
     var isShortTextOrList = false;
     var lengthThreshold = 1000;   
     var lineLengthThreshold = 25; 
@@ -200,9 +200,7 @@ function execute(text, from, to) {
     var finalContent = "";
     var useGeminiForShortText = false;
     
-    // Phân luồng xử lý chính
     if (isShortTextOrList) {
-        // Trường hợp đặc biệt: Dùng Gemini cho text ngắn nếu from/to là ngôn ngữ cơ bản
         var basicLangs = ['zh', 'en', 'vi', 'auto'];
         if (basicLangs.indexOf(from) > -1 && basicLangs.indexOf(to) > -1) {
             useGeminiForShortText = true;
@@ -210,7 +208,6 @@ function execute(text, from, to) {
     }
 
     if (isShortTextOrList && !useGeminiForShortText) {
-        // LUỒNG 1: Dịch bằng Baidu cho text ngắn/danh sách
         const BAIDU_CHUNK_SIZE = 500;
         var baiduTranslatedParts = [];
         var basicBaiduLangs = ['vi', 'zh', 'en'];
@@ -219,7 +216,6 @@ function execute(text, from, to) {
         for (var i = 0; i < lines.length; i += BAIDU_CHUNK_SIZE) {
             var currentChunkLines = lines.slice(i, i + BAIDU_CHUNK_SIZE);
             var chunkText = currentChunkLines.join('\n');
-            // Gán 'from' là 'auto' cho Baidu
             var translatedChunk = baiduTranslateContent(chunkText, 'auto', baiduToLang, 0); 
             if (translatedChunk === null) {
                 return Response.error("Lỗi Baidu Translate. Vui lòng thử lại.");
@@ -228,11 +224,10 @@ function execute(text, from, to) {
         }
         finalContent = baiduTranslatedParts.join('\n');
     } else {
-        // LUỒNG 2: Dịch bằng Gemini (cho nội dung chương hoặc trường hợp đặc biệt)
         if (!rotatedApiKeys || rotatedApiKeys.length === 0) { return Response.error("LỖI: Vui lòng cấu hình ít nhất 1 API key."); }
         
         var cacheKey = null;
-        if (!isShortTextOrList) { // Chỉ kiểm tra cache cho nội dung chương
+        if (!isShortTextOrList) { 
              try {
                 cacheKey = generateFingerprintCacheKey(lines);
                 var cachedTranslation = localStorage.getItem(cacheKey);
@@ -244,30 +239,26 @@ function execute(text, from, to) {
             }
         }
         
-        // --- Logic mới để xác định model và cách chạy ---
         var modelToUse = null;
         var useModelLoop = true;
         var finalTo = to; 
-        var isPinyinRoute = false; // Mặc định là không dùng phiên âm
+        var isPinyinRoute = false; 
         var validModels = ["gemini-2.5-pro", "gemini-2.5-flash-preview-05-20", "gemini-2.5-flash", "gemini-2.5-flash-lite"];
         var pinyinLangs = ['vi_tieuchuan', 'vi_sac', 'vi_NameEng', 'vi_layname'];
 
         if (validModels.indexOf(from) > -1) {
             modelToUse = from;
             useModelLoop = false;
-            // Nếu dùng model và to là ngôn ngữ convert -> dùng phiên âm
             if (pinyinLangs.indexOf(to) > -1) {
                 isPinyinRoute = true;
             }
         } else if (from === 'en' || from === 'vi') {
-            // Trường hợp nguồn là Anh hoặc Việt -> Không dùng phiên âm
             var validTargets = ['zh', 'vi', 'en'];
             if (validTargets.indexOf(finalTo) === -1) {
                 finalTo = 'vi';
             }
             isPinyinRoute = false; 
         } else {
-            // Các trường hợp còn lại mặc định là 'zh' -> Có thể dùng phiên âm
             if (pinyinLangs.indexOf(to) > -1) {
                 isPinyinRoute = true;
             }
@@ -275,7 +266,6 @@ function execute(text, from, to) {
 
         var selectedPrompt = prompts[finalTo] || prompts["vi"];
         
-        // Điều kiện sử dụng phienam.js
         var pinyinLangs = ['vi_tieuchuan', 'vi_sac', 'vi_NameEng', 'vi_layname'];
         var isPinyinRoute = (validModels.indexOf(from) > -1 || from === 'zh') && pinyinLangs.indexOf(to) > -1;
 
@@ -325,7 +315,7 @@ function execute(text, from, to) {
             var currentModelFailed = false;
             for (var k = 0; k < textChunks.length; k++) {
                 var chunkToSend = textChunks[k];
-                if (isPinyinRoute && !isShortTextOrList) { // Chỉ phiên âm cho nội dung chương
+                if (isPinyinRoute && !isShortTextOrList) { 
                     try {
                         load("phienam.js");
                         chunkToSend = phienAmToHanViet(chunkToSend);
@@ -362,9 +352,8 @@ function execute(text, from, to) {
         }
     }
 
-    // --- Logic lưu cache mới ---
+    // --- Logic lưu cache ---
     if (cacheKey && finalContent && !finalContent.includes("LỖI DỊCH")) {
-        // Chỉ lưu cache khi model nằm trong danh sách cho phép và 'to' không phải 'vi_layname'
         if (cacheableModels.indexOf(modelsucess) > -1 && to !== 'vi_layname') {
             manageCacheAndSave(cacheKey, finalContent.trim());
         }
