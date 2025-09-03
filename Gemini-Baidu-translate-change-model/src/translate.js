@@ -2,7 +2,7 @@ load("language_list.js");
 load("prompt.js");
 load("baidutranslate.js");
 
-var apiKeys = [];
+let apiKeys = [];
 try {
     apiKeys = (api_keys || "").split("\n").filter(k => k !== "");
 } catch (e) {}
