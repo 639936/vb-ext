@@ -1,5 +1,11 @@
 load("language_list.js"); 
-load("apikey.js");
+let apiKeys = [];
+try {
+    if (typeof api_keys !== 'undefined' && api_keys) {
+        apiKeys = (api_keys || "").split("\n").filter(function(k) { return k.trim() !== ""; });
+    }
+} catch (e) {
+}
 load("prompt.js");
 load("baidutranslate.js");
 
