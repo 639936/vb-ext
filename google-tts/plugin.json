@@ -2,7 +2,7 @@
   "metadata": {
     "name": "Google TTS",
     "author": "369",
-    "version": 2,
+    "version": 3,
     "source": "https://www.google.com",
     "description": "Nghe truyện bằng Google TTS",
     "type": "tts"
@@ -13,7 +13,7 @@
   },
   "config": {
     "preload_size": 2,
-    "max_length": 200,
+    "max_length": 270,
     "required_api_key": false,
     "support_url": ""
   }

@@ -217,7 +217,7 @@
       "name": "Bing TTS",
       "author": "369",
       "version": 6,
-      "source": "https://www.google.com",
+      "source": "https://www.bing.com/translator",
       "path": "https://raw.githubusercontent.com/639936/vb-ext/main/bing-tts/plugin.zip",
       "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/bing-tts/icon.png",
       "description": "Nghe truyện bằng Bing TTS",
@@ -226,7 +226,7 @@
     {
       "name": "Google TTS",
       "author": "369",
-      "version": 2,
+      "version": 3,
       "source": "https://www.google.com",
       "path": "https://raw.githubusercontent.com/639936/vb-ext/main/google-tts/plugin.zip",
       "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/google-tts/icon.png",
@@ -241,6 +241,16 @@
       "path": "https://raw.githubusercontent.com/639936/vb-ext/main/gemini-tts/plugin.zip",
       "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/gemini-tts/icon.png",
       "description": "Nghe truyện bằng Gemini TTS",
+      "type": "tts"
+    },
+    {
+      "name": "Tiktok TTS",
+      "author": "369",
+      "version": 1,
+      "source": "https://www.tiktok.com",
+      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/tiktok-tts/plugin.zip",
+      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/tiktok-tts/icon.png",
+      "description": "Nghe truyện bằng TikTok TTS",
       "type": "tts"
     },
     {
