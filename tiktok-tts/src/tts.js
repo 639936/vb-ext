@@ -29,19 +29,20 @@ function execute(text, voice) {
         }
     });
 
-    let resultText = response.text();
+    if (response.ok) {
+        let resultText = response.text();
 
-    // Parse JSON if it looks like JSON
-    if (resultText.startsWith('{')) {
-        let result = JSON.parse(resultText);
-        let statusCode = result.status_code;
-
-        if (statusCode === 0) {
-            return Response.success(result.data.v_str);
-        } else {
-            return Response.error(result.status_msg);
+        // Parse JSON if it looks like JSON
+        if (resultText.startsWith('{')) {
+            let result = JSON.parse(resultText);
+            let statusCode = result.status_code;
+            if (statusCode === 0) {
+                return Response.success(result.data.v_str);
+            } else {
+                return Response.error(result.status_msg);
+            }
         }
+        return null
     }
-
     return null;
 }
