@@ -1,11 +1,17 @@
 load('config.js');
-
 function execute(url) {
+    // --- Bắt đầu phần mã thêm vào ---
+    let current_host = localStorage.getItem('vp_local_ip');
+    if (!current_host) {
+        current_host = BASE_URL; // Dùng địa chỉ mặc định nếu chưa có trong storage
+    } else if (!current_host.startsWith('http')) {
+        current_host = 'http://' + current_host; // Tự động thêm http:// nếu người dùng quên
+    }
+    // --- Kết thúc phần mã thêm vào ---
+
     url = url.replace("/vBook/Book/", "");
     url = url.replace("http://localhost", "");
     var page = [];
-    // URL đầu ra của page.js sẽ là đầu vào cho toc.js
-    // Cấu trúc: [API_URL_để_lấy_danh_sách_chương]/[Tên_truyện_để_xây_dựng_lại_URL_chương]
-    page.push(HOST + "/api/file/list?path=%2FvBook%2FBook%2F" + url + "%2F&sort=modified&sort-reversed=false" + "/" + url);
-    return Response.success(page);
+    page.push(current_host + "/api/file/list?path=%2FvBook%2FBook%2F" + url + "%2F&sort=modified&sort-reversed=false" + "/" + url)
+    return Response.success(page)
 }

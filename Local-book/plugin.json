@@ -2,21 +2,12 @@
   "metadata": {
     "name": "Local BOOK",
     "author": "369",
-    "version": 24,
+    "version": 25,
     "source": "http://localhost/vBook/Book",
     "regexp": "https?:\/\/[^/]+\/vBook\/Book\/[^/]+",
     "description": "Đọc truyện Local với địa chỉ IP có thể thay đổi",
     "language": "javascript",
     "type": "novel"
-  },
-  "config": {
-    "local_ip": {
-      "title": "Địa chỉ IP Local",
-      "description": "Nhập địa chỉ IP và cổng của máy chủ local. Ví dụ: 192.168.1.10:8080",
-      "mode": "input",
-      "format": "text",
-      "default": "192.168.0.168:8080"
-    }
   },
   "script": {
     "home": "home.js",
