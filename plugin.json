@@ -63,18 +63,6 @@
     "tag": "nsfw"
     },
     {
-    "name": "alicesw",
-    "author": "369",
-    "path": "https://raw.githubusercontent.com/639936/vb-ext/main/alicesw/plugin.zip",
-    "version": 7,
-    "source": "https://www.alicesw.com",
-    "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/alicesw/icon.png",
-    "description": "Đọc truyện trên alicesw.com",
-    "type": "chinese_novel",
-    "locale": "zh_CN",
-    "tag": "nsfw"
-    },
-    {
     "name": "Truyện sexTV2",
     "author": "369",
     "path": "https://raw.githubusercontent.com/639936/vb-ext/main/xtv2/plugin.zip",
