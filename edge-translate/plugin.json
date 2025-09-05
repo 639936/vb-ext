@@ -4,7 +4,7 @@
     "author": "369",
     "version": 1,
     "source": "https://www.bing.com/translator",
-    "description": "Dịch truyện bằng Edge TTS",
+    "description": "Dịch truyện bằng Bing",
     "type": "translate"
   },
   "script": {

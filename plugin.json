@@ -51,31 +51,6 @@
     "tag": "nsfw"
     },
     {
-    "name": "Sinodan",
-    "author": "369",
-    "path": "https://raw.githubusercontent.com/639936/vb-ext/main/Sinodan/plugin.zip",
-    "version": 16,
-    "source": "https://www.sinodan.link",
-    "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/Sinodan/icon.png",
-    "description": "Đọc truyện trên sinodan.link",
-    "type": "novel",
-    "locale": "zh_CN",
-    "tag": "nsfw"
-    },
-    {
-    "name": "Truyện sexTV2",
-    "author": "369",
-    "path": "https://raw.githubusercontent.com/639936/vb-ext/main/xtv2/plugin.zip",
-    "version": 13,
-    "source": "https://truyensextv2.cc",
-    "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/xtv2/icon.png",
-    "description": "đọc truyện sex",
-    "type": "novel",
-    "locale": "vi_VN",
-    "tag": "nsfw"
-
-    },
-    {
     "name": "Đọc truyện 14",
     "author": "369",
     "path": "https://raw.githubusercontent.com/639936/vb-ext/main/doctruyen14/plugin.zip",
@@ -121,63 +96,6 @@
     "description": "đọc truyện",
     "type": "novel",
     "locale": "vi_VN"
-    },
-    {
-    "name": "cosplaytele",
-    "author": "369",
-    "path": "https://raw.githubusercontent.com/639936/vb-ext/main/cosplaytele/plugin.zip",
-    "version": 1,
-    "source": "https://cosplaytele.com/",
-    "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/cosplaytele/icon.png",
-    "description": "noDes",
-    "type": "comic",
-    "locale": "zh_CN",
-    "tag": "nsfw"
-    },
-     {
-    "name": "Misskon",
-    "author": "369",
-    "path": "https://raw.githubusercontent.com/639936/vb-ext/main/Misskon/plugin.zip",
-    "version": 1,
-    "source": "https://misskon.com/",
-    "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/Misskon/icon.png",
-    "description": "Xem gái trên misskon",
-    "type": "comic",
-    "locale": "vi_VN",
-    "tag": "nsfw"
-    },
-    {
-    "name": "Wattpadfake",
-    "author": "369",
-    "path": "https://raw.githubusercontent.com/639936/vb-ext/main/Wattpadfake/plugin.zip",
-    "version": 1,
-    "source": "https://wattpad.com.vn/",
-    "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/Wattpadfake/icon.png",
-    "description": "noDes",
-    "type": "novel",
-    "locale": "vi_VN"
-    },
-    {
-    "name": "MeTruyenChu",
-    "author": "369",
-    "path": "https://raw.githubusercontent.com/639936/vb-ext/main/MeTruyenChu/plugin.zip",
-    "version": 1,
-    "source": "https://wattpad.com.vn/",
-    "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/MeTruyenChu/icon.png",
-    "description": "noDes",
-    "type": "novel",
-    "locale": "vi_VN"
-    },
-    {
-    "name": "Wattpad",
-    "author": "369",
-    "path": "https://raw.githubusercontent.com/639936/vb-ext/main/wattpad/plugin.zip",
-    "version": 1,
-    "source": "https://wattpad.com",
-    "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/wattpad/icon.png",
-    "description": "noDes",
-    "type": "novel",
-      "locale": "vi_VN"
     },
     {
     "name": "Uaa",
@@ -248,7 +166,17 @@
       "source": "https://fanyi.baidu.com",
       "path": "https://raw.githubusercontent.com/639936/vb-ext/main/baidu-translate/plugin.zip",
       "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/baidu-translate/icon.png",
-      "description": "noDes",
+      "description": "Dịch truyện bằng Baidu",
+      "type": "translate"
+    },
+    {
+      "name": "Edge Translate",
+      "author": "369",
+      "version": 1,
+      "source": "https://www.bing.com/translator",
+      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/edge-translate/plugin.zip",
+      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/edge-translate/icon.png",
+      "description": "Dịch truyện bằng Bing",
       "type": "translate"
     }
   ]
