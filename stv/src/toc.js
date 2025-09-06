@@ -20,7 +20,7 @@ function execute(url) {
         toc.split('-//-').forEach(e=>{
         chapters.push({
             url:"/index.php?bookid="+input[2]+"&h="+input[1]+"&c="+e.match(regex1)[1]+"&ngmar=readc&sajax=readchapter&sty=1&exts="+ext+"|"+url+e.match(regex1)[1]+"/",
-            name:e.match(regex1)[2],
+            name:e.match(regex1)[2].replace(/:/gi, "").replace(/Chương /gi, "").substring(0, 24),
             host :BASE_URL
             })
         })
