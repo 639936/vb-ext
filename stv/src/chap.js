@@ -9,6 +9,7 @@ function execute(url) {
     let response= fetch(url1,{
             method:"POST",
             headers:{
+                "x-stv-transport":	"web",
                 "Content-type": "application/x-www-form-urlencoded",
                 "Host": "14.225.254.182",
                 "Origin": "http://14.225.254.182",

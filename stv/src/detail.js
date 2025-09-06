@@ -10,9 +10,7 @@ const regex = /var\s+bookinfo\s*=\s*(\{[\s\S]*?\});/;
          let _detail = ""
          doc.select(".blk-body.ib-100").forEach(e=>{
 _detail+="<br>"+e.text()
-         })
-       
-        //return Response.success(doc);
+         })       
         return Response.success({
             name: json.name,
             cover: json.thumb,
