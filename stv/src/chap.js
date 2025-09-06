@@ -11,7 +11,6 @@ function execute(url) {
         method:"POST",
         headers:{
             "Content-type": "application/x-www-form-urlencoded",
-            "Cookie": `${Cookie}`,
 "Host": "14.225.254.182",
 "Origin": "http://14.225.254.182",
 "Referer": `${url2}`,
