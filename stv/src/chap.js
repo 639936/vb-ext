@@ -19,7 +19,7 @@ function execute(url) {
     })
     if (response.ok) {
         var obj = response.json();
-        var nd = obj.data.replace(/<i[^>]*>(.*?)<\/i>/g, '$1').replace(/\t/g, '');
+        var nd = obj.data.replace(/<i[^>]*t=['"]([^'"]+)['"][^>]*>.*?<\/i>/g, function(match, tValue) {return tValue}).replace(/\t/g, '');
         return Response.success(nd)
     }
     return null
