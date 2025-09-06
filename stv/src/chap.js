@@ -5,18 +5,17 @@ function execute(url) {
     var parts = url.split('|');
     var url1 = parts[0];
     var url2 = parts[1];
-    console.log(url1)
-    console.log(url2)
+
     let response= fetch(url1,{
-        method:"POST",
-        headers:{
-            "Content-type": "application/x-www-form-urlencoded",
-"Host": "14.225.254.182",
-"Origin": "http://14.225.254.182",
-"Referer": `${url2}`,
-"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 Edg/139.0.0.0"
-        }
-    })
+            method:"POST",
+            headers:{
+                "Content-type": "application/x-www-form-urlencoded",
+                "Host": "14.225.254.182",
+                "Origin": "http://14.225.254.182",
+                "Referer": `${url2}`,
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 Edg/139.0.0.0"
+            }
+        })
     if (response.ok) {
         var obj = response.json();
         var nd = obj.data.replace(/<i[^>]*t=['"]([^'"]+)['"][^>]*>.*?<\/i>/g, function(match, tValue) {return tValue}).replace(/\t/g, '');
