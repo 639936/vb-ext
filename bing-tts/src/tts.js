@@ -37,7 +37,6 @@ function findBingData() {
 }
 
 function generateSSML(text, voiceLang, voiceName, voiceGender) {
-    // Thêm volume='loud' vào thẻ prosody
     return "<speak version='1.0' xml:lang='" + voiceLang + "'><voice xml:lang='" + voiceLang + "' xml:gender='" + voiceGender + "' name='" + voiceName + "'><prosody rate='0%' volume='loud'>" + escapeXml(text) + "</prosody></voice></speak>"
 }
 

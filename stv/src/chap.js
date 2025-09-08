@@ -122,18 +122,22 @@ function execute(url) {
     mapping_dict[String.fromCharCode(0xF0BA)] = 'r';
     mapping_dict[String.fromCharCode(0xF8FF)] = '';
 
-    var parts = url.split('|');
-    var url1 = parts[0];
-    var url2 = parts[1];
+// http://14.225.254.182/index.php?bookid=1599&h=sangtac&c=1&ngmar=readc&sajax=readchapter&sty=1&exts=|http://14.225.254.182/truyen/sangtac/1/1599/1/
+// "/index.php?bookid="+input[2]+"&h="+input[1]+"&c="+e.match(regex1)[1]+"&ngmar=readc&sajax=readchapter&sty=1&exts="+ext+"|"+url+e.match(regex1)[1]+"/"
 
-    let response = fetch(url1, {
+    const regexchap = /truyen\/([^\/]+)\/\d+\/(\d+)\/(\d+)\/?/;   
+    let input = url.match(regexchap)
+    let extchap = (input[1] === "dich" || input[1] === "sangtac")? "720^-16777216^-1383213":"";
+    let urls=BASE_URL+"/index.php?bookid="+input[2]+"&h="+input[1]+"&c="+input[3]+"&ngmar=readc&sajax=readchapter&sty=1&exts="+extchap;
+
+    let response = fetch(urls, {
         method: "POST",
         headers: {
             "x-stv-transport": "web",
             "Content-type": "application/x-www-form-urlencoded",
             "Host": "14.225.254.182",
             "Origin": "http://14.225.254.182",
-            "Referer": `${url2}`,
+            "Referer": `${url}`,
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 Edg/139.0.0.0"
         }
     });

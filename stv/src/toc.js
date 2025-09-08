@@ -2,7 +2,6 @@ load("config.js");
 function execute(url) {
     const regex = /truyen\/([^\/]+)\/\d+\/(\d+)\/?/;   
     let input = url.match(regex)
-    var ext = (input[1] === "dich")? "720^-16777216^-1383213":"";
     urls=BASE_URL+"/index.php?ngmar=chapterlist&sajax=getchapterlist&h="+input[1]+"&bookid="+input[2]
     let response= fetch(urls,{
         method:"GET",
@@ -22,7 +21,7 @@ function execute(url) {
             let name = e.match(regex1)[2];
             name = name.replace(/:/gi, "").replace(/Chương /gi, "").substring(0, 24);
             chapters.push({
-                url: "/index.php?bookid="+input[2]+"&h="+input[1]+"&c="+e.match(regex1)[1]+"&ngmar=readc&sajax=readchapter&sty=1&exts="+ext+"|"+url+e.match(regex1)[1]+"/",
+                url: url+e.match(regex1)[1],
                 name: name,
                 host: BASE_URL
                 })
