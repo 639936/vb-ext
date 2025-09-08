@@ -22,7 +22,7 @@ function execute(url) {
             name = name.replace(/:/gi, "").replace(/Chương /gi, "").substring(0, 24);
             url = url.endsWith('/') ? url : url + '/';
             chapters.push({
-                url: url+"/"+e.match(regextoc)[1],
+                url: url+e.match(regextoc)[1],
                 name: name,
                 host: BASE_URL
                 })
