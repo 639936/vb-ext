@@ -144,7 +144,7 @@ function execute(url) {
 
     if (response.ok) {
         var obj = response.json();
-        let content = obj.data;
+        let content = obj.data.replace(/<span[^>]*>|<\/span>/g, "");
 
         const regex = new RegExp(Object.keys(mapping_dict).join('|'), 'g');
         let decodedContent = content.replace(regex, function(match) {
