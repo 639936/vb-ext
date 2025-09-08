@@ -21,7 +21,7 @@ function execute(url) {
             let name = e.match(regex1)[2];
             name = name.replace(/:/gi, "").replace(/Chương /gi, "").substring(0, 24);
             chapters.push({
-                url: url+e.match(regex1)[1],
+                url: url+e.match(regex1)[1]+"/",
                 name: name,
                 host: BASE_URL
                 })
