@@ -14,14 +14,14 @@ function execute(url) {
     if(response.ok){
         let books=response.json()
         let toc=books.data
-        const regex1 = /1-\/-(\d+)-\/-([^\/]+)/;
+        const regextoc = /1-\/-(\d+)-\/-([^\/]+)/;
         const chapters = [];
     // http://14.225.254.182/index.php?bookid=7525068004636232728&h=fanqie&c=7525451194425147929&ngmar=readc&sajax=readchapter&sty=1&exts=
         toc.split('-//-').forEach(e=>{
-            let name = e.match(regex1)[2];
+            let name = e.match(regextoc)[2];
             name = name.replace(/:/gi, "").replace(/Chương /gi, "").substring(0, 24);
             chapters.push({
-                url: url+e.match(regex1)[1]+"/",
+                url: url+"/"+e.match(regextoc)[1],
                 name: name,
                 host: BASE_URL
                 })
