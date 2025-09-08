@@ -18,7 +18,7 @@ function execute(url) {
         const chapters = [];
     // http://14.225.254.182/index.php?bookid=7525068004636232728&h=fanqie&c=7525451194425147929&ngmar=readc&sajax=readchapter&sty=1&exts=
         toc.split('-//-').forEach(e=>{
-            let name = e.match(regextoc)[2];
+            var name = e.match(regextoc)[2];
             name = name.replace(/:/gi, "").replace(/Chương /gi, "").substring(0, 24);
             url = url.endsWith('/') ? url : url + '/';
             chapters.push({
