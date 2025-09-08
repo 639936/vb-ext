@@ -1,6 +1,6 @@
 function execute() {
     return Response.success([
-        {title: "Truyện theo dõi", input: "http://14.225.254.182/io/bookfollow/getFollowedBooks?format=html&user=0&filter=", script: "gen.js"},
+        {title: "Truyện theo dõi", input: "/io/bookfollow/getFollowedBooks?format=html&user=0&filter=", script: "user1.js"},
         {title: "Mới cập nhật", input: "update", script: "gen.js"},
         {title: "Lượt đọc tổng", input: "view", script: "gen.js"},
         {title: "Lượt đọc tuần", input: "viewweek", script: "gen.js"},
