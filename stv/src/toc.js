@@ -20,6 +20,7 @@ function execute(url) {
         toc.split('-//-').forEach(e=>{
             let name = e.match(regextoc)[2];
             name = name.replace(/:/gi, "").replace(/Chương /gi, "").substring(0, 24);
+            url = url.endsWith('/') ? url : url + '/';
             chapters.push({
                 url: url+"/"+e.match(regextoc)[1],
                 name: name,

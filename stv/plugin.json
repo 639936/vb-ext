@@ -2,7 +2,7 @@
   "metadata": {
     "name": "stv",
     "author": "369",
-    "version": 12,
+    "version": 13,
     "source": "http://14.225.254.182/",
     "regexp": "(www.)?(14.225.254.182)/truyen/[a-zA-Z0-9/-]+$",
     "description": "noDev",
