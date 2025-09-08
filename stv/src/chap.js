@@ -129,6 +129,7 @@ function execute(url) {
     let input = url.match(regexchap)
     let extchap = (input[1] === "dich" || input[1] === "sangtac")? "720^-16777216^-1383213":"";
     let urls=BASE_URL+"/index.php?bookid="+input[2]+"&h="+input[1]+"&c="+input[3]+"&ngmar=readc&sajax=readchapter&sty=1&exts="+extchap;
+    urls = urls.endsWith('/') ? urls : urls + '/';
 
     let response = fetch(urls, {
         method: "POST",
@@ -144,14 +145,14 @@ function execute(url) {
 
     if (response.ok) {
         var obj = response.json();
-        let content = obj.data.replace(/<span[^>]*>|<\/span>/g, "");
+        let content = obj.data;
 
         const regex = new RegExp(Object.keys(mapping_dict).join('|'), 'g');
         let decodedContent = content.replace(regex, function(match) {
             return mapping_dict[match];
         });
 
-        var finalContent = decodedContent
+        var finalContent = decodedContent.replace(/<span[^>]*>|<\/span>/g, "")
             .replace(/<i[^>]*t=['"]([^'"]+)['"][^>]*>.*?<\/i>/g, function(match, tValue) { return tValue; })
             .replace(/\t/g, '');
 
