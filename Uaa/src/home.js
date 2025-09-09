@@ -1,5 +1,6 @@
 function execute() {
     return Response.success([
+        {title: "我的收藏", input: "/member/collect?type=1&sort=0", script: "user.js"},
         {title: "小说首页", input: "/novel", script: "gener.js"},
         {title: "全部小说", input: "/novel/list?keyword=&searchType=1&author=&category=&finished=&space=&source=&tag=&sort=2", script: "updates.js"},
         {title: "小说排行榜", input: "/novel/rank", script: "bxh.js"},
