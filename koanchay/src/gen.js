@@ -1,5 +1,4 @@
 load("config.js");
-load('bypass.js');
 
 function execute(url, page) {
     if (!page) page = '0';
