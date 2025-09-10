@@ -1,12 +1,10 @@
 load('config.js');
 
 function execute(input) {
-    let response = fetch(BASE_URL + input);
+    let response = fetch(input);
     if (response.ok) {
         let doc= response.html();
-        
         const sgb = [];
-        
         doc.select(".main_box .recommend_box .recommend_item").forEach(e => {
             sgb.push({
                 name: e.select(".title").text(),
