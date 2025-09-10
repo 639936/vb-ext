@@ -14,7 +14,12 @@ function execute(url) {
             author: book.select(".info_box div").get(2).text().replace("作者：", ""),
             description: book.select(".brief").text().replace(/\r?\n/g,"<br>"),
             detail: detail,
-            host: "https://www.uaa.com"
+            host: "https://www.uaa.com",
+            suggests: [{
+                title: "View more",
+                input: url,
+                script: "suggest.js"
+            }]
         });
     }
     return null;

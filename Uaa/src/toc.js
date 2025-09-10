@@ -7,11 +7,11 @@ function execute(url) {
         let doc = response.html();
         //console.log(json)
         
-        let chapters=doc.select(".catalog_box .catalog_ul li")
+        let chapters=doc.select(".catalog_box .catalog_ul li.menu")
         chapters.forEach(e => {
         console.log(e)
         data.push({
-            name: e.select("a").first().text(),
+            name: e.text(),
             url: e.select("a").first().attr("href"),
             
         })
