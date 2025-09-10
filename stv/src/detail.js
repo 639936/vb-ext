@@ -10,14 +10,16 @@ const regex = /var\s+bookinfo\s*=\s*(\{[\s\S]*?\});/;
          let _detail = ""
          doc.select(".blk-body.ib-100").forEach(e=>{
 _detail+="<br>"+e.text()
-         })       
+         })
+    let statusTag = doc.select('meta[property="og:novel:status"]').first();
+    let ongoing = statusTag ? statusTag.attr('content') === "Còn tiếp" : false;
         return Response.success({
             name: json.name,
             cover: json.thumb,
             author: json.author || 'Unknow',
             description: des,
-            detail: _detail,
-            ongoing: true,
+            detail: statusTag.attr('content') + _detail,
+            ongoing: ongoing,
             host: BASE_URL
         });
     }
