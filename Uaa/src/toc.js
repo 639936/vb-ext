@@ -11,7 +11,7 @@ function execute(url) {
         chapters.forEach(e => {
         console.log(e)
         data.push({
-            name: e.text().replace(/游客/g, ">").replace(/注册会员/g, ">"),
+            name: e.text().replace(/游客/g, ">").replace(/注册会员/g, ">").replace(/new/g, ""),
             url: e.select("a").first().attr("href"),
             
         })
