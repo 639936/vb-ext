@@ -9,9 +9,11 @@ function execute(url) {
         
         let chapters=doc.select(".catalog_box .catalog_ul li.menu")
         chapters.forEach(e => {
-        console.log(e)
+        let k = e.select("span").text();
+        if (k!=="游客" && k!=="注册会员") {k=""} else {k=">"}
+        //.replace(/游客/g, ">").replace(/注册会员/g, ">")
         data.push({
-            name: e.text().replace(/游客/g, ">").replace(/注册会员/g, ">").replace(/new/g, ""),
+            name: e.select("a").text().replace(/new/g, "") + k,
             url: e.select("a").first().attr("href"),
             
         })
