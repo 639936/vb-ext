@@ -154,7 +154,7 @@ function execute(url) {
 
         var finalContent = decodedContent.replace(/<span[^>]*>|<\/span>/g, "")
             .replace(/<i[^>]*t=['"]([^'"]+)['"][^>]*>.*?<\/i>/g, function(match, tValue) { return tValue; })
-            .replace(/\t/g, '');
+            .replace(/\t/g, '\n');
 
         return Response.success(finalContent);
     }

@@ -160,16 +160,6 @@
       "type": "tts"
     },
     {
-      "name": "Tiktok TTS",
-      "author": "369",
-      "version": 2,
-      "source": "https://www.tiktok.com",
-      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/tiktok-tts/plugin.zip",
-      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/tiktok-tts/icon.png",
-      "description": "Nghe truyện bằng TikTok TTS",
-      "type": "tts"
-    },
-    {
       "name": "Baidu Translate",
       "author": "369",
       "version": 1,
