@@ -1,7 +1,7 @@
 load('config.js');
 function execute(input, next) {
     let response = fetch(input, {
-        headers: {"user-agent": UserAgent.system()},
+        headers: {"user-agent": UserAgent.android()},
     });
     if (response.ok) {
         let doc = response.html();

@@ -4,7 +4,7 @@ function execute(url) {
     url = url.replace(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n?]+)/img, BASE_URL);
     let response = fetch(url, {
         headers: {
-            "user-agent": UserAgent.system()
+            "user-agent": UserAgent.android()
         },
     });
     if (response.ok) {

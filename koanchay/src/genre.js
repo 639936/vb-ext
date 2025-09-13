@@ -3,7 +3,7 @@ load("config.js");
 function execute() {
     let response = fetch(BASE_URL + '/bang-xep-hang', {
         headers: {
-            "user-agent": UserAgent.system()
+            "user-agent": UserAgent.android()
         },
     });
     if (response.ok) {

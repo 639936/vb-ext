@@ -3,7 +3,7 @@ load("config.js");
 function execute(url) {
     url = url.replace(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n?]+)/img, BASE_URL);
     var doc = fetch(url, {
-        headers: {"user-agent": UserAgent.system()},
+        headers: {"user-agent": UserAgent.android()},
     }).html();
 
     var bookId = doc.select("input#bookId").attr("value");

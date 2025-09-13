@@ -5,7 +5,7 @@ function execute(url, page) {
     let response = fetch(url, {
         method: "GET",
         headers: {
-            "user-agent": UserAgent.system()
+            "user-agent": UserAgent.android()
         },
         queries: {"start": page, "vo": 1}
     });
