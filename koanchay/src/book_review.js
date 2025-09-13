@@ -1,6 +1,8 @@
 load('config.js');
 function execute(input, next) {
-    let response = fetch(input);
+    let response = fetch(input, {
+        headers: {"user-agent": UserAgent.system()},
+    });
     if (response.ok) {
         let doc = response.html();
         let comments = [];

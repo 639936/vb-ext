@@ -2,7 +2,9 @@ load("config.js");
 
 function execute(url) {
     url = url.replace(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n?]+)/img, BASE_URL);
-    var doc = Http.get(url).html();
+    var doc = fetch(url, {
+        headers: {"user-agent": UserAgent.system()},
+    }).html();
 
     var bookId = doc.select("input#bookId").attr("value");
     var html = doc.html();
