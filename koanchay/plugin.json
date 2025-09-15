@@ -2,7 +2,7 @@
   "metadata": {
     "name": "koanchay",
     "author": "369",
-    "version": 6,
+    "version": 7,
     "source": "https://koanchay.net",
     "regexp": "(www.)?koanchay.(com|net|info|org)/truyen/[^/]+/?$",
     "description": "Đọc truyện trên trang Koanchay, pass: lamondungtuyentruyen",

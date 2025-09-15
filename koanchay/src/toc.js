@@ -24,12 +24,15 @@ function execute(url) {
     }
 
     function getChapterInPage(currentPage) {
-        return Http.get("https://koanchay.net/book/index").params({
-            bookId: bookId,
-            signKey: signKey,
-            sign: genSign(signKey, currentPage, size),
-            size: size,
-            start: currentPage.toFixed(0)
+        return fetch(BASE_URL + "/book/index", {
+            headers: {"user-agent": UserAgent.android()},
+            queries: {
+                bookId: bookId,
+                signKey: signKey,
+                sign: genSign(signKey, currentPage, size),
+                size: size,
+                start: currentPage.toFixed(0)
+            }
         }).html()
     }
 
@@ -45,7 +48,7 @@ function execute(url) {
             data.push({
                 name: e.text(),
                 url: link,
-                host: "https://koanchay.net"
+                host: BASE_URL
             })
         }
 

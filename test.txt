@@ -1,4 +1,4 @@
-/*{
+/* {
       "name": "Google TTS",
       "author": "369",
       "version": 1,
