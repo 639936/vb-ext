@@ -1,7 +1,7 @@
 load("config.js");
 
 function execute() {
-    let response1 = fetch(BASE_URL + "/novel/rank", header);
+    let response1 = fetch(BASE_URL + "/novel/rank");
     if (response1.ok) {
         let doc1 = response1.html().select(".index-content");
         var data = [
@@ -10,7 +10,7 @@ function execute() {
             { title: "月榜", input: doc1.select(".dx-tab-content").get(3), script: "bxh.js" },
             { title: "年榜", input: doc1.select(".dx-tab-content").get(4), script: "bxh.js" },
         ];
-        let response2 = fetch(BASE_URL + "/novel", header);
+        let response2 = fetch(BASE_URL + "/novel");
         if (response2.ok) {
             let doc2 = response2.html().select(".app-content > div li");
             doc2.forEach(e => {

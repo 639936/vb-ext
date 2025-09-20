@@ -4,7 +4,7 @@ function execute(url, page) {
     if (!page) page = '1';
     url = url.replace(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n?]+)/img, BASE_URL);
     let currentUrl = BASE_URL + url + page;
-    let response = fetch(currentUrl, header);
+    let response = fetch(currentUrl);
 
     if (response.ok) {
         let doc = response.html();

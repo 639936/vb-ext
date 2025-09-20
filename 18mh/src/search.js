@@ -3,7 +3,7 @@ load('config.js');
 function execute(key, page) {
     if (!page) page = '1';
     let currentUrl = BASE_URL + "/novel/all?key_word=" + encodeURIComponent(key) + "&page=" + page;
-    let response = fetch(currentUrl, header);
+    let response = fetch(currentUrl);
 
     if (response.ok) {
         let doc = response.html();
