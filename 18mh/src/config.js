@@ -5,6 +5,7 @@ try {
     }
 } catch (error) {
 }
+let vercel_url = 'https://18mh.vercel.app';
 let clean_vercel_url = vercel_url;
 clean_vercel_url = clean_vercel_url.replace(/^"([\s\S]*)"$/, "$1");
 let VERCEL_PROXY_URL = clean_vercel_url.trim();
