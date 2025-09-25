@@ -1,18 +1,15 @@
 load("config.js");
 
 function execute() {
-    let response1 = fetch(BASE_URL + "/novel/rank");
-    if (response1.ok) {
-        let doc1 = response1.html().select(".index-content");
-        var data = [
-            { title: "收藏榜", input: doc1.select(".dx-tab-content").get(1), script: "bxh.js" },
-            { title: "周榜", input: doc1.select(".dx-tab-content").get(2), script: "bxh.js" },
-            { title: "月榜", input: doc1.select(".dx-tab-content").get(3), script: "bxh.js" },
-            { title: "年榜", input: doc1.select(".dx-tab-content").get(4), script: "bxh.js" },
+        let data = [
+            { title: "收藏榜", input: "0", script: "bxh.js" },
+            { title: "周榜", input: "1", script: "bxh.js" },
+            { title: "月榜", input: "2", script: "bxh.js" },
+            { title: "年榜", input: "3", script: "bxh.js" },
         ];
-        let response2 = fetch(BASE_URL + "/novel");
-        if (response2.ok) {
-            let doc2 = response2.html().select(".app-content > div li");
+        let resGenre = fetch(BASE_URL + "/novel");
+        if (resGenre.ok) {
+            let doc2 = resGenre.html().select(".app-content > div > ul > li");
             doc2.forEach(e => {
                 let link = e.select("a").attr("href");
                 if (link === "/novel/rank" || link === "/novel/all") return;
@@ -20,8 +17,7 @@ function execute() {
                     { title: e.select("a").text(), input: link, script: "gen.js" }
                 );
             })
+            return Response.success(data);
         }
-        return Response.success(data);
-    }
-    return null;
+        return null;;
 }

@@ -1,8 +1,10 @@
 load('config.js');
 function execute(databxh) {
-        let docbxh = Html.parse(databxh);
+    let res = fetch(BASE_URL + "/novel/rank");
+    if (res.ok) {
+        let doc = res.html().select(".index-content .dx-tab-content").get(databxh);
         let contentbxh = [];
-        docbxh.select("li").forEach(e => {
+        doc.select("li").forEach((e) => {
             let a = e.select("a").first();
             let originalCoverUrl = a.select("img").attr("data-src");
 
@@ -16,6 +18,7 @@ function execute(databxh) {
                 cover: finalCoverUrl, // <-- Truyền thẳng URL mới này cho Vbook
                 host: BASE_URL
             });
-        });
-        return Response.success(contentbxh)
+    })
+    return Response.success(contentbxh)
+    }
 }
