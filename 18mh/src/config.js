@@ -5,7 +5,6 @@ try {
     }
 } catch (error) {
 }
-let vercel_url = 'https://vercel.com/your-vercel-username/your-proxy-repo'; // Thay thế bằng URL Vercel của bạn
 let clean_vercel_url = vercel_url;
 clean_vercel_url = clean_vercel_url.replace(/^"([\s\S]*)"$/, "$1");
 let VERCEL_PROXY_URL = clean_vercel_url.trim();
