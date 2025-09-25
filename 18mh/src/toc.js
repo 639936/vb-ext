@@ -10,7 +10,7 @@ function execute(url) {
         let el = doc.select(".menu-list ul")
         el.select("li a").forEach(e => {
             chapters.push({
-                name: e.text(),
+                name: e.text().replace(/new/g, '').trim(),
                 url: e.attr("href"),
                 host: BASE_URL
             })
