@@ -77,7 +77,7 @@
     "name": "Fanqie",
     "author": "Noir fix toc",
     "path": "https://raw.githubusercontent.com/639936/vb-ext/main/stv/plugin.zip",
-    "version": 9,
+    "version": 10,
     "source": "https://fanqienovel.com",
     "description": "fix toc for fanqie",
     "type": "chinese_novel",
