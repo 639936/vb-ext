@@ -66,7 +66,7 @@
     "name": "stv",
     "author": "369",
     "path": "https://raw.githubusercontent.com/639936/vb-ext/main/stv/plugin.zip",
-"icon": "https://raw.githubusercontent.com/639936/vb-ext/main/stv/icon.png",
+    "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/stv/icon.png",
     "version": 21,
     "source": "http://14.225.254.182/",
     "description": "noDes",
@@ -77,7 +77,8 @@
     {
     "name": "Fanqie",
     "author": "Noir fix toc",
-    "path": "https://raw.githubusercontent.com/639936/vb-ext/main/stv/plugin.zip",
+    "path": "https://raw.githubusercontent.com/639936/vb-ext/main/FanqiAPI/plugin.zip",
+    "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/FanqiAPI/icon.png",
     "version": 10,
     "source": "https://fanqienovel.com",
     "description": "fix toc for fanqie",
