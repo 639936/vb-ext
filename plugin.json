@@ -79,7 +79,7 @@
     "author": "Noir fix toc",
     "path": "https://raw.githubusercontent.com/639936/vb-ext/main/FanqiAPI/plugin.zip",
     "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/FanqiAPI/icon.png",
-    "version": 10,
+    "version": 11,
     "source": "https://fanqienovel.com",
     "description": "fix toc for fanqie",
     "type": "chinese_novel",
