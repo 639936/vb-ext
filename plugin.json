@@ -75,18 +75,6 @@
     "encrypt": true
     },
     {
-    "name": "Fanqie",
-    "author": "Noir fix toc",
-    "path": "https://raw.githubusercontent.com/639936/vb-ext/main/FanqiAPI/plugin.zip",
-    "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/FanqiAPI/icon.png",
-    "version": 11,
-    "source": "https://fanqienovel.com",
-    "description": "fix toc for fanqie",
-    "type": "chinese_novel",
-    "locale": "zh_CN",
-    "encrypt": true
-    },
-    {
     "name": "Đọc truyện 14",
     "author": "369",
     "path": "https://raw.githubusercontent.com/639936/vb-ext/main/doctruyen14/plugin.zip",
