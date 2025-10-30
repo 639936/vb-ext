@@ -17,18 +17,6 @@
     "tag": "nsfw"
     },
     {
-    "name": "anhhantmwordpress",
-    "author": "369",
-    "path": "https://raw.githubusercontent.com/639936/vb-ext/main/anhhantmwordpress/plugin.zip",
-    "version": 1,
-    "source": "https://anhhantm.wordpress.com/",
-    "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/anhhantmwordpress/icon.png",
-    "description": "noDes",
-    "type": "novel",
-    "locale": "vi_VN",
-    "tag": "nsfw"
-    },
-     {
     "name": "TruyệnC",
     "author": "369",
     "path": "https://raw.githubusercontent.com/639936/vb-ext/main/TruyenC/plugin.zip",
@@ -39,16 +27,6 @@
     "type": "novel",
     "locale": "vi_VN",
     "tag": "nsfw"
-    },
-    {
-    "name": "Local BOOK",
-    "author": "369",
-    "path": "https://raw.githubusercontent.com/639936/vb-ext/main/Local-book/plugin.zip",
-    "version": 25,
-    "source": "http://localhost/vBook/Book",
-    "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/Local-book/icon.png",
-    "description": "Đọc truyện Local",
-    "type": "novel"
     },
     {
     "name": "koanchay",
@@ -66,21 +44,10 @@
     "name": "stv",
     "author": "369",
     "path": "https://raw.githubusercontent.com/639936/vb-ext/main/stv/plugin.zip",
-    "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/stv/icon.png",
     "version": 23,
     "source": "http://14.225.254.182/",
+    "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/stv/icon.png",
     "description": "noDes",
-    "type": "chinese_novel",
-    "locale": "zh_CN",
-    "encrypt": true
-    },
-    {
-    "name": "Fanqie",
-    "author": "Noir fix toc",
-    "path": "https://raw.githubusercontent.com/639936/vb-ext/main/stv/plugin.zip",
-    "version": 10,
-    "source": "https://fanqienovel.com",
-    "description": "fix toc for fanqie",
     "type": "chinese_novel",
     "locale": "zh_CN",
     "encrypt": true
