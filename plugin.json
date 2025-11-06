@@ -122,7 +122,7 @@
     "locale": "vi_VN"
     },
     {
-      "name": "Bing TTS",
+      "name": "Bing TTS 369",
       "author": "369",
       "version": 9,
       "source": "https://www.bing.com/translator",
@@ -132,7 +132,7 @@
       "type": "tts"
     },
     {
-      "name": "Tiktok TTS",
+      "name": "Tiktok TTS 369",
       "author": "369",
       "version": 1,
       "source": "https://tiktok.com",
