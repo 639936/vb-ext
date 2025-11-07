@@ -142,6 +142,16 @@
       "type": "tts"
     },
     {
+      "name": "Gemini TTS 369",
+      "author": "369",
+      "version": 1,
+      "source": "https://gemini.google.com",
+      "path": "https://raw.githubusercontent.com/639936/vb-ext/main/gemini-tts/plugin.zip",
+      "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/gemini-tts/icon.png",
+      "description": "Nghe truyện bằng Gemini TTS",
+      "type": "tts"
+    },
+    {
       "name": "Baidu Translate",
       "author": "369",
       "version": 1,
