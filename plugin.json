@@ -124,7 +124,7 @@
     {
       "name": "Bing TTS 369",
       "author": "369",
-      "version": 13,
+      "version": 14,
       "source": "https://www.bing.com/translator",
       "path": "https://raw.githubusercontent.com/639936/vb-ext/main/bing-tts/plugin.zip",
       "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/bing-tts/icon.png",
@@ -134,7 +134,7 @@
     {
       "name": "Tiktok TTS 369",
       "author": "369",
-      "version": 4,
+      "version": 5,
       "source": "https://tiktok.com",
       "path": "https://raw.githubusercontent.com/639936/vb-ext/main/tiktok-tts/plugin.zip",
       "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/tiktok-tts/icon.png",
