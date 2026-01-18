@@ -124,7 +124,7 @@
     {
       "name": "Bing TTS 369",
       "author": "369",
-      "version": 14,
+      "version": 15,
       "source": "https://www.bing.com/translator",
       "path": "https://raw.githubusercontent.com/639936/vb-ext/main/bing-tts/plugin.zip",
       "icon": "https://raw.githubusercontent.com/639936/vb-ext/main/bing-tts/icon.png",
